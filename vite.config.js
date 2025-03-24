@@ -25,4 +25,14 @@ export default defineConfig({
             vue: 'vue/dist/vue.esm-bundler.js',
         },
     },
+    server: {
+        host: 'qltv.local',
+        port: 5173,
+        origin: 'http://qltv.local:5173',
+        hmr: {
+            host: 'qltv.local',
+            protocol: 'ws',
+        },
+        cors: true
+    },
 });
