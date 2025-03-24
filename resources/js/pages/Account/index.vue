@@ -52,13 +52,13 @@
     </div>
 
     <!-- Modal Thêm mới tài khoản -->
-    <div class="modal fade" id="modalThem" tabindex="-1" aria-labelledby="modalThemLabel" aria-hidden="true">
+    <div class="modal fade" id="modalThem" tabindex="-1" aria-labelledby="modalThemLabel">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
             <h4 class="modal-title text-bold" id="modalThemLabel">Thêm mới tài khoản</h4>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">×</span>
+              <span>×</span>
             </button>
           </div>
           <!-- Sử dụng v-model để liên kết dữ liệu form -->
@@ -99,13 +99,13 @@
     </div>
 
     <!-- Modal Sửa tài khoản -->
-    <div class="modal fade" id="modalSua" tabindex="-1" aria-labelledby="modalSuaLabel" aria-hidden="true">
+    <div class="modal fade" id="modalSua" tabindex="-1" aria-labelledby="modalSuaLabel">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
             <h4 class="modal-title text-bold" id="modalSuaLabel">Chỉnh sửa tài khoản</h4>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">×</span>
+              <span>×</span>
             </button>
           </div>
           <form @submit.prevent="updateAccount">
@@ -195,16 +195,17 @@ export default {
     addAccount() {
       axios.post('/api/accounts', this.newAccount)
         .then(response => {
-          Swal.fire('Thành công', response.data.message, 'success');
-          this.newAccount = { ten_dang_nhap: '', ten_nguoi_dung: '', mat_khau: '', quyen: 'admin' };
           $('#modalThem').modal('hide');
-          this.loadAccounts(); // Reload danh sách sau khi thêm mới
+          Swal.fire('Thành công', response.data.message, 'success');
+          this.loadAccounts();
+          this.newAccount = { ten_dang_nhap: '', ten_nguoi_dung: '', mat_khau: '', quyen: 'admin' };
         })
         .catch(error => {
           Swal.fire('Lỗi', 'Có lỗi xảy ra khi thêm tài khoản!', 'error');
           console.error(error);
         });
     },
+
     // Hàm hiển thị modal chỉnh sửa
     editAccount(row) {
       // Gán dữ liệu từ row sang biến editAccountData
@@ -221,7 +222,7 @@ export default {
     updateAccount() {
       axios.put(`/api/accounts/${this.editAccountData.id_tai_khoan}`, this.editAccountData)
         .then(response => {
-          Swal.fire('Thành công', 'Cập nhật tài khoản thành công!', 'success');
+          Swal.fire('Thành công', response.data.message, 'success');
           $('#modalSua').modal('hide');
           this.loadAccounts();
         })
