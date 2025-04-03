@@ -29,7 +29,7 @@ CREATE TABLE `chuc_vu` (
   `ngay_cap_nhat` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `ngay_tao` timestamp NULL DEFAULT (now()),
   PRIMARY KEY (`id_chuc_vu`)
-) ENGINE=InnoDB AUTO_INCREMENT=57 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=58 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -167,7 +167,7 @@ CREATE TABLE `don_vi` (
   `ngay_tao` timestamp NULL DEFAULT (now()),
   `ngay_cap_nhat` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_don_vi`)
-) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=55 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -176,7 +176,7 @@ CREATE TABLE `don_vi` (
 
 LOCK TABLES `don_vi` WRITE;
 /*!40000 ALTER TABLE `don_vi` DISABLE KEYS */;
-INSERT INTO `don_vi` VALUES (1,'CTSV','Phòng Công tác sinh viên','2025-04-01 07:58:16','2025-04-01 08:01:58'),(2,'PĐT','Phòng Đào tạo','2025-04-01 07:58:16','2025-04-01 08:01:58'),(3,'QLKH-HTQT','Phòng Quản lý khoa học & Hợp tác quốc tế','2025-04-01 07:58:16','2025-04-01 08:01:58'),(4,'KHTC','Phòng Kế hoạch - Tài chính','2025-04-01 07:58:16','2025-04-01 08:01:58'),(5,'TCHC','Phòng Tổ chức Hành Chính','2025-04-01 07:58:16','2025-04-01 08:01:58'),(6,'TTTH','Trung tâm thực hành','2025-04-01 07:58:16','2025-04-01 08:01:58'),(7,'KT-DBCLGD','Phòng Khảo thí và Đảm bảo chất lượng giáo dục','2025-04-01 07:58:16','2025-04-01 08:01:58'),(8,'QTTB','Phòng Quản trị thiết bị','2025-04-01 07:58:16','2025-04-01 08:01:58'),(9,'GDTC','Trung tâm GDTC và GDQP','2025-04-01 07:58:16','2025-04-01 08:01:58'),(11,'NN-TH','Trung tâm Ngoại ngữ - Tin học','2025-04-01 07:58:16','2025-04-01 08:01:58'),(12,'KHCB','Khoa Khoa học cơ bản','2025-04-01 07:58:16','2025-04-01 08:01:58'),(13,'LLCT','Khoa Lý luận chính trị','2025-04-01 07:58:16','2025-04-01 08:01:58'),(14,'KTCNOT','Khoa Kỹ thuật công nghệ Ô tô','2025-04-01 07:58:16','2025-04-01 08:01:58'),(15,'KTCNCK','Khoa Kỹ thuật công nghệ Cơ khí','2025-04-01 07:58:16','2025-04-01 08:01:58'),(16,'KTCNDDT','Khoa Kỹ thuật công nghệ Điện - Điện tử','2025-04-01 07:58:16','2025-04-01 08:01:58'),(17,'CNTT','Khoa Công nghệ thông tin','2025-04-01 07:58:16','2025-04-01 08:01:58'),(18,'KHSHUD','Khoa Khoa học Sinh học ứng dụng','2025-04-01 07:58:16','2025-04-01 08:01:58'),(19,'SPKT&XHNV','Khoa Sư phạm Kỹ thuật và Xã hội nhân văn','2025-04-01 07:58:16','2025-04-01 08:01:58'),(20,'KT-L','Khoa Kinh tế - Luật','2025-04-01 07:58:16','2025-04-01 08:01:58'),(21,'SV','Sinh Viên','2025-04-01 07:58:16','2025-04-01 08:01:58'),(22,'KCM','Khoa Chuyên Môn','2025-04-01 07:58:16','2025-04-01 08:01:58');
+INSERT INTO `don_vi` VALUES (1,'CTSV','Phòng Công tác sinh viên','2025-01-16 19:29:34','2025-04-03 22:21:08'),(2,'PĐT','Phòng Đào tạo','2025-01-10 06:39:17','2025-04-03 22:21:08'),(3,'QLKH-HTQT','Phòng Quản lý khoa học & Hợp tác quốc tế','2025-01-10 06:39:40','2025-04-03 22:21:08'),(4,'KHTC','Phòng Kế hoạch - Tài chính','2025-01-10 06:40:02','2025-04-03 22:21:08'),(5,'TCHC','Phòng Tổ chức Hành Chính','2025-01-10 06:40:19','2025-04-03 22:21:08'),(6,'TTTH','Trung tâm thực hành','2025-01-10 06:40:30','2025-04-03 22:21:08'),(7,'KT-DBCLGD','Phòng Khảo thí và Đảm bảo chất lượng giáo dục','2025-01-10 06:41:32','2025-04-03 22:21:08'),(8,'QTTB','Phòng Quản trị thiết bị','2025-01-10 06:44:14','2025-04-03 22:21:08'),(9,'GDTC','Trung tâm GDTC và GDQP','2025-01-10 07:30:29','2025-04-03 22:21:08'),(11,'NN-TH','Trung tâm Ngoại ngữ - Tin học','2025-01-10 07:31:52','2025-04-03 22:21:08'),(12,'KHCB','Khoa Khoa học cơ bản','2025-01-10 07:32:22','2025-04-03 22:21:08'),(13,'LLCT','Khoa Lý luận chính trị','2025-01-10 07:32:39','2025-04-03 22:21:08'),(14,'KTCNOT','Khoa Kỹ thuật công nghệ Ô tô','2025-01-10 07:34:51','2025-04-03 22:21:08'),(15,'KTCNCK','Khoa Kỹ thuật công nghệ Cơ khí','2025-01-10 07:35:00','2025-04-03 22:21:08'),(16,'KTCNDDT','Khoa Kỹ thuật công nghệ Điện - Điện tử','2025-01-10 07:34:35','2025-04-03 22:21:08'),(17,'CNTT','Khoa Công nghệ thông tin','2025-01-10 07:35:34','2025-04-03 22:21:08'),(18,'KHSHUD','Khoa Khoa học Sinh học ứng dụng','2025-01-10 07:36:06','2025-04-03 22:21:08'),(19,'SPKT&XHNV','Khoa Sư phạm Kỹ thuật và Xã hội nhân văn','2025-01-10 07:36:36','2025-04-03 22:21:08'),(20,'KT-L','Khoa Kinh tế - Luật','2025-01-10 07:37:16','2025-04-03 22:21:08'),(21,'SV','Sinh Viên','2025-02-01 16:28:51','2025-04-03 22:21:08');
 /*!40000 ALTER TABLE `don_vi` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -397,4 +397,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-04-01 18:11:29
+-- Dump completed on 2025-04-04  6:05:56
