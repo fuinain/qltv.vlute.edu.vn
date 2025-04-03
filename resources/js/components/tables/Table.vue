@@ -6,7 +6,6 @@
           <input v-model="searchQuery" type="text" class="form-control form-control-sm w-auto" style="min-width: 200px"
             placeholder="Tìm kiếm..." />
         </div>
-
         <!-- Table -->
         <table class="table table-striped">
           <thead>
@@ -41,23 +40,23 @@
             </tr>
           </tbody>
         </table>
+        <!-- Pagination -->
+        <nav v-if="pagination" class="mt-3">
+          <ul class="pagination justify-content-center">
+            <li class="page-item" :class="{ disabled: !pagination.prev_page_url }">
+              <button class="page-link" @click="goToPage(pagination.current_page - 1)">Trước</button>
+            </li>
+            <li class="page-item disabled">
+              <span class="page-link">Trang {{ pagination.current_page }}</span>
+            </li>
+            <li class="page-item" :class="{ disabled: !pagination.next_page_url }">
+              <button class="page-link" @click="goToPage(pagination.current_page + 1)">Tiếp</button>
+            </li>
+          </ul>
+        </nav>
       </div>
-
-      <!-- Pagination -->
-      <nav v-if="pagination" class="mt-3">
-        <ul class="pagination justify-content-center">
-          <li class="page-item" :class="{ disabled: !pagination.prev_page_url }">
-            <button class="page-link" @click="goToPage(pagination.current_page - 1)">Trước</button>
-          </li>
-          <li class="page-item disabled">
-            <span class="page-link">Trang {{ pagination.current_page }}</span>
-          </li>
-          <li class="page-item" :class="{ disabled: !pagination.next_page_url }">
-            <button class="page-link" @click="goToPage(pagination.current_page + 1)">Tiếp</button>
-          </li>
-        </ul>
-      </nav>
     </div>
+
   </div>
 </template>
 
@@ -147,3 +146,37 @@ export default {
   },
 };
 </script>
+
+<style>
+.table td,
+.table th {
+  padding: .4rem !important;
+  vertical-align: middle;
+  border-top: 1px solid #dee2e6;
+  font-size: 15px;
+}
+
+.table-responsive {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 768px) {
+  .table {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  .table th,
+  .table td {
+    padding: 10px;
+    font-size: 15px;
+  }
+
+  .pagination {
+    justify-content: center;
+  }
+}
+</style>

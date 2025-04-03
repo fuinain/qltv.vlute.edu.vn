@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DonViController;
+use App\Http\Controllers\ChucVuController;
 
 // Route API cho sanctum (nếu sử dụng)
 Route::get('/user', function (Request $request) {
@@ -14,10 +15,18 @@ Route::middleware(['isLogin:admin'])->group(function () {
     
     //API quản lý đơn vị
     Route::prefix('donvi')->group(function () {
-        Route::post('/', [DonViController::class, 'store']);       // C
-        Route::get('/', [DonViController::class, 'index']);        // R
-        Route::put('/{id}', [DonViController::class, 'update']);   // U
+        Route::post('/', [DonViController::class, 'store']);         // C
+        Route::get('/', [DonViController::class, 'index']);          // R
+        Route::put('/{id}', [DonViController::class, 'update']);     // U
         Route::delete('/{id}', [DonViController::class, 'destroy']); // D
+    });
+
+    //API quản lý chức vụ
+    Route::prefix('chucvu')->group(function () {
+        Route::post('/', [ChucVuController::class, 'store']);         // C
+        Route::get('/', [ChucVuController::class, 'index']);          // R
+        Route::put('/{id}', [ChucVuController::class, 'update']);     // U
+        Route::delete('/{id}', [ChucVuController::class, 'destroy']); // D
     });
     
     // Các API admin khác có thể thêm ở đây
