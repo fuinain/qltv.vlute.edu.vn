@@ -1,10 +1,11 @@
+// resources/js/router/index.js
 import { createRouter, createWebHistory } from "vue-router";
-import AdminLayout from "../layouts/AdminLayout.vue";
-import PublicLayout from "../layouts/PublicLayout.vue";
-import Admin from "../pages/Admin/index.vue";
-import DocGia from "../pages/DocGia/index.vue";
-import pagePhongKhoa from "../pages/Admin/DanhMuc/ThongTinChung/pagePhongKhoa.vue";
-import pageChucVu from "../pages/Admin/DanhMuc/ThongTinChung/pageChucVu.vue";
+import Admin from "@/pages/Admin/pageAdmin.vue";
+import DocGia from "@/pages/DocGia/index.vue";
+import pagePhongKhoa from "@/pages/Admin/DanhMuc/ThongTinChung/pagePhongKhoa.vue";
+import pageChucVu from "@/pages/Admin/DanhMuc/ThongTinChung/pageChucVu.vue";
+import AdminLayout from "@/components/layouts/AdminLayout.vue";
+import PublicLayout from "@/components/layouts/PublicLayout.vue";
 const routes = [
   {
     path: "/",
@@ -33,12 +34,29 @@ const routes = [
         path: "/danh-muc/thong-tin-chung/phong-khoa",
         name: "pagePhongKhoa",
         component: pagePhongKhoa,
+        meta: {
+          title: "Phòng/Khoa",
+          breadcrumb: [
+            { name: "Home", path: "/" },
+            { name: "Danh mục", path: "/admin" },
+            { name: "Phòng/Khoa" }
+          ]
+        }
       },
       {
         path: "/danh-muc/thong-tin-chung/chuc-vu",
         name: "pageChucVu",
         component: pageChucVu,
-      },
+        meta: {
+          title: "Chức vụ",
+          breadcrumb: [
+            { name: "Home", path: "/" },
+            { name: "Danh mục", path: "/admin" },
+            { name: "Chức vụ" }
+          ]
+        }
+      }
+      
     ],
   },
   {

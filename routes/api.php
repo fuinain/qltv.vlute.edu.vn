@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\TaiKhoanController;
+use App\Http\Controllers\DonViController;
 
 // Route API cho sanctum (nếu sử dụng)
 Route::get('/user', function (Request $request) {
@@ -11,12 +11,13 @@ Route::get('/user', function (Request $request) {
 
 // API chỉ dành cho admin
 Route::middleware(['isLogin:admin'])->group(function () {
-    // API quản lý tài khoản - chỉ admin mới có quyền
-    Route::prefix('accounts')->group(function () {
-        Route::get('/', [TaiKhoanController::class, 'index']);
-        Route::post('/', [TaiKhoanController::class, 'store']);
-        Route::put('/{id}', [TaiKhoanController::class, 'update']);
-        Route::delete('/{id}', [TaiKhoanController::class, 'destroy']);
+    
+    //API quản lý đơn vị
+    Route::prefix('donvi')->group(function () {
+        Route::post('/', [DonViController::class, 'store']);       // C
+        Route::get('/', [DonViController::class, 'index']);        // R
+        Route::put('/{id}', [DonViController::class, 'update']);   // U
+        Route::delete('/{id}', [DonViController::class, 'destroy']); // D
     });
     
     // Các API admin khác có thể thêm ở đây
