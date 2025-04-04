@@ -1,59 +1,72 @@
+// resources/js/router/index.js
 import { createRouter, createWebHistory } from "vue-router";
-import PublicLayout from "../layouts/PublicLayout.vue";
-import AdminLayout from "../layouts/AdminLayout.vue";
-import Login from "../pages/Login/index.vue";
-import DashBoard from "../pages/DashBoard/Index.vue";
-import Categories from "../pages/Categories/Index.vue";
-import Readers from "../pages/Readers/Index.vue";
-import Services from "../pages/Services/Index.vue";
-import Liquidation from "../pages/Liquidation/Index.vue";
-import Account from "../pages/Account/Index.vue";
-
+import Admin from "@/pages/Admin/pageAdmin.vue";
+import DocGia from "@/pages/DocGia/index.vue";
+import pagePhongKhoa from "@/pages/Admin/DanhMuc/ThongTinChung/pagePhongKhoa.vue";
+import pageChucVu from "@/pages/Admin/DanhMuc/ThongTinChung/pageChucVu.vue";
+import AdminLayout from "@/components/layouts/AdminLayout.vue";
+import PublicLayout from "@/components/layouts/PublicLayout.vue";
 const routes = [
   {
     path: "/",
+    redirect: (to) => {
+      const userRole = window.userRole;
+      
+      if (userRole === 'admin') {
+        return '/admin';
+      } else if (userRole === 'docgia') {
+        return '/docgia';
+      } else {
+        return "Bạn không có quyền truy cập vào trang này.";
+      }
+    }
+  },
+  {
+    path: "/admin",
+    component: AdminLayout,
+    children: [
+      {
+        path: "",
+        name: "AdminIndex",
+        component: Admin,
+      },
+      {
+        path: "/danh-muc/thong-tin-chung/phong-khoa",
+        name: "pagePhongKhoa",
+        component: pagePhongKhoa,
+        meta: {
+          title: "Phòng/Khoa",
+          breadcrumb: [
+            { name: "Home", path: "/" },
+            { name: "Danh mục", path: "/admin" },
+            { name: "Phòng/Khoa" }
+          ]
+        }
+      },
+      {
+        path: "/danh-muc/thong-tin-chung/chuc-vu",
+        name: "pageChucVu",
+        component: pageChucVu,
+        meta: {
+          title: "Chức vụ",
+          breadcrumb: [
+            { name: "Home", path: "/" },
+            { name: "Danh mục", path: "/admin" },
+            { name: "Chức vụ" }
+          ]
+        }
+      }
+      
+    ],
+  },
+  {
+    path: "/docgia",
     component: PublicLayout,
     children: [
       {
         path: "",
-        name: "Login",
-        component: Login,
-      },
-    ],
-  },
-  {
-    path: "/",
-    component: AdminLayout,
-    children: [
-      {
-        path: "dashboard",
-        name: "DashBoard",
-        component: DashBoard,
-      },
-      {
-        path: "categories",
-        name: "Categories",
-        component: Categories,
-      },
-      {
-        path: "readers",
-        name: "Readers",
-        component: Readers,
-      },
-      {
-        path: "services",
-        name: "Services",
-        component: Services,
-      },
-      {
-        path: "liquidation",
-        name: "Liquidation",
-        component: Liquidation,
-      },
-      {
-        path: "account",
-        name: "Account",
-        component: Account,
+        name: "DocGiaIndex",
+        component: DocGia,
       },
     ],
   },
