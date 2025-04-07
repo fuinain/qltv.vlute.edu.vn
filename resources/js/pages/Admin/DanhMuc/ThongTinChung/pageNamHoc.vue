@@ -61,7 +61,7 @@ export default {
     async dongBoHocKy() {
       const result = await Swal.fire({
         title: 'Xác nhận đồng bộ?',
-        html: 'Nếu đồng bộ thì các dữ liệu hiện tại sẽ thay đổi. Bạn có chắc chắn muốn đồng bộ?',
+        html: 'Nếu đồng bộ thì các dữ liệu hiện tại sẽ thay đổi. Bạn có chắc chắn muốn đồng bộ',
         icon: 'warning',
         showCancelButton: true,
         confirmButtonText: 'Đồng bộ ngay',
