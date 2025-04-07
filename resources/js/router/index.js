@@ -4,6 +4,7 @@ import Admin from "@/pages/Admin/pageAdmin.vue";
 import DocGia from "@/pages/DocGia/index.vue";
 import pagePhongKhoa from "@/pages/Admin/DanhMuc/ThongTinChung/pagePhongKhoa.vue";
 import pageChucVu from "@/pages/Admin/DanhMuc/ThongTinChung/pageChucVu.vue";
+import pageNamHoc from "@/pages/Admin/DanhMuc/ThongTinChung/pageNamHoc.vue";
 import AdminLayout from "@/components/layouts/AdminLayout.vue";
 import PublicLayout from "@/components/layouts/PublicLayout.vue";
 const routes = [
@@ -59,6 +60,19 @@ const routes = [
                                         { name: "Home", path: "/" },
                                         { name: "Danh mục", path: "/admin" },
                                         { name: "Chức vụ" },
+                                    ],
+                                },
+                            },
+                            {
+                                path: "nam-hoc",
+                                name: "pageNamHoc",
+                                component: pageNamHoc,
+                                meta: {
+                                    title: "Năm học",
+                                    breadcrumb: [
+                                        { name: "Home", path: "/" },
+                                        { name: "Danh mục", path: "/admin" },
+                                        { name: "Năm học" },
                                     ],
                                 },
                             },

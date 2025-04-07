@@ -4,11 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DonViController;
 use App\Http\Controllers\ChucVuController;
-
-// Route API cho sanctum (nếu sử dụng)
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+use App\Http\Controllers\HocKyController;
 
 // API chỉ dành cho admin
 Route::middleware(['isLogin:admin'])->group(function () {
@@ -27,6 +23,12 @@ Route::middleware(['isLogin:admin'])->group(function () {
         Route::get('/', [ChucVuController::class, 'index']);          // R
         Route::put('/{id}', [ChucVuController::class, 'update']);     // U
         Route::delete('/{id}', [ChucVuController::class, 'destroy']); // D
+    });
+
+    //API quản lý học kỳ
+    Route::prefix('hocky')->group(function () {
+        Route::get('/', [HocKyController::class, 'index']);          // R
+        Route::post('/sync', [HocKyController::class, 'syncHocKy']);
     });
     
     // Các API admin khác có thể thêm ở đây

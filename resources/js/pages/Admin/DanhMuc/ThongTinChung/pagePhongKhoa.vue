@@ -15,10 +15,13 @@
               <Table :columns="headers" :data="ds.data ?? []" :pagination="ds" :fetchData="fetchData">
                 <!-- Slot cho cột hành động -->
                 <template v-slot:column-actions="{ row }">
-                  <button type="button" class="btn p-1 btn-primary border-0 bg-transparent text-primary shadow-none" @click="suaPhongKhoa(row)">
+                  <button type="button" class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none"
+                    @click="suaPhongKhoa(row)">
                     <i class="fas fa-edit"></i>&nbsp;
                   </button>
-                  <button type="button" class="btn p-1 btn-primary border-0 bg-transparent text-danger shadow-none" @click="xoaPhongKhoa(row)">
+                  |
+                  <button type="button" class="btn p-0 btn-primary border-0 bg-transparent text-danger shadow-none"
+                    @click="xoaPhongKhoa(row)">
                     <i class="fas fa-trash-alt"></i>&nbsp;
                   </button>
                 </template>
@@ -59,6 +62,8 @@ export default {
         { key: 'index', label: 'STT', sortable: false },
         { key: 'ma_don_vi', label: 'Mã đơn vị' },
         { key: 'ten_don_vi', label: 'Tên đơn vị' },
+        { key: 'ngay_cap_nhat', label: 'Ngày cập nhật', format: 'datetime' },
+        { key: 'ngay_tao', label: 'Ngày tạo', format: 'datetime' },
         { key: 'actions', label: 'Hành động', sortable: false }
       ],
     };
@@ -78,7 +83,7 @@ export default {
         console.error("Lỗi khi load dữ liệu:", error);
       }
     },
-  
+
     async themPhongKhoa() {
       // Reset form cho trường hợp thêm mới
       this.$refs.modal.$data.title = "Thêm mới thông tin";

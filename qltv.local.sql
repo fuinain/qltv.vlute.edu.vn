@@ -54,6 +54,8 @@ CREATE TABLE `chuyen_nganh` (
   `ma_chuyen_nganh` text,
   `ten_chuyen_nganh` text,
   `id_don_vi` int DEFAULT NULL,
+  `ngay_cap_nhat` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `ngay_tao` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_chuyen_nganh`)
 ) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -64,7 +66,7 @@ CREATE TABLE `chuyen_nganh` (
 
 LOCK TABLES `chuyen_nganh` WRITE;
 /*!40000 ALTER TABLE `chuyen_nganh` DISABLE KEYS */;
-INSERT INTO `chuyen_nganh` VALUES (1,'OTO','Công nghệ kỹ thuật ô tô',14),(2,'CTM','Công nghệ chế tạo máy',15),(3,'DDT','Công nghệ kỹ thuật điện, điện tử',16),(4,'CTT','Công nghệ thông tin',17),(5,'CTP','Công nghệ thực phẩm',18),(6,'CDT','Công nghệ kỹ thuật cơ điện tử',16),(7,'TDH','Công nghệ kỹ thuật điều khiển và tự động hóa',15),(8,'CCK','Công nghệ kỹ thuật cơ khí',15),(9,'QGD','Quản lý giáo dục',19),(10,'BTY','Thú y',18),(11,'CXH','Công tác xã hội',19),(12,'KGT','Công nghệ kỹ thuật giao thông',14),(13,'KTN','Công nghệ kỹ thuật nhiệt',16),(14,'CSH','Công nghệ sinh học',18),(15,'DLH','Du lịch',19),(16,'DVT','Công nghệ kỹ thuật điện tử viễn thông',16),(17,'KTE','Kinh tế',20),(18,'LAW','Luật',20),(19,'CKD','Kỹ thuật CKĐL',14),(20,'KXD','CNKT Công trình XD',14),(21,'QDL','QTDV Du lịch và lữ hành',19),(22,'KMT','Khoa học Máy tính',12),(23,'SCN','Sư phạm công nghệ',19),(24,'KHH','Kỹ thuật hóa học',18),(25,'TDT','Thương mại điện tử',20),(26,'OTD','Kỹ thuật ô tô (điện)',14),(27,'LGT','Logistics và Quản lý chuỗi cung ứng',20),(28,'KQT','Kinh doanh quốc tế',20),(29,'DPT','Truyền thông đa phương tiện',17),(30,'GDH','Giáo dục học',19);
+INSERT INTO `chuyen_nganh` VALUES (1,'OTO','Công nghệ kỹ thuật ô tô',14,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(2,'CTM','Công nghệ chế tạo máy',15,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(3,'DDT','Công nghệ kỹ thuật điện, điện tử',16,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(4,'CTT','Công nghệ thông tin',17,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(5,'CTP','Công nghệ thực phẩm',18,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(6,'CDT','Công nghệ kỹ thuật cơ điện tử',16,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(7,'TDH','Công nghệ kỹ thuật điều khiển và tự động hóa',15,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(8,'CCK','Công nghệ kỹ thuật cơ khí',15,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(9,'QGD','Quản lý giáo dục',19,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(10,'BTY','Thú y',18,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(11,'CXH','Công tác xã hội',19,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(12,'KGT','Công nghệ kỹ thuật giao thông',14,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(13,'KTN','Công nghệ kỹ thuật nhiệt',16,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(14,'CSH','Công nghệ sinh học',18,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(15,'DLH','Du lịch',19,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(16,'DVT','Công nghệ kỹ thuật điện tử viễn thông',16,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(17,'KTE','Kinh tế',20,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(18,'LAW','Luật',20,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(19,'CKD','Kỹ thuật CKĐL',14,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(20,'KXD','CNKT Công trình XD',14,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(21,'QDL','QTDV Du lịch và lữ hành',19,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(22,'KMT','Khoa học Máy tính',12,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(23,'SCN','Sư phạm công nghệ',19,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(24,'KHH','Kỹ thuật hóa học',18,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(25,'TDT','Thương mại điện tử',20,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(26,'OTD','Kỹ thuật ô tô (điện)',14,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(27,'LGT','Logistics và Quản lý chuỗi cung ứng',20,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(28,'KQT','Kinh doanh quốc tế',20,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(29,'DPT','Truyền thông đa phương tiện',17,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(30,'GDH','Giáo dục học',19,'2025-04-07 15:50:52','2025-04-07 15:50:52');
 /*!40000 ALTER TABLE `chuyen_nganh` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -80,6 +82,8 @@ CREATE TABLE `diem_luu_thong` (
   `ma_loai` text,
   `ten_diem` text,
   `id_kho_an_pham` int DEFAULT NULL,
+  `ngay_cap_nhat` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `ngay_tao` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_diem_luu_thong`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -116,6 +120,8 @@ CREATE TABLE `doc_gia` (
   `id_nien_khoa` int DEFAULT NULL,
   `id_doi_tuong_ban_doc` int DEFAULT NULL,
   `email` text,
+  `ngay_cap_nhat` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `ngay_tao` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_doc_gia`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -140,6 +146,8 @@ CREATE TABLE `doi_tuong_ban_doc` (
   `id_doi_tuong_ban_doc` int NOT NULL AUTO_INCREMENT,
   `ma_loai` text,
   `ten_loai` text,
+  `ngay_cap_nhat` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `ngay_tao` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_doi_tuong_ban_doc`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -193,8 +201,10 @@ CREATE TABLE `hoc_ky` (
   `ten_hoc_ky` text,
   `nam_hoc` text,
   `loai_hoc_ky` int DEFAULT NULL,
+  `ngay_cap_nhat` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `ngay_tao` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_hoc_ky`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -203,6 +213,7 @@ CREATE TABLE `hoc_ky` (
 
 LOCK TABLES `hoc_ky` WRITE;
 /*!40000 ALTER TABLE `hoc_ky` DISABLE KEYS */;
+INSERT INTO `hoc_ky` VALUES (1,'242','Học kỳ 2, 2024-2025','2024',2,'2025-04-07 17:02:36','2025-04-07 16:56:42'),(2,'243','Học kỳ phụ, 2024 - 2025','2024',3,'2025-04-07 17:03:20','2025-04-07 16:56:42'),(3,'241','Học kỳ 1, 2024-2025','2024',1,'2025-04-07 16:56:42','2025-04-07 16:56:42'),(4,'234','Học kỳ hè, 2023-2024','2023',4,'2025-04-07 16:56:42','2025-04-07 16:56:42'),(5,'232','Học kỳ 2, 2023-2024','2023',2,'2025-04-07 16:56:42','2025-04-07 16:56:42'),(6,'233','Học kỳ phụ, 2023-2024','2023',3,'2025-04-07 16:56:42','2025-04-07 16:56:42'),(7,'231','Học kỳ 1, 2023-2024','2023',1,'2025-04-07 16:56:42','2025-04-07 16:56:42'),(8,'224','Học kỳ hè, 2022-2023','2022',4,'2025-04-07 16:56:42','2025-04-07 16:56:42'),(9,'222','Học kỳ 2, 2022-2023','2022',2,'2025-04-07 16:56:42','2025-04-07 16:56:42'),(10,'223','Học kỳ phụ, 2022-2023','2022',3,'2025-04-07 16:56:42','2025-04-07 16:56:42'),(11,'221','Học kỳ 1, 2022-2023','2022',1,'2025-04-07 16:56:42','2025-04-07 16:56:42'),(12,'214','Học kỳ hè, 2021-2022','2021',4,'2025-04-07 16:56:42','2025-04-07 16:56:42'),(13,'212','Học kỳ 2, 2021-2022','2021',2,'2025-04-07 16:56:42','2025-04-07 16:56:42'),(14,'213','Học kỳ phụ, 2021-2022','2021',3,'2025-04-07 16:56:42','2025-04-07 16:56:42'),(15,'211','Học kỳ 1, 2021-2022','2021',1,'2025-04-07 16:56:42','2025-04-07 16:56:42'),(16,'204','Học kỳ hè, 2020-2021','2020',4,'2025-04-07 16:56:42','2025-04-07 16:56:42'),(17,'202','Học kỳ 2, 2020-2021','2020',2,'2025-04-07 16:56:42','2025-04-07 16:56:42'),(18,'203','Học kỳ phụ, 2020-2021','2020',3,'2025-04-07 16:56:42','2025-04-07 16:56:42'),(19,'201','Học kỳ 1, 2020-2021','2020',1,'2025-04-07 16:56:42','2025-04-07 16:56:42'),(20,'192','Học kỳ 2, 2019-2020','2019',2,'2025-04-07 16:56:42','2025-04-07 16:56:42'),(21,'193','Học kỳ phụ, 2019-2020','2019',3,'2025-04-07 16:56:42','2025-04-07 16:56:42'),(22,'191','Học kỳ 1, 2019-2020','2019',1,'2025-04-07 16:56:42','2025-04-07 16:56:42'),(23,'184','Học kỳ phụ, 2018-2019, K43 và K44','2018',4,'2025-04-07 16:56:42','2025-04-07 16:56:42'),(24,'182','Học kỳ 2, 2018-2019','2018',2,'2025-04-07 16:56:42','2025-04-07 16:56:42'),(25,'183','Học kỳ phụ, 2018-2019','2018',3,'2025-04-07 16:56:42','2025-04-07 16:56:42'),(26,'181','Học kỳ 1, 2018-2019','2018',1,'2025-04-07 16:56:42','2025-04-07 16:56:42'),(27,'174','Học kỳ phụ, 2017-2018, K42 và K43','2017',4,'2025-04-07 16:56:42','2025-04-07 16:56:42'),(28,'172','Học kỳ 2, 2017-2018','2017',2,'2025-04-07 16:56:42','2025-04-07 16:56:42'),(29,'173','Học kỳ phụ, 2017-2018','2017',3,'2025-04-07 16:56:42','2025-04-07 16:56:42'),(30,'171','Học kỳ 1, 2017-2018','2017',1,'2025-04-07 16:56:42','2025-04-07 16:56:42'),(31,'164','Học kỳ phụ, 2016-2017, K41, K42','2016',4,'2025-04-07 16:56:42','2025-04-07 16:56:42'),(32,'162','Học kỳ 2, 2016-2017','2016',2,'2025-04-07 16:56:42','2025-04-07 16:56:42'),(33,'163','Học kỳ phụ, 2016-2017, K39-40','2016',3,'2025-04-07 16:56:42','2025-04-07 16:56:42'),(34,'161','Học kỳ 1, 2016-2017','2016',1,'2025-04-07 16:56:42','2025-04-07 16:56:42'),(35,'153','Học kỳ phụ, 2015-2016, K39','2015',3,'2025-04-07 16:56:42','2025-04-07 16:56:42'),(36,'152','Học kỳ 2, 2015 - 2016','2015',2,'2025-04-07 16:56:42','2025-04-07 16:56:42'),(37,'151','Học kỳ 1, 2015-2016','2015',1,'2025-04-07 16:56:42','2025-04-07 16:56:42'),(38,'143','Học kỳ phụ, 2014-2015','2014',3,'2025-04-07 16:56:42','2025-04-07 16:56:42'),(39,'142','Học kỳ 2, 2014-2015','2014',2,'2025-04-07 16:56:42','2025-04-07 16:56:42'),(40,'131','Học kỳ 1, 2013-2014','2013',1,'2025-04-07 16:56:42','2025-04-07 16:56:42'),(41,'141','Học kỳ 1, 2014-2015','2014',1,'2025-04-07 16:56:42','2025-04-07 16:56:42'),(43,'132','Học kỳ 2, 2013 - 2014','2013',2,'2025-04-07 17:03:20','2025-04-07 17:03:20');
 /*!40000 ALTER TABLE `hoc_ky` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -217,6 +228,8 @@ CREATE TABLE `kho_an_pham` (
   `id_kho_an_pham` int NOT NULL AUTO_INCREMENT,
   `ma_kho` text,
   `ten_kho` text,
+  `ngay_cap_nhat` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `ngay_tao` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_kho_an_pham`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -272,6 +285,8 @@ CREATE TABLE `nien_khoa` (
   `id_nien_khoa` int NOT NULL AUTO_INCREMENT,
   `ma_nien_khoa` int DEFAULT NULL,
   `nien_khoa` text,
+  `ngay_cap_nhat` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `ngay_tao` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_nien_khoa`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -297,6 +312,8 @@ CREATE TABLE `phat_ban_doc` (
   `ma_loai` text,
   `ten_loai_phat` text,
   `ghi_chu` text,
+  `ngay_cap_nhat` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `ngay_tao` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_phat_ban_doc`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -323,6 +340,7 @@ CREATE TABLE `tai_khoan` (
   `email` text,
   `quyen` text,
   `ngay_tao` timestamp NULL DEFAULT NULL,
+  `ngay_cap_nhat` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_tai_khoan`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -333,7 +351,7 @@ CREATE TABLE `tai_khoan` (
 
 LOCK TABLES `tai_khoan` WRITE;
 /*!40000 ALTER TABLE `tai_khoan` DISABLE KEYS */;
-INSERT INTO `tai_khoan` VALUES (1,'Admin ','admindvc@vlute.edu.vn','admin','2025-01-10 06:53:45');
+INSERT INTO `tai_khoan` VALUES (1,'Admin ','admindvc@vlute.edu.vn','admin','2025-01-10 06:53:45','2025-04-07 15:56:04');
 /*!40000 ALTER TABLE `tai_khoan` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -375,6 +393,8 @@ CREATE TABLE `thu_muc` (
   `nhan_truong` text,
   `con` text,
   `dau_cach` text,
+  `ngay_cap_nhat` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `ngay_tao` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_thu_muc`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -397,4 +417,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-04-04  6:05:56
+-- Dump completed on 2025-04-08  0:07:23

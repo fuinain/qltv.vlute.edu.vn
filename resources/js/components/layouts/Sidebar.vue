@@ -47,10 +47,10 @@
                     </router-link>
                   </li>
                   <li class="nav-item">
-                    <a href="#" class="nav-link">
+                    <router-link :to="{ name: 'pageNamHoc' }" class="nav-link">
                       <i class="fas fa-angle-right nav-icon"></i>
                       <p>Danh mục năm học</p>
-                    </a>
+                    </router-link>
                   </li>
                   <li class="nav-item">
                     <a href="#" class="nav-link">

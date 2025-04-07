@@ -2,7 +2,7 @@
   <div class="row">
     <div class="col-12">
       <div class="table-responsive">
-        <div class="card-header d-flex justify-content-end pr-0">
+        <div class="card-header pt-0 d-flex justify-content-end pr-0">
           <input v-model="searchQuery" type="text" class="form-control form-control-sm w-auto" style="min-width: 200px"
             placeholder="Tìm kiếm..." />
         </div>
@@ -29,7 +29,7 @@
                     {{ calculateSTT(rowIndex) }}
                   </template>
                   <template v-else-if="row[column.key] !== undefined">
-                    {{ row[column.key] }}
+                    {{ formatValue(row[column.key], column.format) }}
                   </template>
                   <template v-else>
                     <em class="text-muted">Không có dữ liệu</em>
@@ -61,6 +61,8 @@
 </template>
 
 <script>
+import dayjs from "dayjs";
+
 export default {
   name: "Table",
   props: {
@@ -124,6 +126,13 @@ export default {
     },
   },
   methods: {
+    formatValue(value, format) {
+      if (format === "datetime") {
+        return value ? dayjs(value).format("DD/MM/YYYY HH:mm:ss") : "–";
+      }
+      // Có thể mở rộng thêm format khác tại đây
+      return value;
+    },
     sortBy(columnKey) {
       if (this.sortColumn === columnKey) {
         this.sortAsc = !this.sortAsc;
