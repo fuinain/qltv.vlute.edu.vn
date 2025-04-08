@@ -57,7 +57,7 @@ CREATE TABLE `chuyen_nganh` (
   `ngay_cap_nhat` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `ngay_tao` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_chuyen_nganh`)
-) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -66,7 +66,7 @@ CREATE TABLE `chuyen_nganh` (
 
 LOCK TABLES `chuyen_nganh` WRITE;
 /*!40000 ALTER TABLE `chuyen_nganh` DISABLE KEYS */;
-INSERT INTO `chuyen_nganh` VALUES (1,'OTO','Công nghệ kỹ thuật ô tô',14,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(2,'CTM','Công nghệ chế tạo máy',15,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(3,'DDT','Công nghệ kỹ thuật điện, điện tử',16,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(4,'CTT','Công nghệ thông tin',17,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(5,'CTP','Công nghệ thực phẩm',18,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(6,'CDT','Công nghệ kỹ thuật cơ điện tử',16,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(7,'TDH','Công nghệ kỹ thuật điều khiển và tự động hóa',15,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(8,'CCK','Công nghệ kỹ thuật cơ khí',15,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(9,'QGD','Quản lý giáo dục',19,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(10,'BTY','Thú y',18,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(11,'CXH','Công tác xã hội',19,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(12,'KGT','Công nghệ kỹ thuật giao thông',14,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(13,'KTN','Công nghệ kỹ thuật nhiệt',16,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(14,'CSH','Công nghệ sinh học',18,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(15,'DLH','Du lịch',19,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(16,'DVT','Công nghệ kỹ thuật điện tử viễn thông',16,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(17,'KTE','Kinh tế',20,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(18,'LAW','Luật',20,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(19,'CKD','Kỹ thuật CKĐL',14,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(20,'KXD','CNKT Công trình XD',14,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(21,'QDL','QTDV Du lịch và lữ hành',19,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(22,'KMT','Khoa học Máy tính',12,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(23,'SCN','Sư phạm công nghệ',19,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(24,'KHH','Kỹ thuật hóa học',18,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(25,'TDT','Thương mại điện tử',20,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(26,'OTD','Kỹ thuật ô tô (điện)',14,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(27,'LGT','Logistics và Quản lý chuỗi cung ứng',20,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(28,'KQT','Kinh doanh quốc tế',20,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(29,'DPT','Truyền thông đa phương tiện',17,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(30,'GDH','Giáo dục học',19,'2025-04-07 15:50:52','2025-04-07 15:50:52');
+INSERT INTO `chuyen_nganh` VALUES (1,'OTO','Công nghệ kỹ thuật ô tô',14,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(2,'CTM','Công nghệ chế tạo máy',15,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(3,'DDT','Công nghệ kỹ thuật điện, điện tử',16,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(4,'CTT','Công nghệ thông tin',17,'2025-04-08 17:11:26','2025-04-07 15:50:52'),(5,'CTP','Công nghệ thực phẩm',18,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(6,'CDT','Công nghệ kỹ thuật cơ điện tử',16,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(7,'TDH','Công nghệ kỹ thuật điều khiển và tự động hóa',15,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(8,'CCK','Công nghệ kỹ thuật cơ khí',15,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(9,'QGD','Quản lý giáo dục',19,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(10,'BTY','Thú y',18,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(11,'CXH','Công tác xã hội',19,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(12,'KGT','Công nghệ kỹ thuật giao thông',14,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(13,'KTN','Công nghệ kỹ thuật nhiệt',16,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(14,'CSH','Công nghệ sinh học',18,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(15,'DLH','Du lịch',19,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(16,'DVT','Công nghệ kỹ thuật điện tử viễn thông',16,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(17,'KTE','Kinh tế',20,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(18,'LAW','Luật',20,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(19,'CKD','Kỹ thuật CKĐL',14,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(20,'KXD','CNKT Công trình XD',14,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(21,'QDL','QTDV Du lịch và lữ hành',19,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(22,'KMT','Khoa học Máy tính',12,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(23,'SCN','Sư phạm công nghệ',19,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(24,'KHH','Kỹ thuật hóa học',18,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(25,'TDT','Thương mại điện tử',20,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(26,'OTD','Kỹ thuật ô tô (điện)',14,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(27,'LGT','Logistics và Quản lý chuỗi cung ứng',20,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(28,'KQT','Kinh doanh quốc tế',20,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(29,'DPT','Truyền thông đa phương tiện',17,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(30,'GDH','Giáo dục học',19,'2025-04-07 15:50:52','2025-04-07 15:50:52'),(33,'OKOK','OKOK',1,'2025-04-08 17:10:39','2025-04-08 17:01:32');
 /*!40000 ALTER TABLE `chuyen_nganh` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -175,7 +175,7 @@ CREATE TABLE `don_vi` (
   `ngay_tao` timestamp NULL DEFAULT (now()),
   `ngay_cap_nhat` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_don_vi`)
-) ENGINE=InnoDB AUTO_INCREMENT=55 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=56 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -417,4 +417,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-04-08  0:07:23
+-- Dump completed on 2025-04-09  0:19:28
