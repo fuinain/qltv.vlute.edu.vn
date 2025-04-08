@@ -59,10 +59,10 @@
                     </a>
                   </li>
                   <li class="nav-item">
-                    <a href="#" class="nav-link">
+                    <router-link :to="{ name: 'pageChuyenNganh' }" class="nav-link">
                       <i class="fas fa-angle-right nav-icon"></i>
                       <p>Danh mục chuyên ngành</p>
-                    </a>
+                    </router-link>
                   </li>
                 </ul>
               </li>
