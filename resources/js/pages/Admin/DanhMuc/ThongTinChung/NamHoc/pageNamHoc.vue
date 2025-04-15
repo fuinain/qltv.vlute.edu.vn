@@ -48,7 +48,7 @@ export default {
     methods: {
         async fetchData(page = 1) {
             try {
-                const response = await axios.get(`/api/hoc-ky?page=${page}`);
+                const response = await axios.get(`/api/danh-muc/thong-tin-chung/hoc-ky?page=${page}`);
                 if (response.data.status === 200) {
                     this.ds = response.data.data;
                     this.currentPage = this.ds.current_page;
@@ -71,7 +71,7 @@ export default {
             if (!result.isConfirmed) return;
 
             try {
-                const response = await axios.post('/api/hoc-ky/sync');
+                const response = await axios.post('/api/danh-muc/thong-tin-chung/hoc-ky/sync');
                 if (response.data.status === 200) {
                     toastr.success(response.data.message);
                     this.fetchData(this.currentPage);

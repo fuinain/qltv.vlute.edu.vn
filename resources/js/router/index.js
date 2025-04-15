@@ -5,7 +5,9 @@ import DocGia from "@/pages/DocGia/index.vue";
 import pagePhongKhoa from "@/pages/Admin/DanhMuc/ThongTinChung/PhongKhoa/pagePhongKhoa.vue";
 import pageChucVu from "@/pages/Admin/DanhMuc/ThongTinChung/ChucVu/pageChucVu.vue";
 import pageNamHoc from "@/pages/Admin/DanhMuc/ThongTinChung/NamHoc/pageNamHoc.vue";
+import pageLopHoc from "@/pages/Admin/DanhMuc/ThongTinChung/LopHoc/pageLopHoc.vue";
 import pageChuyenNganh from "@/pages/Admin/DanhMuc/ThongTinChung/ChuyenNganh/pageChuyenNganh.vue";
+import pageDoiTuongBanDoc from "@/pages/Admin/DanhMuc/NghiepVuLuuThong/DoiTuongBanDoc/pageDoiTuongBanDoc.vue";
 import AdminLayout from "@/components/layouts/AdminLayout.vue";
 import PublicLayout from "@/components/layouts/PublicLayout.vue";
 const routes = [
@@ -46,7 +48,8 @@ const routes = [
                                     title: "Phòng/Khoa",
                                     breadcrumb: [
                                         { name: "Home", path: "/" },
-                                        { name: "Danh mục", path: "/admin" },
+                                        { name: "Danh mục"},
+                                        { name: "Thông tin chung"},
                                         { name: "Phòng/Khoa" },
                                     ],
                                 },
@@ -59,7 +62,8 @@ const routes = [
                                     title: "Chức vụ",
                                     breadcrumb: [
                                         { name: "Home", path: "/" },
-                                        { name: "Danh mục", path: "/admin" },
+                                        { name: "Danh mục"},
+                                        { name: "Thông tin chung"},
                                         { name: "Chức vụ" },
                                     ],
                                 },
@@ -72,8 +76,23 @@ const routes = [
                                     title: "Năm học",
                                     breadcrumb: [
                                         { name: "Home", path: "/" },
-                                        { name: "Danh mục", path: "/admin" },
+                                        { name: "Danh mục"},
+                                        { name: "Thông tin chung"},
                                         { name: "Năm học" },
+                                    ],
+                                },
+                            },
+                            {
+                                path: "lop-hoc",
+                                name: "pageLopHoc",
+                                component: pageLopHoc,
+                                meta: {
+                                    title: "Lớp học",
+                                    breadcrumb: [
+                                        { name: "Home", path: "/" },
+                                        { name: "Danh mục"},
+                                        { name: "Thông tin chung"},
+                                        { name: "Lớp học" },
                                     ],
                                 },
                             },
@@ -85,8 +104,46 @@ const routes = [
                                     title: "Năm học",
                                     breadcrumb: [
                                         { name: "Home", path: "/" },
-                                        { name: "Danh mục", path: "/admin" },
+                                        { name: "Danh mục"},
+                                        { name: "Thông tin chung"},
                                         { name: "Chuyên ngành" },
+                                    ],
+                                },
+                            },
+                        ],
+                    },
+                    // {
+                    //     path: "nghiep-vu-bien-muc",
+                    //     children: [
+                    //         {
+                    //             path: "cau-hinh-thuc-muc-tai-lieu",
+                    //             name: "pageCauHinhTMTL",
+                    //             component: pageCauHinhTMTL,
+                    //             meta: {
+                    //                 title: "Cấu hình thư mục tài liệu",
+                    //                 breadcrumb: [
+                    //                     { name: "Home", path: "/" },
+                    //                     { name: "Danh mục", path: "/admin" },
+                    //                     { name: "Phòng/Khoa" },
+                    //                 ],
+                    //             },
+                    //         },
+                    //     ],
+                    // },
+                    {
+                        path: "nghiep-vu-luu-thong",
+                        children: [
+                            {
+                                path: "doi-tuong-ban-doc",
+                                name: "pageDoiTuongBanDoc",
+                                component: pageDoiTuongBanDoc,
+                                meta: {
+                                    title: "Đối tượng bạn đọc",
+                                    breadcrumb: [
+                                        { name: "Home", path: "/" },
+                                        { name: "Danh mục"},
+                                        { name: "Nghiệp vụ lưu thông"},
+                                        { name: "Đối tượng bạn đọc" },
                                     ],
                                 },
                             },

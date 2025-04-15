@@ -37,14 +37,14 @@
     <!-- Modal (dùng chung cho thêm & sửa) -->
     <Modal ref="modal">
         <div class="row">
-            <div class="col-6">
+            <div class="col-md-6">
                 <Input v-model="ChuyenNganh.ma_chuyen_nganh"
                        label="Mã chuyên ngành"
                        placeholder="Mã chuyên ngành ..."
                        type="text"
                 />
             </div>
-            <div class="col-6">
+            <div class="col-md-6">
                 <Input v-model="ChuyenNganh.ten_chuyen_nganh"
                        label="Tên chuyên ngành"
                        placeholder="Tên chuyên ngành ..."
@@ -58,7 +58,6 @@
                     label="Đơn vị"
                     placeholder="Chọn đơn vị"
                 />
-
             </div>
         </div>
     </Modal>
@@ -99,7 +98,7 @@ export default {
     methods: {
         async fetchData(page = 1) {
             try {
-                const response = await axios.get(`/api/chuyen-nganh?page=${page}`);
+                const response = await axios.get(`/api/danh-muc/thong-tin-chung/chuyen-nganh?page=${page}`);
                 if (response.data.status === 200) {
                     this.ds = response.data.data;
                     this.currentPage = this.ds.current_page;
@@ -111,7 +110,7 @@ export default {
 
         async getListDonVi() {
             try {
-                const res = await axios.get("/api/don-vi/list-don-vi-select-option");
+                const res = await axios.get("/api/danh-muc/thong-tin-chung/don-vi/list-don-vi-select-option");
                 if (res.data.status === 200) {
                     // Map dữ liệu từ API về định dạng: { value, text }
                     this.dsDonVi = res.data.data.map(item => ({
@@ -149,7 +148,7 @@ export default {
             }
 
             try {
-                const response = await axios.post("/api/chuyen-nganh", this.ChuyenNganh);
+                const response = await axios.post("/api/danh-muc/thong-tin-chung/chuyen-nganh", this.ChuyenNganh);
                 if (response.data.status === 200) {
                     toastr.success(response.data.message);
                     this.fetchData(this.currentPage);
@@ -157,7 +156,7 @@ export default {
                 }
             } catch (error) {
                 console.error("Lỗi khi thêm:", error);
-                toastr.error("Thêm đơn vị thất bại!");
+                toastr.error("Thêm thất bại!");
             }
         },
 
@@ -174,7 +173,7 @@ export default {
             if (!confirmed) return;
 
             try {
-                const response = await axios.put(`/api/chuyen-nganh/${row.id_chuyen_nganh}`, this.ChuyenNganh);
+                const response = await axios.put(`/api/danh-muc/thong-tin-chung/chuyen-nganh/${row.id_chuyen_nganh}`, this.ChuyenNganh);
                 if (response.data.status === 200) {
                     toastr.success(response.data.message);
                     this.fetchData(this.currentPage);
@@ -182,7 +181,7 @@ export default {
                 }
             } catch (error) {
                 console.error("Lỗi khi cập nhật:", error);
-                toastr.error("Cập nhật đơn vị thất bại!");
+                toastr.error("Cập nhật thất bại!");
             }
         },
 
@@ -198,14 +197,14 @@ export default {
             }).then(async (result) => {
                 if (result.isConfirmed) {
                     try {
-                        const response = await axios.delete(`/api/chuyen-nganh/${row.id_chuyen_nganh}`);
+                        const response = await axios.delete(`/api/danh-muc/thong-tin-chung/chuyen-nganh/${row.id_chuyen_nganh}`);
                         if (response.data.status === 200) {
                             toastr.success(response.data.message);
                             this.fetchData(this.currentPage);
                         }
                     } catch (error) {
                         console.error("Lỗi khi xoá:", error);
-                        toastr.error("Xoá đơn vị thất bại!");
+                        toastr.error("Xoá thất bại!");
                     }
                 }
             });

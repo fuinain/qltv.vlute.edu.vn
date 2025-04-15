@@ -37,10 +37,10 @@
     <!-- Modal (dùng chung cho thêm & sửa) -->
     <Modal ref="modal">
         <div class="row">
-            <div class="col-6">
+            <div class="col-md-6">
                 <Input v-model="ChucVu.ma_chuc_vu" label="Mã chức vụ" placeholder="Mã chức vụ ..." type="text"/>
             </div>
-            <div class="col-6">
+            <div class="col-md-6">
                 <Input v-model="ChucVu.ten_chuc_vu" label="Tên chức vụ" placeholder="Tên chức vụ ..." type="text"/>
             </div>
         </div>
@@ -75,7 +75,7 @@ export default {
     methods: {
         async fetchData(page = 1) {
             try {
-                const response = await axios.get(`/api/chuc-vu?page=${page}`);
+                const response = await axios.get(`/api/danh-muc/thong-tin-chung/chuc-vu?page=${page}`);
                 if (response.data.status === 200) {
                     this.ds = response.data.data;
                     this.currentPage = this.ds.current_page;
@@ -108,7 +108,7 @@ export default {
             }
 
             try {
-                const response = await axios.post("/api/chuc-vu", this.ChucVu);
+                const response = await axios.post("/api/danh-muc/thong-tin-chung/chuc-vu", this.ChucVu);
                 if (response.data.status === 200) {
                     toastr.success(response.data.message);
                     this.fetchData(this.currentPage);
@@ -116,7 +116,7 @@ export default {
                 }
             } catch (error) {
                 console.error("Lỗi khi thêm:", error);
-                toastr.error("Thêm đơn vị thất bại!");
+                toastr.error("Thêm thất bại!");
             }
         },
 
@@ -131,7 +131,7 @@ export default {
             if (!confirmed) return;
 
             try {
-                const response = await axios.put(`/api/chuc-vu/${row.id_chuc_vu}`, this.ChucVu);
+                const response = await axios.put(`/api/danh-muc/thong-tin-chung/chuc-vu/${row.id_chuc_vu}`, this.ChucVu);
                 if (response.data.status === 200) {
                     toastr.success(response.data.message);
                     this.fetchData(this.currentPage);
@@ -139,7 +139,7 @@ export default {
                 }
             } catch (error) {
                 console.error("Lỗi khi cập nhật:", error);
-                toastr.error("Cập nhật đơn vị thất bại!");
+                toastr.error("Cập nhật thất bại!");
             }
         },
 
@@ -154,14 +154,14 @@ export default {
             }).then(async (result) => {
                 if (result.isConfirmed) {
                     try {
-                        const response = await axios.delete(`/api/chuc-vu/${row.id_chuc_vu}`);
+                        const response = await axios.delete(`/api/danh-muc/thong-tin-chung/chuc-vu/${row.id_chuc_vu}`);
                         if (response.data.status === 200) {
                             toastr.success(response.data.message);
                             this.fetchData(this.currentPage);
                         }
                     } catch (error) {
                         console.error("Lỗi khi xoá:", error);
-                        toastr.error("Xoá đơn vị thất bại!");
+                        toastr.error("Xoá thất bại!");
                     }
                 }
             });

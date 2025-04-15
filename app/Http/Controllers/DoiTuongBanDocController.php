@@ -3,13 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\DonViModel;
-
-class DonViController extends Controller
+use App\Models\DoiTuongBanDocModel;
+class DoiTuongBanDocController extends Controller
 {
     public function index(Request $request)
     {
-        $query = DonViModel::query();
+        $query = DoiTuongBanDocModel::query();
         return response()->json([
             'status' => 200,
             'data' => $query->paginate(perPage: 10)
@@ -19,32 +18,31 @@ class DonViController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'ma_don_vi' => 'required|string',
-            'ten_don_vi' => 'required|string',
+            'ma_doi_tuong_ban_doc' => 'required|string',
+            'ten_doi_tuong_ban_doc' => 'required|string',
         ]);
-
-        $donvi = DonViModel::create($validated);
-        return response()->json(['status' => 200, 'message' => 'Thêm thành công', 'data' => $donvi]);
+        $data = DoiTuongBanDocModel::create($validated);
+        return response()->json(['status' => 200, 'message' => 'Thêm thành công', 'data' => $data]);
     }
 
     public function update(Request $request, $id)
     {
-        $donvi = DonViModel::findOrFail($id);
-        $donvi->update($request->all());
+        $model = DoiTuongBanDocModel::findOrFail($id);
+        $model->update($request->all());
         return response()->json(['status' => 200, 'message' => 'Cập nhật thành công']);
     }
 
     public function destroy($id)
     {
-        DonViModel::destroy($id);
+        DoiTuongBanDocModel::destroy($id);
         return response()->json(['status' => 200, 'message' => 'Xóa thành công']);
     }
 
-    public function listDonViSelectOption(){
-        $query = DonViModel::getListDonViSelectOption();
+    public function listDoiTuongBanDocSelectOption(){
+        $data = DoiTuongBanDocModel::listDoiTuongBanDoc();
         return response()->json([
             'status' => 200,
-            'data' => $query
+            'data' => $data
         ]);
     }
 }

@@ -16,7 +16,7 @@
                 <div class="col-8"></div>
                 <div class="col-4">
                   <div class="input-group input-group-sm" style="margin-bottom: 12px;">
-                    <input @keyup.enter="loadChucVu('/chuc-vu')" type="text" class="form-control float-right"
+                    <input @keyup.enter="loadChucVu('chuc-vu')" type="text" class="form-control float-right"
                       name="search" placeholder="Nhập từ khóa tìm kiếm và nhấn Enter ...">
                   </div>
                 </div>

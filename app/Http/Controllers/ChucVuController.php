@@ -7,7 +7,6 @@ use App\Models\ChucVuModel;
 
 class ChucVuController extends Controller
 {
-    // GET /api/chuc-vu
     public function index(Request $request)
     {
         $query = ChucVuModel::query();
@@ -17,7 +16,6 @@ class ChucVuController extends Controller
         ]);
     }
 
-    // POST /api/chuc-vu
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -28,7 +26,6 @@ class ChucVuController extends Controller
         return response()->json(['status' => 200, 'message' => 'Thêm thành công', 'data' => $chucvu]);
     }
 
-    // PUT /api/chuc-vu/{id}
     public function update(Request $request, $id)
     {
         $chucvu = ChucVuModel::findOrFail($id);
@@ -36,7 +33,6 @@ class ChucVuController extends Controller
         return response()->json(['status' => 200, 'message' => 'Cập nhật thành công']);
     }
 
-    // DELETE /api/chuc-vu/{id}
     public function destroy($id)
     {
         ChucVuModel::destroy($id);

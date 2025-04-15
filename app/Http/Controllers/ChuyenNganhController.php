@@ -7,7 +7,6 @@ use App\Models\ChuyenNganhModel;
 
 class ChuyenNganhController extends Controller
 {
-    // GET /api/chuyen-nganh
     public function index(Request $request)
     {
         $query = ChuyenNganhModel::getDanhSachChuyenNganhWithTenDonVi();
@@ -17,7 +16,6 @@ class ChuyenNganhController extends Controller
         ]);
     }
 
-    // POST /api/chuyen-nganh
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -35,7 +33,6 @@ class ChuyenNganhController extends Controller
         ]);
     }
 
-    // PUT /api/chuyen-nganh/{id}
     public function update(Request $request, $id)
     {
         $chuyennganh = ChuyenNganhModel::findOrFail($id);
@@ -43,7 +40,6 @@ class ChuyenNganhController extends Controller
         return response()->json(['status' => 200, 'message' => 'Cập nhật thành công']);
     }
 
-    // DELETE /api/chuyen-nganh/{id}
     public function destroy($id)
     {
         ChuyenNganhModel::destroy($id);
