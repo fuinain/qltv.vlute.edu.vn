@@ -77,10 +77,10 @@
                                 </a>
                                 <ul class="nav nav-treeview">
                                     <li class="nav-item">
-                                        <a href="#" class="nav-link">
+                                        <router-link :to="{name: 'pageTaiLieuThuMuc'}" class="nav-link">
                                             <i class="fas fa-angle-right nav-icon"></i> <!-- Icon cấp 3 -->
                                             <p>Cấu hình thư mục và loại tài liệu</p>
-                                        </a>
+                                        </router-link>
                                     </li>
                                 </ul>
                             </li>
@@ -100,22 +100,22 @@
                                         </router-link>
                                     </li>
                                     <li class="nav-item">
-                                        <a href="#" class="nav-link">
+                                        <router-link :to="{ name: 'pageDiemLuuThong' }" class="nav-link">
                                             <i class="fas fa-angle-right nav-icon"></i> <!-- Icon cấp 3 -->
                                             <p>Khai báo điểm lưu thông</p>
-                                        </a>
+                                        </router-link>
                                     </li>
                                     <li class="nav-item">
-                                        <a href="#" class="nav-link">
+                                        <router-link :to="{ name: 'pageThamSoLuuThong' }" class="nav-link">
                                             <i class="fas fa-angle-right nav-icon"></i> <!-- Icon cấp 3 -->
                                             <p>Khai báo tham số lưu thông</p>
-                                        </a>
+                                        </router-link>
                                     </li>
                                     <li class="nav-item">
-                                        <a href="#" class="nav-link">
+                                        <router-link :to="{ name: 'pagePhatBanDoc' }" class="nav-link">
                                             <i class="fas fa-angle-right nav-icon"></i> <!-- Icon cấp 3 -->
                                             <p>Khai báo danh mục phạt bạn đọc</p>
-                                        </a>
+                                        </router-link>
                                     </li>
                                 </ul>
                             </li>
@@ -207,10 +207,10 @@
                                 </a>
                                 <ul class="nav nav-treeview">
                                     <li class="nav-item">
-                                        <a href="#" class="nav-link">
+                                        <router-link :to="{name: 'pageDMKhoAnPham'}" class="nav-link">
                                             <i class="fas fa-angle-right nav-icon"></i> <!-- Icon cấp 3 -->
                                             <p>Danh mục kho ấn phẩm</p>
-                                        </a>
+                                        </router-link>
                                     </li>
                                     <li class="nav-item">
                                         <a href="#" class="nav-link">

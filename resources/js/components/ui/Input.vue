@@ -11,7 +11,6 @@ export default {
   props: {
     label: {
       type: String,
-      default: 'Chưa đặt tên',
     },
     placeholder: {
       type: String,

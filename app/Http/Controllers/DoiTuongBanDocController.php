@@ -21,22 +21,65 @@ class DoiTuongBanDocController extends Controller
             'ma_doi_tuong_ban_doc' => 'required|string',
             'ten_doi_tuong_ban_doc' => 'required|string',
         ]);
-        $data = DoiTuongBanDocModel::create($validated);
-        return response()->json(['status' => 200, 'message' => 'Thêm thành công', 'data' => $data]);
+
+        try {
+            $data = DoiTuongBanDocModel::createWithThamSoLuuThong($validated);
+
+            return response()->json([
+                'status' => 200,
+                'message' => 'Thêm thành công',
+                'data' => $data,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 500,
+                'message' => 'Lỗi khi thêm dữ liệu',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 
     public function update(Request $request, $id)
     {
-        $model = DoiTuongBanDocModel::findOrFail($id);
-        $model->update($request->all());
-        return response()->json(['status' => 200, 'message' => 'Cập nhật thành công']);
+        $validated = $request->validate([
+            'ma_doi_tuong_ban_doc' => 'required|string',
+            'ten_doi_tuong_ban_doc' => 'required|string',
+        ]);
+
+        try {
+            DoiTuongBanDocModel::updateWithThamSoLuuThong($id, $validated);
+
+            return response()->json([
+                'status' => 200,
+                'message' => 'Cập nhật thành công',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 500,
+                'message' => 'Lỗi khi cập nhật',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
+
 
     public function destroy($id)
     {
-        DoiTuongBanDocModel::destroy($id);
-        return response()->json(['status' => 200, 'message' => 'Xóa thành công']);
+        try {
+            DoiTuongBanDocModel::deleteWithRelated($id);
+            return response()->json([
+                'status' => 200,
+                'message' => 'Xóa thành công',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 500,
+                'message' => 'Lỗi khi xóa',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
+
 
     public function listDoiTuongBanDocSelectOption(){
         $data = DoiTuongBanDocModel::listDoiTuongBanDoc();

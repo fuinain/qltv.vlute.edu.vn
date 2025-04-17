@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ThamSoLuuThongController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DonViController;
@@ -8,6 +9,10 @@ use App\Http\Controllers\HocKyController;
 use App\Http\Controllers\ChuyenNganhController;
 use App\Http\Controllers\LopHocController;
 use App\Http\Controllers\DoiTuongBanDocController;
+use App\Http\Controllers\TaiLieuController;
+use App\Http\Controllers\KhoAnPhamController;
+use App\Http\Controllers\DiemLuuThongController;
+use App\Http\Controllers\PhatBanDocController;
 
 // API chỉ dành cho admin
 Route::middleware(['isLogin:admin'])->group(function () {
@@ -24,7 +29,7 @@ Route::middleware(['isLogin:admin'])->group(function () {
                 Route::get('/', [DonViController::class, 'index']);
                 Route::put('/{id}', [DonViController::class, 'update']);
                 Route::delete('/{id}', [DonViController::class, 'destroy']);
-                Route::get('/list-don-vi-select-option', [DonViController::class, 'listDonViSelectOption']);       
+                Route::get('/list-don-vi-select-option', [DonViController::class, 'listDonViSelectOption']);
             });
 
             //API quản lý chức vụ
@@ -61,6 +66,17 @@ Route::middleware(['isLogin:admin'])->group(function () {
             });
         });
 
+        Route::group(['prefix' => 'nghiep-vu-bien-muc'], function () {
+
+            //API nghiệp vụ biên mục
+            Route::prefix('tai-lieu')->group(function () {
+                Route::post('/', [TaiLieuController::class, 'store']);
+                Route::get('/', [TaiLieuController::class, 'index']);
+                Route::put('/{id}', [TaiLieuController::class, 'update']);
+                Route::delete('/{id}', [TaiLieuController::class, 'destroy']);
+            });
+        });
+
         Route::group(['prefix' => 'nghiep-vu-luu-thong'], function () {
 
             //API đối tượng bạn đọc
@@ -70,6 +86,46 @@ Route::middleware(['isLogin:admin'])->group(function () {
                 Route::put('/{id}', [DoiTuongBanDocController::class, 'update']);
                 Route::delete('/{id}', [DoiTuongBanDocController::class, 'destroy']);
                 Route::get('/list-dtbd-select-option', [DoiTuongBanDocController::class, 'listDoiTuongBanDocSelectOption']);
+            });
+
+            //API điểm lưu thông
+            Route::prefix('diem-luu-thong')->group(function () {
+                Route::post('/', [DiemLuuThongController::class, 'store']);
+                Route::get('/', [DiemLuuThongController::class, 'index']);
+                Route::put('/{id}', [DiemLuuThongController::class, 'update']);
+                Route::delete('/{id}', [DiemLuuThongController::class, 'destroy']);
+
+                Route::prefix('chi-tiet-luu-thong')->group(function () {
+                    Route::get('/{id}', [ThamSoLuuThongController::class, 'index']);
+                    Route::post('/chi-tiet-tslt', [ThamSoLuuThongController::class, 'taoHoacCapNhat']);
+                    Route::get('/get-chi-tiet-tslt/{id_doi_tuong}/{id_diem}', [ThamSoLuuThongController::class, 'layChiTiet']);
+                    Route::put('/update-chi-tiet-tslt', [ThamSoLuuThongController::class, 'capNhatChiTiet']);
+                });
+            });
+
+            //API phạt bạn đọc
+            Route::prefix('phat-ban-doc')->group(function () {
+                Route::post('/', [PhatBanDocController::class, 'store']);
+                Route::get('/', [PhatBanDocController::class, 'index']);
+                Route::put('/{id}', [PhatBanDocController::class, 'update']);
+                Route::delete('/{id}', [PhatBanDocController::class, 'destroy']);
+            });
+        });
+    });
+
+    //API Quản lý ẩn phẩm
+    Route::group(['prefix' => 'quan-ly-an-pham'], function () {
+
+        //API Kho ấn phẩm
+        Route::prefix('kho-an-pham')->group(function () {
+
+            // API Danh mục kho
+            Route::prefix('danh-muc-kho')->group(function () {
+                Route::post('/', [KhoAnPhamController::class, 'store']);
+                Route::get('/', [KhoAnPhamController::class, 'index']);
+                Route::put('/{id}', [KhoAnPhamController::class, 'update']);
+                Route::delete('/{id}', [KhoAnPhamController::class, 'destroy']);
+                Route::get('/list-dmkho-select-option', [KhoAnPhamController::class, 'listDanhMucKhoAnPhamSelectOption']);
             });
         });
     });

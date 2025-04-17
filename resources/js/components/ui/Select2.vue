@@ -11,49 +11,45 @@
 
 <script>
 
+
 export default {
     props: {
         label: {
             type: String,
-            default: 'Select an option'
+            default: 'Select an option',
         },
         options: {
             type: Array,
-            required: true
+            required: true,
         },
-        value: {
+        modelValue: { // ✅ Chuẩn Vue 3 v-model
             type: Array,
-            default: () => []
+            default: () => [],
         },
-        selectedOptions: {
-            type: Array,
-            default: () => []
-        }
     },
+    emits: ['update:modelValue'],
     mounted() {
         $(this.$refs.select).select2({
             placeholder: this.label,
             width: "100%",
-            tags: true
+            theme: "bootstrap4",
+            tags: false, // ✅ Không cho nhập tay
         });
 
-        $(this.$refs.select).val(this.value).trigger("change");
+        $(this.$refs.select).val(this.modelValue).trigger("change");
 
         $(this.$refs.select).on("change", () => {
-            let selectedValues = $(this.$refs.select).val();
-            // console.log("Giá trị được chọn:", selectedValues); // 🚀 Debug giá trị select2
-            this.$emit("update:value", selectedValues);
-            this.$emit("update:selectedOptions", this.options.filter(option => selectedValues.includes(option.value)));
+            const selectedValues = $(this.$refs.select).val();
+            this.$emit('update:modelValue', selectedValues);
         });
     },
     watch: {
-        value(newVal) {
+        modelValue(newVal) {
             this.$nextTick(() => {
-                const parsedNewVal = typeof newVal === 'string' ? JSON.parse(newVal) : newVal;
-                const currentValues = $(this.$refs.select).val() || [];
-                if (JSON.stringify(parsedNewVal) !== JSON.stringify(currentValues)) {
-                    // console.log("Cập nhật Select2 với giá trị mới:", parsedNewVal);
-                    $(this.$refs.select).val(parsedNewVal).trigger("change");
+                const parsed = typeof newVal === 'string' ? JSON.parse(newVal) : newVal;
+                const current = $(this.$refs.select).val() || [];
+                if (JSON.stringify(parsed) !== JSON.stringify(current)) {
+                    $(this.$refs.select).val(parsed).trigger('change');
                 }
             });
         }
@@ -65,11 +61,14 @@ export default {
 </script>
 
 <style>
-
-.select2-container--default .select2-selection--multiple .select2-selection__choice {
+.select2-container--bootstrap4 .select2-selection--multiple .select2-selection__choice {
     background-color: #007bff;
     border-color: #007bff;
     color: #fff;
 }
 
+.select2-container--bootstrap4 .select2-selection--multiple .select2-selection__choice__remove {
+    color: white;
+    margin-right: 5px;
+}
 </style>
