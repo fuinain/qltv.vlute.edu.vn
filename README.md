@@ -9,5 +9,6 @@ KEYCLOAK_BASE_URL=https://sso.vlute.edu.vn/auth/
 KEYCLOAK_REALM=Dev
 KEYCLOAK_REDIRECT_URI=http://qltv.local/login/callback
 ```
-
+```
 php artisan ser --host="qltv.local" --port="80"
+```
