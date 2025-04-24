@@ -58,7 +58,7 @@ export default {
             }
         },
 
-        xemChiTietThamSoLuuThong(row) {
+        async xemChiTietThamSoLuuThong(row) {
             this.$router.push({
                 name: "pageCTThamSoLuuThong",
                 params: { id_doi_tuong_ban_doc: row.id_doi_tuong_ban_doc },

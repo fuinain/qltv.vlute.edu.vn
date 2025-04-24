@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ThamSoLuuThongController;
+use App\Http\Controllers\TrangThaiDonController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DonViController;
@@ -13,6 +14,11 @@ use App\Http\Controllers\TaiLieuController;
 use App\Http\Controllers\KhoAnPhamController;
 use App\Http\Controllers\DiemLuuThongController;
 use App\Http\Controllers\PhatBanDocController;
+use App\Http\Controllers\NhaCungCapController;
+use App\Http\Controllers\NguonNhanController;
+use App\Http\Controllers\LoaiNhapController;
+use App\Http\Controllers\DonNhanController;
+use App\Http\Controllers\SachController;
 
 // API chỉ dành cho admin
 Route::middleware(['isLogin:admin'])->group(function () {
@@ -77,6 +83,46 @@ Route::middleware(['isLogin:admin'])->group(function () {
             });
         });
 
+        Route::group(['prefix' => 'nghiep-vu-bo-sung'], function () {
+
+            //API NCC
+            Route::prefix('ncc')->group(function () {
+                Route::post('/', [NhaCungCapController::class, 'store']);
+                Route::get('/', [NhaCungCapController::class, 'index']);
+                Route::put('/{id}', [NhaCungCapController::class, 'update']);
+                Route::delete('/{id}', [NhaCungCapController::class, 'destroy']);
+                Route::get('/list-ncc-select-option', [NhaCungCapController::class, 'listNCCSelectOption']);
+
+            });
+
+            //API Trạng thái đơn
+            Route::prefix('trang-thai-don')->group(function () {
+                Route::post('/', [TrangThaiDonController::class, 'store']);
+                Route::get('/', [TrangThaiDonController::class, 'index']);
+                Route::put('/{id}', [TrangThaiDonController::class, 'update']);
+                Route::delete('/{id}', [TrangThaiDonController::class, 'destroy']);
+                Route::get('/list-trang-thai-don-select-option', [TrangThaiDonController::class, 'listTTDonSelectOption']);
+            });
+
+            //API Nguồn nhận
+            Route::prefix('nguon-nhan')->group(function () {
+                Route::post('/', [NguonNhanController::class, 'store']);
+                Route::get('/', [NguonNhanController::class, 'index']);
+                Route::put('/{id}', [NguonNhanController::class, 'update']);
+                Route::delete('/{id}', [NguonNhanController::class, 'destroy']);
+                Route::get('/list-nguon-nhan-select-option', [NguonNhanController::class, 'listNguonNhanSelectOption']);
+            });
+
+            //API Loại nhập
+            Route::prefix('loai-nhap')->group(function () {
+                Route::post('/', [LoaiNhapController::class, 'store']);
+                Route::get('/', [LoaiNhapController::class, 'index']);
+                Route::put('/{id}', [LoaiNhapController::class, 'update']);
+                Route::delete('/{id}', [LoaiNhapController::class, 'destroy']);
+                Route::get('/list-loai-nhap-select-option', [LoaiNhapController::class, 'listLoaiNhapSelectOption']);
+            });
+        });
+
         Route::group(['prefix' => 'nghiep-vu-luu-thong'], function () {
 
             //API đối tượng bạn đọc
@@ -115,6 +161,25 @@ Route::middleware(['isLogin:admin'])->group(function () {
 
     //API Quản lý ẩn phẩm
     Route::group(['prefix' => 'quan-ly-an-pham'], function () {
+        //API Quản lý nhận sách
+        Route::prefix('nhan-sach')->group(function () {
+
+            // API Quản lý đơn nhận
+            Route::prefix('don-nhan')->group(function () {
+                Route::post('/', [DonNhanController::class, 'store']);
+                Route::get('/', [DonNhanController::class, 'index']);
+                Route::put('/{id}', [DonNhanController::class, 'update']);
+                Route::delete('/{id}', [DonNhanController::class, 'destroy']);
+
+                //API Chi tiết đơn nhận
+                Route::prefix('chi-tiet-don-nhan')->group(function () {
+                    Route::post('/', [SachController::class, 'store']);
+                    Route::get('/{id_don_nhan}', [SachController::class, 'index']);
+                    Route::put('/{id}', [SachController::class, 'update']);
+                    Route::delete('/{id}', [SachController::class, 'destroy']);
+                });
+            });
+        });
 
         //API Kho ấn phẩm
         Route::prefix('kho-an-pham')->group(function () {

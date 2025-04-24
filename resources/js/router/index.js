@@ -7,6 +7,10 @@ import pageChucVu from "@/pages/Admin/DanhMuc/ThongTinChung/ChucVu/pageChucVu.vu
 import pageNamHoc from "@/pages/Admin/DanhMuc/ThongTinChung/NamHoc/pageNamHoc.vue";
 import pageLopHoc from "@/pages/Admin/DanhMuc/ThongTinChung/LopHoc/pageLopHoc.vue";
 import pageChuyenNganh from "@/pages/Admin/DanhMuc/ThongTinChung/ChuyenNganh/pageChuyenNganh.vue";
+import pageNCC from "@/pages/Admin/DanhMuc/NghiepVuBoSung/NhaCungCap/pageNhaCungCap.vue";
+import pageTrangThaiDon from "@/pages/Admin/DanhMuc/NghiepVuBoSung/TrangThaiDon/pageTrangThaiDon.vue";
+import pageNguonNhan from "@/pages/Admin/DanhMuc/NghiepVuBoSung/NguonNhan/pageNguonNhan.vue";
+import pageLoaiNhap from "@/pages/Admin/DanhMuc/NghiepVuBoSung/LoaiNhap/pageLoaiNhap.vue";
 import pageDoiTuongBanDoc from "@/pages/Admin/DanhMuc/NghiepVuLuuThong/DoiTuongBanDoc/pageDoiTuongBanDoc.vue";
 import pageDiemLuuThong from "@/pages/Admin/DanhMuc/NghiepVuLuuThong/DiemLuuThong/pageDiemLuuThong.vue";
 import pageThamSoLuuThong from "@/pages/Admin/DanhMuc/NghiepVuLuuThong/ThamSoLuuThong/pageThamSoLuuThong.vue";
@@ -14,6 +18,8 @@ import pageCTThamSoLuuThong from "@/pages/Admin/DanhMuc/NghiepVuLuuThong/ThamSoL
 import pagePhatBanDoc from "@/pages/Admin/DanhMuc/NghiepVuLuuThong/PhatBanDoc/pagePhatBanDoc.vue";
 import pageTaiLieuThuMuc from "@/pages/Admin/DanhMuc/NghiepVuBienMuc/ThucMucTaiLieu/pageTaiLieuThuMuc.vue";
 import pageDMKhoAnPham from "@/pages/Admin/QuanLyAnPham/KhoAnPham/pageDMKhoAnPham.vue";
+import pageDonNhan from "@/pages/Admin/QuanLyAnPham/NhanSach/pageDonNhan.vue";
+import pageCTDonNhan from "@/pages/Admin/QuanLyAnPham/NhanSach/pageCTDonNhan.vue";
 import AdminLayout from "@/components/layouts/AdminLayout.vue";
 import PublicLayout from "@/components/layouts/PublicLayout.vue";
 const routes = [
@@ -119,6 +125,67 @@ const routes = [
                         ],
                     },
                     {
+                        path: "nghiep-vu-bo-sung",
+                        children: [
+                            {
+                                path: "ncc",
+                                name: "pageNCC",
+                                component: pageNCC,
+                                meta: {
+                                    title: "Nhà cung cấp",
+                                    breadcrumb: [
+                                        { name: "Home", path: "/" },
+                                        { name: "Danh mục"},
+                                        { name: "Nghiệp vụ bổ sung"},
+                                        { name: "Nhà cung cấp" },
+                                    ],
+                                },
+                            },
+                            {
+                                path: "trang-thai-don",
+                                name: "pageTrangThaiDon",
+                                component: pageTrangThaiDon,
+                                meta: {
+                                    title: "Trạng thái đơn",
+                                    breadcrumb: [
+                                        { name: "Home", path: "/" },
+                                        { name: "Danh mục"},
+                                        { name: "Nghiệp vụ bổ sung"},
+                                        { name: "Trạng thái đơn" },
+                                    ],
+                                },
+                            },
+                            {
+                                path: "nguon-nhan",
+                                name: "pageNguonNhan",
+                                component: pageNguonNhan,
+                                meta: {
+                                    title: "Nguồn nhận",
+                                    breadcrumb: [
+                                        { name: "Home", path: "/" },
+                                        { name: "Danh mục"},
+                                        { name: "Nghiệp vụ bổ sung"},
+                                        { name: "Nguồn nhận" },
+                                    ],
+                                },
+                            },
+                            {
+                                path: "loai-nhap",
+                                name: "pageLoaiNhap",
+                                component: pageLoaiNhap,
+                                meta: {
+                                    title: "Loại nhập",
+                                    breadcrumb: [
+                                        { name: "Home", path: "/" },
+                                        { name: "Danh mục"},
+                                        { name: "Nghiệp vụ bổ sung"},
+                                        { name: "Loại nhập" },
+                                    ],
+                                },
+                            },
+                        ],
+                    },
+                    {
                         path: "nghiep-vu-bien-muc",
                         children: [
                             {
@@ -196,7 +263,7 @@ const routes = [
                                             name: "Thiết lập tham số lưu thông",
                                             path: "/admin/danh-muc/nghiep-vu-luu-thong/tham-so-luu-thong",
                                         },
-                                        { name: "Chi tiết tham số lưu thông" },
+                                        { name: "CT tham số lưu thông" },
                                     ],
                                 },
                             },
@@ -235,6 +302,42 @@ const routes = [
                                         { name: "Quản lý ấn phẩm"},
                                         { name: "Kho ấn phẩm"},
                                         { name: "Danh mục kho" },
+                                    ],
+                                },
+                            },
+                        ],
+                    },
+                    {
+                        path: "quan-ly-nhan-sach",
+                        children: [
+                            {
+                                path: "don-nhan",
+                                name: "pageDonNhan",
+                                component: pageDonNhan,
+                                meta: {
+                                    title: "Đơn nhận",
+                                    breadcrumb: [
+                                        { name: "Home", path: "/" },
+                                        { name: "Quản lý ấn phẩm"},
+                                        { name: "Quản lý nhận sách"},
+                                        { name: "Đơn nhận" },
+                                    ],
+                                },
+                            },
+                            {
+                                path: "don-nhan/chi-tiet-don-nhan/:id_don_nhan",
+                                name: "pageCTDonNhan",
+                                component: pageCTDonNhan,
+                                meta: {
+                                    title: "Chi tiết đơn nhận",
+                                    breadcrumb: [
+                                        { name: "Home", path: "/" },
+                                        { name: "Quản lý ấn phẩm"},
+                                        { name: "Quản lý nhận sách"},
+                                        {
+                                            name: "Đơn nhận",
+                                            path: "/admin/quan-ly-an-pham/quan-ly-nhan-sach/don-nhan"},
+                                        { name: "Chi tiết đơn nhận" },
                                     ],
                                 },
                             },

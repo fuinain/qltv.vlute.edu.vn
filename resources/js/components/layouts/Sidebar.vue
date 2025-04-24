@@ -71,6 +71,41 @@
                                 <a href="#" class="nav-link">
                                     <i class="nav-icon far fa-circle"></i> <!-- Icon cấp 2 -->
                                     <p>
+                                        Nghiệp vụ bổ sung
+                                        <i class="fas fa-angle-left right"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <router-link :to="{name: 'pageNCC'}" class="nav-link">
+                                            <i class="fas fa-angle-right nav-icon"></i> <!-- Icon cấp 3 -->
+                                            <p>Nhà cung cấp</p>
+                                        </router-link>
+                                    </li>
+                                    <li class="nav-item">
+                                        <router-link :to="{name: 'pageTrangThaiDon'}" class="nav-link">
+                                            <i class="fas fa-angle-right nav-icon"></i> <!-- Icon cấp 3 -->
+                                            <p>Trạng thái đơn</p>
+                                        </router-link>
+                                    </li>
+                                    <li class="nav-item">
+                                        <router-link :to="{name: 'pageNguonNhan'}" class="nav-link">
+                                            <i class="fas fa-angle-right nav-icon"></i> <!-- Icon cấp 3 -->
+                                            <p>Nguồn nhận</p>
+                                        </router-link>
+                                    </li>
+                                    <li class="nav-item">
+                                        <router-link :to="{name: 'pageLoaiNhap'}" class="nav-link">
+                                            <i class="fas fa-angle-right nav-icon"></i> <!-- Icon cấp 3 -->
+                                            <p>Loại nhập</p>
+                                        </router-link>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="nav-item has-treeview">
+                                <a href="#" class="nav-link">
+                                    <i class="nav-icon far fa-circle"></i> <!-- Icon cấp 2 -->
+                                    <p>
                                         Nghiệp vụ biên mục
                                         <i class="fas fa-angle-left right"></i>
                                     </p>
@@ -158,13 +193,12 @@
                                         <i class="fas fa-angle-left right"></i>
                                     </p>
                                 </a>
-                                <!-- Menu cấp 3 -->
                                 <ul class="nav nav-treeview">
                                     <li class="nav-item">
-                                        <a href="#" class="nav-link">
+                                        <router-link :to="{ name: 'pageDonNhan' }" class="nav-link">
                                             <i class="fas fa-angle-right nav-icon"></i> <!-- Icon cấp 3 -->
                                             <p>Quản lý đơn nhận</p>
-                                        </a>
+                                        </router-link>
                                     </li>
                                     <li class="nav-item">
                                         <a href="#" class="nav-link">
