@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\BienMucBieuGhiController;
+use App\Http\Controllers\MarcController;
 use App\Http\Controllers\ThamSoLuuThongController;
 use App\Http\Controllers\TrangThaiDonController;
 use Illuminate\Http\Request;
@@ -69,6 +71,7 @@ Route::middleware(['isLogin:admin'])->group(function () {
                 Route::get('/', [ChuyenNganhController::class, 'index']);
                 Route::put('/{id}', [ChuyenNganhController::class, 'update']);
                 Route::delete('/{id}', [ChuyenNganhController::class, 'destroy']);
+                Route::get('/by-don-vi/{id_don_vi}', [ChuyenNganhController::class, 'listByDonViSelectOption']);
             });
         });
 
@@ -80,6 +83,8 @@ Route::middleware(['isLogin:admin'])->group(function () {
                 Route::get('/', [TaiLieuController::class, 'index']);
                 Route::put('/{id}', [TaiLieuController::class, 'update']);
                 Route::delete('/{id}', [TaiLieuController::class, 'destroy']);
+                Route::get('/list-tai-lieu-select-option', [TaiLieuController::class, 'listTaiLieuSelectOption']);
+
             });
         });
 
@@ -177,6 +182,30 @@ Route::middleware(['isLogin:admin'])->group(function () {
                     Route::get('/{id_don_nhan}', [SachController::class, 'index']);
                     Route::put('/{id}', [SachController::class, 'update']);
                     Route::delete('/{id}', [SachController::class, 'destroy']);
+
+                    //API Biên mục biểu ghi
+                    Route::prefix('bien-muc-bieu-ghi')->group(function () {
+                        Route::get('/{id_sach}', [BienMucBieuGhiController::class, 'show']);
+                        Route::post('/', [BienMucBieuGhiController::class, 'store']);
+
+                        Route::prefix('bien-muc/marc')->group(function () {
+                            // Lấy toàn bộ cha–con của một cuốn
+                            Route::get   ('/by-sach/{id_sach}', [MarcController::class, 'index']);
+
+                            /* ---------- TRƯỜNG CHA ---------- */
+                            Route::post  ('/parent',        [MarcController::class, 'storeParent']);   // thêm mới
+                            Route::put   ('/parent/{id}',   [MarcController::class, 'updateParent']);  // cập nhật
+                            Route::delete('/parent/{id}',   [MarcController::class, 'destroyParent']); // xoá
+
+                            // thêm cha rỗng ngay sau vị trí idx (FE truyền idx)
+                            Route::post  ('/add-parent-after', [MarcController::class, 'addParentAfter']);
+
+                            /* ---------- TRƯỜNG CON ---------- */
+                            Route::post  ('/child',        [MarcController::class, 'storeChild']);     // thêm mới
+                            Route::put   ('/child/{id}',   [MarcController::class, 'updateChild']);    // cập nhật
+                            Route::delete('/child/{id}',   [MarcController::class, 'destroyChild']);   // xoá
+                        });
+                    });
                 });
             });
         });

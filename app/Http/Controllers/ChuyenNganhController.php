@@ -45,4 +45,15 @@ class ChuyenNganhController extends Controller
         ChuyenNganhModel::destroy($id);
         return response()->json(['status' => 200, 'message' => 'Xóa thành công']);
     }
+
+    public function listByDonViSelectOption($id_don_vi)
+    {
+        $rows = ChuyenNganhModel::getListByDonVi($id_don_vi);
+
+        return response()->json([
+            'status' => 200,
+            'data'   => $rows,
+        ]);
+    }
+
 }

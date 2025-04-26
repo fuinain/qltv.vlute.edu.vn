@@ -23,4 +23,12 @@ class SachModel extends Model
         'so_luong',
         'thanh_tien',
     ];
+
+    public static function getListByDonNhan(int $id_don_nhan, int $perPage = 10)
+    {
+        return self::query()
+            ->where('id_don_nhan', $id_don_nhan)
+            ->orderBy('ngay_tao')
+            ->paginate($perPage);
+    }
 }

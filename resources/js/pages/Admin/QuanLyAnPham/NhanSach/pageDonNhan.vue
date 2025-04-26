@@ -219,28 +219,27 @@ export default {
                 ghi_chu: "",
             };
 
-            // Mở modal
-            const confirmed = await this.$refs.modal.openModal();
-            if (!confirmed) return;
+            while (true){
+                const confirmed = await this.$refs.modal.openModal();
+                if (!confirmed) break
 
-            try {
-                const response = await axios.post("/api/quan-ly-an-pham/nhan-sach/don-nhan", this.DonNhan);
-                if (response.data.status === 200) {
-                    toastr.success(response.data.message);
-                    this.fetchData(this.currentPage);
-                    this.$refs.modal.closeModal();
-                }
-            } catch (error) {
-                if (error.response && error.response.status === 422) {
-                    const errors = error.response.data.errors;
-                    for (const key in errors) {
-                        if (errors.hasOwnProperty(key)) {
-                            toastr.error(errors[key][0]);
-                        }
+                try {
+                    const response = await axios.post("/api/quan-ly-an-pham/nhan-sach/don-nhan", this.DonNhan);
+                    if (response.data.status === 200) {
+                        toastr.success(response.data.message);
+                        this.fetchData(this.currentPage);
+                        this.$refs.modal.closeModal();
+                        break;
                     }
-                } else {
-                    console.error("Lỗi khi thêm:", error);
-                    toastr.error("Thêm thất bại!");
+                } catch (err) {
+                    if (err.response?.status === 422) {
+                        Object.values(err.response.data.errors)
+                            .forEach(msg => toastr.error(msg[0]));
+                    } else {
+                        toastr.error('Thêm thất bại');
+                        console.error(err);
+                        break;
+                    }
                 }
             }
         },
@@ -302,12 +301,4 @@ export default {
     },
 };
 </script>
-<style scoped>
-.table td,
-.white-preline {
-    white-space: pre-line;
-    text-align: center;
-    vertical-align: middle;
-}
-</style>
 

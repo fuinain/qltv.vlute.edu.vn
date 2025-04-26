@@ -133,6 +133,13 @@ export default {
                 return value ? dayjs(value).format("DD/MM/YYYY HH:mm:ss") : "–";
             } else if (format === "normalDateTime") {
                 return value ? dayjs(value).format("DD/MM/YYYY") : "";
+            } else if (format === "VND") {
+                const n = Number(value) || 0;
+                return n.toLocaleString("vi-VN", {
+                    style: "currency",
+                    currency: "VND",
+                    minimumFractionDigits: 0,
+                });
             }
             return value;
         },

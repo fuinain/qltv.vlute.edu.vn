@@ -27,7 +27,7 @@ class DonNhanController extends Controller
             'id_loai_nhap' => 'nullable|integer',
             'id_nguon_nhan' => 'nullable|integer',
             'id_trang_thai_don' => 'nullable|integer',
-            'ngay_nhan' => 'date',
+            'ngay_nhan' => 'nullable|date',
             'id_nha_cung_cap' => 'nullable|integer',
             'so_chung_tu' => 'nullable',
             'ghi_chu' => 'nullable',

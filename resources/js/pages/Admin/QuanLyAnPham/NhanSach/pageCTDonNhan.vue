@@ -2,8 +2,8 @@
     <ContentWrapper>
         <template #customTitle>
             CHI TIẾT ĐƠN NHẬN <br>
-            <span class="text-secondary">Mã đơn nhận: {{ maSach }}</span> <br>
-            <span class="text-secondary">Tên đơn nhận: {{ tenSach }}</span>
+            <span class="text-secondary">Mã đơn nhận: {{ maDonNhan }}</span> <br>
+            <span class="text-secondary">Tên đơn nhận: {{ tenDonNhan }}</span>
         </template>
         <template #ContentPage>
             <div class="row">
@@ -29,9 +29,19 @@
                                 <!-- Slot cho cột hành động -->
                                 <template v-slot:column-actions="{ row }">
                                     <button type="button"
-                                            class="btn p-1 btn-primary border-0 bg-transparent text-success shadow-none"
-                                            @click="chiTietDiemLuuThong(row)">
-                                        <i class="fas fa-eye"></i>&nbsp;
+                                            class="btn p-1 btn-primary border-0 bg-transparent text-primary shadow-none"
+                                            @click="suaCTDonNhan(row)">
+                                        <i class="fas fa-edit"></i>&nbsp;
+                                    </button>
+                                    <button type="button"
+                                            class="btn p-1 btn-primary border-0 bg-transparent text-danger shadow-none"
+                                            @click="xoaCTDonNhan(row)">
+                                        <i class="fas fa-trash-alt"></i>&nbsp;
+                                    </button>
+                                    <button type="button"
+                                            class="btn p-1 btn-primary border-0 bg-transparent text-secondary shadow-none"
+                                            @click="xemBienMucBieuGhiSach(row)">
+                                        <i class="fas fa-cog"></i>&nbsp;
                                     </button>
                                 </template>
                             </Table>
@@ -63,7 +73,7 @@
                 <Input v-model="Sach.gia" label="Giá tiền" placeholder="Giá tiền..." type="text"/>
             </div>
             <div class="col-md-6">
-                <Input v-model="Sach.so_luong" label="Số chứng từ" placeholder="Số chứng từ..." type="number"/>
+                <Input v-model="Sach.so_luong" label="Số lượng" placeholder="Số lượng..." type="number"/>
             </div>
         </div>
     </Modal>
@@ -73,7 +83,7 @@
 <script>
 
 export default {
-    name: "pageCTThamSoLuuThong",
+    name: "pageCTDonNhan",
     data() {
         return {
             ds: [],
@@ -94,13 +104,13 @@ export default {
                 {key: 'nam_xuat_ban', label: 'NXB'},
                 {key: 'nha_xuat_ban', label: 'Nhà xuất bản'},
                 {key: 'noi_xuat_ban', label: 'Nơi xuất bản'},
-                {key: 'gia', label: 'Giá'},
+                {key: 'gia', label: 'Giá', format: "VND"},
                 {key: 'so_luong', label: 'SL'},
-                {key: 'thanh_tien', label: 'Thành tiền'},
+                {key: 'thanh_tien', label: 'Thành tiền', format: "VND" },
                 {key: 'actions', label: 'Hành động', sortable: false},
             ],
-            maSach: this.$route.query.ma_don_nhan || '',
-            tenSach: this.$route.query.ten_don_nhan || '',
+            maDonNhan: this.$route.query.ma_don_nhan || '',
+            tenDonNhan: this.$route.query.ten_don_nhan || '',
         };
     },
     mounted() {
@@ -110,57 +120,139 @@ export default {
         async fetchData(page = 1) {
             const id = this.$route.params.id_don_nhan;
             try {
-                const response = await axios.get(`/api/quan-ly-an-pham/nhan-sach/don-nhan/chi-tiet-don-nhan${id}?page=${page}`);
-                if (response.data.status === 200) {
-                    this.ds = response.data.data;
+                const res = await axios.get(
+                    `/api/quan-ly-an-pham/nhan-sach/don-nhan/chi-tiet-don-nhan/${id}?page=${page}`
+                );
+
+                if (res.data.status === 200) {
+                    this.ds = res.data.data;
                     this.currentPage = this.ds.current_page;
+                } else {
+                    toastr.error('Không tải được dữ liệu');
                 }
-            } catch (error) {
-                console.error("Lỗi khi load dữ liệu:", error);
+            } catch (err) {
+                console.error('Lỗi khi fetch dữ liệu:', err);
+                toastr.error('Đã xảy ra lỗi khi tải dữ liệu');
             }
         },
 
-        async themSach() {
-            // Reset form cho trường hợp thêm mới
-            this.$refs.modal.$data.title = "Thêm mới thông tin";
-            this.$refs.modal.$data.save = "Thêm mới";
+        async themSach () {
+            // 1. Chuẩn bị dữ liệu & tiêu đề modal
+            this.$refs.modal.$data.title = 'Thêm mới sách';
+            this.$refs.modal.$data.save  = 'Thêm';
+
             this.Sach = {
-                nguoi_tao: "",
-                ten_don_nhan: "",
-                id_nguon_nhan: null,
-                id_loai_nhap: null,
-                id_trang_thai_don: null,
-                ngay_nhan: "",
-                id_nha_cung_cap: null,
-                so_chung_tu: "",
-                ghi_chu: "",
+                id_don_nhan : this.$route.params.id_don_nhan,
+                nhan_de     : '',
+                tac_gia     : '',
+                nam_xuat_ban: '',
+                nha_xuat_ban: '',
+                noi_xuat_ban: '',
+                gia         : 0,
+                so_luong    : 0,
+                thanh_tien  : 0
             };
 
-            // Mở modal
-            const confirmed = await this.$refs.modal.openModal();
-            if (!confirmed) return;
+            /* ---------- LOOP cho phép “Lưu” nhiều lần nếu server trả lỗi ---------- */
+            while (true) {
+                const confirmed = await this.$refs.modal.openModal();
+                if (!confirmed) break;
 
-            try {
-                const response = await axios.post("/api/quan-ly-an-pham/nhan-sach/don-nhan/chi-tiet-don-nhan", this.Sach);
-                if (response.data.status === 200) {
-                    toastr.success(response.data.message);
-                    this.fetchData(this.currentPage);
-                    this.$refs.modal.closeModal();
-                }
-            } catch (error) {
-                if (error.response && error.response.status === 422) {
-                    const errors = error.response.data.errors;
-                    for (const key in errors) {
-                        if (errors.hasOwnProperty(key)) {
-                            toastr.error(errors[key][0]);
-                        }
+                try {
+                    const res = await axios.post(
+                        '/api/quan-ly-an-pham/nhan-sach/don-nhan/chi-tiet-don-nhan',
+                        this.Sach
+                    );
+                    if (res.data.status === 200) {
+                        toastr.success(res.data.message);
+                        this.fetchData(this.currentPage);
+                        this.$refs.modal.closeModal();     // đóng modal
+                        break;                             // kết thúc while
                     }
-                } else {
-                    console.error("Lỗi khi thêm:", error);
-                    toastr.error("Thêm thất bại!");
+                } catch (err) {
+                    if (err.response?.status === 422) {
+                        Object.values(err.response.data.errors)
+                            .forEach(msg => toastr.error(msg[0]));
+                    } else {
+                        toastr.error('Thêm thất bại');
+                        console.error(err);
+                        break; // lỗi khác → thoát
+                    }
                 }
             }
         },
+
+        async suaCTDonNhan (row) {
+            this.$refs.modal.$data.title = 'Cập nhật sách';
+            this.$refs.modal.$data.save  = 'Cập nhật';
+            this.Sach = { ...row };
+
+            while (true) {
+                const confirmed = await this.$refs.modal.openModal();
+                if (!confirmed) break;
+
+                try {
+                    const res = await axios.put(
+                        `/api/quan-ly-an-pham/nhan-sach/don-nhan/chi-tiet-don-nhan/${row.id_sach}`,
+                        this.Sach
+                    );
+                    if (res.data.status === 200) {
+                        toastr.success(res.data.message);
+                        this.fetchData(this.currentPage);
+                        this.$refs.modal.closeModal();
+                        break;
+                    }
+                } catch (err) {
+                    if (err.response?.status === 422) {
+                        Object.values(err.response.data.errors)
+                            .forEach(msg => toastr.error(msg[0]));
+                    } else {
+                        toastr.error('Cập nhật thất bại');
+                        console.error(err);
+                        break;
+                    }
+                }
+            }
+        },
+
+        async xoaCTDonNhan(row) {
+            Swal.fire({
+                title: 'Bạn có chắc chắn?',
+                text: "Dữ liệu sau khi bị xoá không thể khôi phục lại !!!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Có, xoá!',
+                cancelButtonText: 'Hủy',
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    try {
+                        const res = await axios.delete(
+                            `/api/quan-ly-an-pham/nhan-sach/don-nhan/chi-tiet-don-nhan/${row.id_sach}`
+                        );
+                        if (res.data.status === 200) {
+                            toastr.success(res.data.message);
+                            this.fetchData(this.currentPage);
+                        }
+                    } catch (err) {
+                        toastr.error("Xoá thất bại");
+                        console.error(err);
+                    }
+                }
+            });
+        },
+
+        async xemBienMucBieuGhiSach(row) {
+            this.$router.push({
+                name: "pageBienMucBieuGhiSach",
+                params: {
+                    id_don_nhan: this.$route.params.id_don_nhan,
+                    id_sach:     row.id_sach
+                },
+                query: {
+                    ten_sach: row.nhan_de
+                }
+            });
+        }
     },
 };
 </script>

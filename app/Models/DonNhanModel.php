@@ -45,7 +45,7 @@ class DonNhanModel extends Model
                 'don_nhan.id_nha_cung_cap',
                 'nha_cung_cap.ten_nha_cung_cap',
 
-                DB::raw("CONCAT_WS(CHAR(10), loai_nhap.ten_loai_nhap, nguon_nhan.ten_nguon) AS nguon_nhan_hien_thi"),
+                DB::raw("CONCAT_WS(' - ', loai_nhap.ten_loai_nhap, nguon_nhan.ten_nguon) AS nguon_nhan_hien_thi"),
                 DB::raw('COUNT(sach.id_sach)                            AS so_ten'),
                 DB::raw('COALESCE(SUM(sach.so_luong)           ,0)      AS so_ban'),
                 DB::raw('COALESCE(SUM(sach.so_luong * sach.gia),0)      AS tri_gia'),

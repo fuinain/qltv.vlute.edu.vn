@@ -52,4 +52,13 @@ class TaiLieuController extends Controller
         TaiLieuModel::destroy($id);
         return response()->json(['status' => 200, 'message' => 'Xóa thành công']);
     }
+
+    public function listTaiLieuSelectOption()
+    {
+        $data = TaiLieuModel::listTaiLieu();
+        return response()->json([
+            'status' => 200,
+            'data' => $data
+        ]);
+    }
 }

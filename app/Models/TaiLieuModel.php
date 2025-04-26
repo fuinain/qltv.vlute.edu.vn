@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class TaiLieuModel extends Model
 {
@@ -14,4 +15,10 @@ class TaiLieuModel extends Model
         'ma_tai_lieu',
         'ten_tai_lieu',
     ];
+
+    protected static function listTaiLieu(){
+        return DB::table('tai_lieu')
+            ->select('id_tai_lieu', 'ten_tai_lieu')
+            ->get();
+    }
 }

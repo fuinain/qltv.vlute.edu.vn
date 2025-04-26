@@ -14,4 +14,13 @@ class BienMucTruongConModel extends Model
         'ma_truong_con',
         'noi_dung',
     ];
+
+    public function parent()
+    {
+        return $this->belongsTo(
+            BienMucTruongChaModel::class,
+            'id_bien_muc_truong_cha',
+            'id_bien_muc_truong_cha'
+        );
+    }
 }

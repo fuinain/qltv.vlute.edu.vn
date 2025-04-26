@@ -15,4 +15,31 @@ class BienMucTruongChaModel extends Model
         'ct1',
         'ct2',
     ];
+
+    public function children()
+    {
+        return $this->hasMany(
+            BienMucTruongConModel::class,
+            'id_bien_muc_truong_cha',
+            'id_bien_muc_truong_cha'
+        );
+    }
+
+    /** Lấy tất cả cha-con của một cuốn sách */
+    public static function listBySach(int $id_sach)
+    {
+        $bieuGhi = BienMucBieuGhiModel::query()
+            ->where('id_sach', $id_sach)
+            ->firstOrFail();
+
+        return self::with(['children' => function ($q) {
+            /* Số ưu tiên, rồi tới chữ */
+            $q->orderByRaw(
+                "CASE WHEN ma_truong_con REGEXP '^[0-9]+$' THEN 0 ELSE 1 END"
+            )->orderByRaw("CAST(ma_truong_con AS UNSIGNED), ma_truong_con");
+        }])
+            ->where('id_bien_muc_bieu_ghi', $bieuGhi->id_bien_muc_bieu_ghi)
+            ->orderByRaw("CAST(ma_truong AS UNSIGNED), ma_truong")
+            ->get();
+    }
 }
