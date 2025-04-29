@@ -278,7 +278,7 @@ export default {
                 toastr.error('Không tìm thấy ID đơn nhận.');
                 return;
             }
-            toastr.info('Đang chuẩn bị file Excel Thống kê loại tài liệu, vui lòng đợi...');
+            toastr.info('Đang chuẩn bị file Excel, vui lòng đợi...');
             try {
                 const exportUrl = `/api/quan-ly-an-pham/nhan-sach/don-nhan/chi-tiet-don-nhan/export-thong-ke-tai-lieu/${id_don_nhan}`;
                 window.location.href = exportUrl;

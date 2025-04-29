@@ -8,6 +8,7 @@ use App\Models\BienMucTruongConModel;
 use App\Models\DonNhanModel;
 use App\Models\SachModel;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -19,6 +20,7 @@ use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Throwable;
 
 class SachController extends Controller
 {
@@ -316,6 +318,7 @@ class SachController extends Controller
             }
             $spreadsheet = IOFactory::load($templatePath);
             $sheet = $spreadsheet->getActiveSheet();
+
             $sheet->setCellValue('A5', setValueInCell('DANH MỤC SÁCH ĐƠN NHẬN SỐ: ', $donNhan->id_don_nhan));
             $sheet->setCellValue('B6', $donNhan->id_don_nhan);
             $sheet->setCellValue('B7', $donNhan->ten_don_nhan);
@@ -323,8 +326,8 @@ class SachController extends Controller
             $sheet->setCellValue('C6', setValueInCell('Ngày nhận: ', Carbon::parse($donNhan->ngay_nhan)->format('d-m-Y')));
             $sheet->setCellValue('B9', setValueInCell('Tổng số nhãn: ', $tongSoTen));
             $sheet->setCellValue('D9', setValueInCell('Tổng số quyển: ', $tongSoBan));
-            $sheet->setCellValue('H9', setValueInCell('Tổng số tiền: ',$tongTriGia ?? ''));
-            $sheet->getStyle('H9')->getNumberFormat()->setFormatCode('#,##0');
+            $sheet->setCellValue('I9', $tongTriGia);
+            $sheet->getStyle('I9')->getNumberFormat()->setFormatCode('#,##0');
             $sheet->setCellValue('H6', setValueInCell('Trạng thái: ',$donNhan->trangThaiDon->trang_thai ?? ''));
             $sheet->setCellValue('H7', setValueInCell('Nguồn nhận: ',$donNhan->nguonNhan->ten_nguon ?? ''));
             $sheet->setCellValue('H8', setValueInCell('Ghi chú: ',$donNhan->ghi_chu ?? ''));
@@ -358,11 +361,9 @@ class SachController extends Controller
                         $sheet->getRowDimension($currentRow)->setRowHeight($templateRowHeight);
                     }
 
-                    // Lấy thông tin biên mục (giữ nguyên logic)
                     $phanLoai = '';
                     $tenTaiLieu = '';
                     $bieuGhi = $sach->bienMucBieuGhi;
-                    // ... (logic lấy phân loại và tên tài liệu giữ nguyên) ...
                     if ($bieuGhi) {
                         $tenTaiLieu = $bieuGhi->taiLieu->ten_tai_lieu ?? '';
                         $truong082 = $bieuGhi->truongCha
@@ -446,19 +447,16 @@ class SachController extends Controller
             $sheet->getStyle('I' . $nameRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT)->setVertical(Alignment::VERTICAL_CENTER);
 
             $writer = new Xlsx($spreadsheet);
-            $fileName = 'Don_Nhan_' . $donNhan->id_don_nhan . '_' . date('YmdHis') . '.xlsx';
+            $fileName = 'Don_Nhan_' . $donNhan->id_don_nhan . '_' . date('dmY') . '.xlsx';
             $tempFilePath = tempnam(sys_get_temp_dir(), 'excel_don_nhan_');
             $writer->save($tempFilePath);
             return response()->download($tempFilePath, $fileName, [
                 'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
             ])->deleteFileAfterSend(true);
 
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            Log::error("Export Excel Error - Đơn nhận không tồn tại: ID " . $id_don_nhan . " - " . $e->getMessage());
+        } catch (ModelNotFoundException $e) {
             return response()->json(['status' => 404, 'message' => 'Không tìm thấy đơn nhận.'], 404);
-        } catch (\Throwable $e) {
-            Log::error("Lỗi export Excel Đơn nhận ID {$id_don_nhan}: " . $e->getMessage() . "\n" . $e->getTraceAsString());
-            // Quan trọng: Trả về lỗi dạng JSON để frontend có thể bắt được nếu có thể
+        } catch (Throwable $e) {
             return response()->json(['status' => 500, 'message' => 'Có lỗi xảy ra trong quá trình xuất file Excel.'], 500);
         }
     }
@@ -466,26 +464,20 @@ class SachController extends Controller
     public function exportExcelThongKeTaiLieu(int $id_don_nhan)
     {
         try {
-            // 1. Gọi hàm từ Model để lấy dữ liệu đã chuẩn bị và thống kê
             $exportData = DonNhanModel::getDataThongKeTaiLieuForExport($id_don_nhan);
 
-            // Kiểm tra nếu model trả về null (không tìm thấy đơn nhận)
             if (!$exportData) {
-                Log::error("Export Thống kê TL Error - Đơn nhận ID {$id_don_nhan} không tồn tại.");
                 return response()->json(['status' => 404, 'message' => 'Không tìm thấy đơn nhận với ID cung cấp.'], 404);
             }
 
-            // 2. Lấy dữ liệu từ kết quả trả về của Model
             $donNhan = $exportData->donNhan;
             $thongKeData = $exportData->thongKeData;
             $tongSoTenChung = $exportData->tongSoTenChung;
             $tongSoBanChung = $exportData->tongSoBanChung;
             $tongTriGiaChung = $exportData->tongTriGiaChung;
 
-            // 3. Load template và chuẩn bị PhpSpreadsheet
             $templatePath = public_path('template_excel/template_excel_thong_ke_tai_lieu.xlsx');
             if (!file_exists($templatePath)) {
-                Log::error("Template file not found: " . $templatePath);
                 return response()->json(['status' => 500, 'message' => 'Lỗi server: Không tìm thấy file mẫu thống kê.'], 500);
             }
             $spreadsheet = IOFactory::load($templatePath);
@@ -502,23 +494,18 @@ class SachController extends Controller
             $sheet->setCellValue('H8', setValueInCell('Ghi chú: ', $donNhan->ghi_chu ?? ''));
             $sheet->setCellValue('B9', setValueInCell('Tổng số loại TL: ', count($thongKeData)));
             $sheet->setCellValue('D9', setValueInCell('Tổng số bản: ', $tongSoBanChung));
-            $sheet->setCellValue('H9', setValueInCell('Tổng trị giá: ', $tongTriGiaChung));
-            $sheet->getStyle('H9')->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1);
+            $sheet->setCellValue('I9', $tongTriGiaChung);
+            $sheet->getStyle('I9')->getNumberFormat()->setFormatCode('#,##0');
 
             // --- Chuẩn bị Style và Vị trí bắt đầu ---
             $startRow = 11;
             $currentRow = $startRow - 1;
             $templateStyle = [];
 
-            // --- SỬA LỖI TẠI ĐÂY ---
-            // Sao chép style từ dòng mẫu (dòng $startRow) - Bỏ kiểm tra styleExists()
             for ($col = 'A'; $col <= 'O'; $col++) {
                 $columnLetter = $col;
-                // Lấy style trực tiếp, getStyle() sẽ xử lý trả về style mặc định nếu cần
                 $templateStyle[$columnLetter] = $sheet->getStyle($columnLetter . $startRow);
             }
-            // --- KẾT THÚC SỬA LỖI ---
-
             $templateRowHeight = $sheet->getRowDimension($startRow)->getRowHeight();
 
             $borderStyle = [
@@ -562,7 +549,7 @@ class SachController extends Controller
                     $sheet->getStyle('J' . $currentRow)->getAlignment()->setVertical(Alignment::VERTICAL_CENTER)->setHorizontal(Alignment::HORIZONTAL_CENTER);
                     $sheet->mergeCells('N' . $currentRow . ':O' . $currentRow);
                     $sheet->setCellValue('N' . $currentRow, $item['tri_gia']);
-                    $sheet->getStyle('N' . $currentRow)->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1);
+                    $sheet->getStyle('N' . $currentRow)->getNumberFormat()->setFormatCode('#,##0');
                     $sheet->getStyle('N' . $currentRow)->getAlignment()->setVertical(Alignment::VERTICAL_CENTER)->setHorizontal(Alignment::HORIZONTAL_RIGHT);
                     $sheet->getStyle('A' . $currentRow . ':O' . $currentRow)->applyFromArray($borderStyle);
 
@@ -575,7 +562,7 @@ class SachController extends Controller
 
             // --- Thêm dòng Tổng cộng Chung và Chữ ký ---
             $totalRow = $currentRow + 1;
-            $dateRow = $totalRow + 2;
+            $dateRow = $totalRow + 3;
             $titleRow = $dateRow + 1;
             $nameSignatureRow = $titleRow + 4;
 
@@ -590,7 +577,7 @@ class SachController extends Controller
             $sheet->getStyle('J' . $totalRow)->getFont()->setBold(true);
             $sheet->getStyle('J' . $totalRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER)->setVertical(Alignment::VERTICAL_CENTER);
             $sheet->mergeCells('N' . $totalRow . ':O' . $totalRow)->setCellValue('N' . $totalRow, $tongTriGiaChung);
-            $sheet->getStyle('N' . $totalRow)->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1);
+            $sheet->getStyle('N' . $totalRow)->getNumberFormat()->setFormatCode('#,##0');
             $sheet->getStyle('N' . $totalRow)->getFont()->setBold(true);
             $sheet->getStyle('N' . $totalRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT)->setVertical(Alignment::VERTICAL_CENTER);
             $sheet->getStyle('A' . $totalRow . ':O' . $totalRow)->applyFromArray($borderStyle);
@@ -600,23 +587,23 @@ class SachController extends Controller
             $currentLocation = config('app.location_for_report', 'Vĩnh Long');
             $chuoiNgayThang = $currentLocation . ", ngày " . $now->day . " tháng " . $now->month . " năm " . $now->year;
             $sheet->mergeCells('J' . $dateRow . ':O' . $dateRow)->setCellValue('J' . $dateRow, $chuoiNgayThang);
-            $sheet->getStyle('J' . $dateRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER)->setVertical(Alignment::VERTICAL_CENTER);
+            $sheet->getStyle('J' . $dateRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT)->setVertical(Alignment::VERTICAL_CENTER);
             $sheet->getStyle('J' . $dateRow)->getFont()->setItalic(true);
 
             $sheet->mergeCells('J' . $titleRow . ':O' . $titleRow)->setCellValue('J' . $titleRow, 'Người lập báo cáo');
-            $sheet->getStyle('J' . $titleRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER)->setVertical(Alignment::VERTICAL_TOP);
+            $sheet->getStyle('J' . $titleRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT)->setVertical(Alignment::VERTICAL_TOP);
             $sheet->getStyle('J' . $titleRow)->getFont()->setBold(true);
             if ($sheet->getRowDimension($titleRow)->getRowHeight() < 20) {
                 $sheet->getRowDimension($titleRow)->setRowHeight(20);
             }
 
             $sheet->mergeCells('J' . $nameSignatureRow . ':O' . $nameSignatureRow)->setCellValue('J' . $nameSignatureRow, $donNhan->nguoi_tao ?? '');
-            $sheet->getStyle('J' . $nameSignatureRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER)->setVertical(Alignment::VERTICAL_CENTER);
+            $sheet->getStyle('J' . $nameSignatureRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT)->setVertical(Alignment::VERTICAL_CENTER);
             $sheet->getStyle('J' . $nameSignatureRow)->getFont()->setBold(true);
 
             // 4. Chuẩn bị và Xuất file Excel
             $writer = new Xlsx($spreadsheet);
-            $fileName = 'ThongKe_LoaiTaiLieu_DN' . $donNhan->id_don_nhan . '_' . Carbon::now()->format('Ymd_His') . '.xlsx';
+            $fileName = 'Thong_Ke_Loai_TL_' . $donNhan->id_don_nhan . '_' . Carbon::now()->format('dmY') . '.xlsx';
             $tempFilePath = tempnam(sys_get_temp_dir(), 'excel_thongke_tl_');
             $writer->save($tempFilePath);
 
@@ -625,13 +612,8 @@ class SachController extends Controller
             ])->deleteFileAfterSend(true);
 
         } catch (ModelNotFoundException $e) {
-            Log::error("Export Thống kê TL Error - Đơn nhận ID {$id_don_nhan} không tồn tại: " . $e->getMessage());
             return response()->json(['status' => 404, 'message' => 'Không tìm thấy đơn nhận với ID cung cấp.'], 404);
-        } catch (\PhpOffice\PhpSpreadsheet\Exception $e) {
-            Log::error("Lỗi PhpSpreadsheet khi export Thống kê Tài liệu ID {$id_don_nhan}: " . $e->getMessage() . "\n" . $e->getTraceAsString());
-            return response()->json(['status' => 500, 'message' => 'Có lỗi xảy ra khi tạo file Excel. Vui lòng thử lại.'], 500);
-        } catch (\Throwable $e) {
-            Log::error("Lỗi không xác định export Excel Thống kê Tài liệu ID {$id_don_nhan}: " . $e->getMessage() . "\n" . $e->getTraceAsString());
+        } catch (Throwable $e) {
             return response()->json(['status' => 500, 'message' => 'Có lỗi không xác định xảy ra trong quá trình xuất file. Liên hệ quản trị viên.'], 500);
         }
     }

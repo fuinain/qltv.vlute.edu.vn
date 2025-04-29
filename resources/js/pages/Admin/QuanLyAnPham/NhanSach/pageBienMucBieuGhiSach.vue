@@ -231,53 +231,53 @@ export default {
             }
         },
 
-        // async thongTinBienMuc() {
-        //     this.$refs.modal.$data.title = 'Thông tin biên mục';
-        //     Object.assign(this.BienMuc, {
-        //         id_tai_lieu        : null,
-        //         trang_thai_bieu_ghi: 'dang-bien-muc',
-        //         id_don_vi          : null,
-        //         id_chuyen_nganh    : null,
-        //     });
-        //
-        //     const idSach = this.$route.params.id_sach;
-        //
-        //     try {
-        //         const res = await axios.get(`/api/quan-ly-an-pham/nhan-sach/don-nhan/chi-tiet-don-nhan/bien-muc-bieu-ghi/${idSach}`);
-        //
-        //         if (res.data.status === 200 && res.data.data) {
-        //             this.isLoadingBienMuc = true;
-        //             Object.assign(this.BienMuc, res.data.data);
-        //             await this.getChuyenNganhByDonVi(this.BienMuc.id_don_vi);
-        //             this.isLoadingBienMuc = false;
-        //         }
-        //
-        //         // Hiển thị modal khi có dữ liệu
-        //         while (await this.$refs.modal.openModal()) {
-        //             try {
-        //                 const saveRes = await axios.post("/api/quan-ly-an-pham/nhan-sach/don-nhan/chi-tiet-don-nhan/bien-muc-bieu-ghi/", this.BienMuc);
-        //
-        //                 if (saveRes.data.status === 200) {
-        //                     toastr.success(saveRes.data.message);
-        //                     this.$refs.modal.closeModal();
-        //                     break;
-        //                 }
-        //             } catch (err) {
-        //                 if (err.response?.status === 422) {
-        //                     Object.values(err.response.data.errors)
-        //                         .forEach(msg => toastr.error(msg[0]));
-        //                 } else {
-        //                     toastr.error("Lưu biên mục thất bại");
-        //                     console.error(err);
-        //                     break;
-        //                 }
-        //             }
-        //         }
-        //     } catch (err) {
-        //         toastr.error("Lỗi khi tải thông tin biên mục");
-        //         console.error(err);
-        //     }
-        // },
+        async thongTinBienMuc() {
+            this.$refs.modal.$data.title = 'Thông tin biên mục';
+            Object.assign(this.BienMuc, {
+                id_tai_lieu        : null,
+                trang_thai_bieu_ghi: 'dang-bien-muc',
+                id_don_vi          : null,
+                id_chuyen_nganh    : null,
+            });
+
+            const idSach = this.$route.params.id_sach;
+
+            try {
+                const res = await axios.get(`/api/quan-ly-an-pham/nhan-sach/don-nhan/chi-tiet-don-nhan/bien-muc-bieu-ghi/${idSach}`);
+
+                if (res.data.status === 200 && res.data.data) {
+                    this.isLoadingBienMuc = true;
+                    Object.assign(this.BienMuc, res.data.data);
+                    await this.getChuyenNganhByDonVi(this.BienMuc.id_don_vi);
+                    this.isLoadingBienMuc = false;
+                }
+
+                // Hiển thị modal khi có dữ liệu
+                while (await this.$refs.modal.openModal()) {
+                    try {
+                        const saveRes = await axios.post("/api/quan-ly-an-pham/nhan-sach/don-nhan/chi-tiet-don-nhan/bien-muc-bieu-ghi/", this.BienMuc);
+
+                        if (saveRes.data.status === 200) {
+                            toastr.success(saveRes.data.message);
+                            this.$refs.modal.closeModal();
+                            break;
+                        }
+                    } catch (err) {
+                        if (err.response?.status === 422) {
+                            Object.values(err.response.data.errors)
+                                .forEach(msg => toastr.error(msg[0]));
+                        } else {
+                            toastr.error("Lưu biên mục thất bại");
+                            console.error(err);
+                            break;
+                        }
+                    }
+                }
+            } catch (err) {
+                toastr.error("Lỗi khi tải thông tin biên mục");
+                console.error(err);
+            }
+        },
 
         /* ---------- MARC ---------- */
         marcBase() {
