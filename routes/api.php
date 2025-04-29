@@ -182,6 +182,8 @@ Route::middleware(['isLogin:admin'])->group(function () {
                     Route::get('/{id_don_nhan}', [SachController::class, 'index']);
                     Route::put('/{id}', [SachController::class, 'update']);
                     Route::delete('/{id}', [SachController::class, 'destroy']);
+                    Route::get('/export-don-nhan/{id_don_nhan}', [SachController::class, 'exportExcelDonNhan']);
+                    Route::get('/export-thong-ke-tai-lieu/{id_don_nhan}', [SachController::class, 'exportExcelThongKeTaiLieu']);
 
                     //API Biên mục biểu ghi
                     Route::prefix('bien-muc-bieu-ghi')->group(function () {

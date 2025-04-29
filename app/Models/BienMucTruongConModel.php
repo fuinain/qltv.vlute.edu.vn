@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class BienMucTruongConModel extends Model
 {
@@ -22,5 +23,10 @@ class BienMucTruongConModel extends Model
             'id_bien_muc_truong_cha',
             'id_bien_muc_truong_cha'
         );
+    }
+
+    public function truongCha(): BelongsTo
+    {
+        return $this->belongsTo(BienMucTruongChaModel::class, 'id_bien_muc_truong_cha', 'id_bien_muc_truong_cha');
     }
 }

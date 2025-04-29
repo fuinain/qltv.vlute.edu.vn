@@ -25,6 +25,7 @@
         "datatables.net": "^2.2.2",
         "datatables.net-dt": "^2.2.2",
         "dayjs": "^1.11.13",
+        "file-saver": "^2.0.5",
         "jquery": "^3.7.1",
         "select2": "^4.1.0-rc.0",
         "sweetalert2": "^11.17.2",

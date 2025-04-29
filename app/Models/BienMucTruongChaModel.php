@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class BienMucTruongChaModel extends Model
 {
@@ -16,13 +18,18 @@ class BienMucTruongChaModel extends Model
         'ct2',
     ];
 
-    public function children()
+    public function children(): HasMany
     {
         return $this->hasMany(
             BienMucTruongConModel::class,
             'id_bien_muc_truong_cha',
             'id_bien_muc_truong_cha'
         );
+    }
+
+    public function bieuGhi(): BelongsTo
+    {
+        return $this->belongsTo(BienMucBieuGhiModel::class, 'id_bien_muc_bieu_ghi', 'id_bien_muc_bieu_ghi');
     }
 
     /** Lấy tất cả cha-con của một cuốn sách */

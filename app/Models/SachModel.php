@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class SachModel extends Model
 {
@@ -30,5 +32,13 @@ class SachModel extends Model
             ->where('id_don_nhan', $id_don_nhan)
             ->orderBy('ngay_tao')
             ->paginate($perPage);
+    }
+    public function bienMucBieuGhi(): HasOne
+    {
+        return $this->hasOne(BienMucBieuGhiModel::class, 'id_sach', 'id_sach');
+    }
+    public function donNhan(): BelongsTo
+    {
+        return $this->belongsTo(DonNhanModel::class, 'id_don_nhan', 'id_don_nhan');
     }
 }

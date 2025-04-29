@@ -125,31 +125,31 @@ export default {
     data() {
         return {
             /* ---------- danh sách chọn ---------- */
-            dsTaiLieu     : [],
-            dsDonVi       : [],
-            dsChuyenNganh : [],
-            dsTrangThai   : [
-                { value: "dang-bien-muc", text: "Đang biên mục" },
-                { value: "da-duyet",      text: "Đã duyệt"      },
+            dsTaiLieu: [],
+            dsDonVi: [],
+            dsChuyenNganh: [],
+            dsTrangThai: [
+                {value: "dang-bien-muc", text: "Đang biên mục"},
+                {value: "da-duyet", text: "Đã duyệt"},
             ],
 
             /* ---------- form Biên Mục ---------- */
             BienMuc: {
-                id_sach            : this.$route.params.id_sach,
-                id_tai_lieu        : null,
+                id_sach: this.$route.params.id_sach,
+                id_tai_lieu: null,
                 trang_thai_bieu_ghi: "dang-bien-muc",
-                id_don_vi          : null,
-                id_chuyen_nganh    : null,
+                id_don_vi: null,
+                id_chuyen_nganh: null,
             },
 
             /* ---------- danh sách MARC ---------- */
-            marcRows  : [],
-            tenSach   : this.$route.query.ten_sach || "",
-            isLoadingMarc   : false,
+            marcRows: [],
+            tenSach: this.$route.query.ten_sach || "",
+            isLoadingMarc: false,
             isLoadingBienMuc: false,
 
             /* ---------- form THÊM TRƯỜNG CHA ---------- */
-            newParent : { ma_truong: "", nhan: "", ct1: "", ct2: "" },
+            newParent: {ma_truong: "", nhan: "", ct1: "", ct2: ""},
         };
     },
 
@@ -173,58 +173,111 @@ export default {
             const byNum = (a, b) => Number(a) - Number(b);
 
             const sortChildren = arr => {
-                const num  = arr.filter(c => /^\d+$/.test(c.ma_truong_con))
-                    .sort((a,b)=>byNum(a.ma_truong_con, b.ma_truong_con));
+                const num = arr.filter(c => /^\d+$/.test(c.ma_truong_con))
+                    .sort((a, b) => byNum(a.ma_truong_con, b.ma_truong_con));
                 const text = arr.filter(c => !/^\d+$/.test(c.ma_truong_con))
-                    .sort((a,b)=>a.ma_truong_con.localeCompare(b.ma_truong_con));
+                    .sort((a, b) => a.ma_truong_con.localeCompare(b.ma_truong_con));
                 return [...num, ...text];
             };
 
             return [...this.marcRows]
-                .sort((a,b)=>byNum(a.ma_truong, b.ma_truong))
-                .map(p => ({ ...p, children: sortChildren(p.children || []) }));
+                .sort((a, b) => byNum(a.ma_truong, b.ma_truong))
+                .map(p => ({...p, children: sortChildren(p.children || [])}));
         },
 
         /* ---------- COMBO DATA ---------- */
         async getListTaiLieu() {
             try {
-                const { data } = await axios.get(
+                const {data} = await axios.get(
                     "/api/danh-muc/nghiep-vu-bien-muc/tai-lieu/list-tai-lieu-select-option"
                 );
                 if (data.status === 200) {
                     this.dsTaiLieu = data.data.map(d => ({
                         value: d.id_tai_lieu,
-                        text : d.ten_tai_lieu,
+                        text: d.ten_tai_lieu,
                     }));
                 }
-            } catch (e) { console.error(e); }
+            } catch (e) {
+                console.error(e);
+            }
         },
 
         async getListDonVi() {
-            const { data } = await axios.get(
+            const {data} = await axios.get(
                 "/api/danh-muc/thong-tin-chung/don-vi/list-don-vi-select-option"
             );
             if (data.status === 200) {
                 this.dsDonVi = data.data.map(d => ({
                     value: d.id_don_vi,
-                    text : d.ten_don_vi,
+                    text: d.ten_don_vi,
                 }));
             }
         },
 
         async getChuyenNganhByDonVi(id) {
-            if (!id) { this.dsChuyenNganh = []; return; }
+            if (!id) {
+                this.dsChuyenNganh = [];
+                return;
+            }
 
-            const { data } = await axios.get(
+            const {data} = await axios.get(
                 `/api/danh-muc/thong-tin-chung/chuyen-nganh/by-don-vi/${id}`
             );
             if (data.status === 200) {
                 this.dsChuyenNganh = data.data.map(d => ({
                     value: d.id_chuyen_nganh,
-                    text : d.ten_chuyen_nganh,
+                    text: d.ten_chuyen_nganh,
                 }));
             }
         },
+
+        // async thongTinBienMuc() {
+        //     this.$refs.modal.$data.title = 'Thông tin biên mục';
+        //     Object.assign(this.BienMuc, {
+        //         id_tai_lieu        : null,
+        //         trang_thai_bieu_ghi: 'dang-bien-muc',
+        //         id_don_vi          : null,
+        //         id_chuyen_nganh    : null,
+        //     });
+        //
+        //     const idSach = this.$route.params.id_sach;
+        //
+        //     try {
+        //         const res = await axios.get(`/api/quan-ly-an-pham/nhan-sach/don-nhan/chi-tiet-don-nhan/bien-muc-bieu-ghi/${idSach}`);
+        //
+        //         if (res.data.status === 200 && res.data.data) {
+        //             this.isLoadingBienMuc = true;
+        //             Object.assign(this.BienMuc, res.data.data);
+        //             await this.getChuyenNganhByDonVi(this.BienMuc.id_don_vi);
+        //             this.isLoadingBienMuc = false;
+        //         }
+        //
+        //         // Hiển thị modal khi có dữ liệu
+        //         while (await this.$refs.modal.openModal()) {
+        //             try {
+        //                 const saveRes = await axios.post("/api/quan-ly-an-pham/nhan-sach/don-nhan/chi-tiet-don-nhan/bien-muc-bieu-ghi/", this.BienMuc);
+        //
+        //                 if (saveRes.data.status === 200) {
+        //                     toastr.success(saveRes.data.message);
+        //                     this.$refs.modal.closeModal();
+        //                     break;
+        //                 }
+        //             } catch (err) {
+        //                 if (err.response?.status === 422) {
+        //                     Object.values(err.response.data.errors)
+        //                         .forEach(msg => toastr.error(msg[0]));
+        //                 } else {
+        //                     toastr.error("Lưu biên mục thất bại");
+        //                     console.error(err);
+        //                     break;
+        //                 }
+        //             }
+        //         }
+        //     } catch (err) {
+        //         toastr.error("Lỗi khi tải thông tin biên mục");
+        //         console.error(err);
+        //     }
+        // },
 
         /* ---------- MARC ---------- */
         marcBase() {
@@ -234,9 +287,10 @@ export default {
             );
         },
 
+
         async fetchMarc() {
             this.isLoadingMarc = true;
-            const { data } = await axios.get(
+            const {data} = await axios.get(
                 `${this.marcBase()}/by-sach/${this.$route.params.id_sach}`
             );
             if (data.status === 200) this.marcRows = data.data;
@@ -245,24 +299,25 @@ export default {
 
         /* ----------------- THÊM TRƯỜNG CHA (MODAL) ----------------- */
         async themTruongCha() {
-            this.newParent = { ma_truong:"", nhan:"", ct1:"", ct2:"" };
+            this.newParent = {ma_truong: "", nhan: "", ct1: "", ct2: ""};
 
             while (await this.$refs.modalAddParent.openModal()) {
 
                 /* VALIDATE FE */
                 if (!/^\d{3}$/.test(this.newParent.ma_truong)) {
-                    toastr.error("Nhãn phải gồm đúng 3 chữ số"); continue;
+                    toastr.error("Nhãn phải gồm đúng 3 chữ số");
+                    continue;
                 }
 
                 try {
-                    const { data } = await axios.post(`${this.marcBase()}/parent`, {
-                        id_sach  : this.$route.params.id_sach,
+                    const {data} = await axios.post(`${this.marcBase()}/parent`, {
+                        id_sach: this.$route.params.id_sach,
                         ...this.newParent,
                     });
 
                     /* THÀNH CÔNG */
-                    this.marcRows.push({ ...data.data, children: [] });
-                    this.marcRows.sort((a,b)=>Number(a.ma_truong)-Number(b.ma_truong));
+                    this.marcRows.push({...data.data, children: []});
+                    this.marcRows.sort((a, b) => Number(a.ma_truong) - Number(b.ma_truong));
                     toastr.success("Đã thêm trường cha");
                     this.$refs.modalAddParent.closeModal();
                     break;
@@ -285,12 +340,12 @@ export default {
         /* ---------- CALLBACKS TỪ TABLE ---------- */
         async handleAddParentAfter(idx) {
             try {
-                const { data } = await axios.post(`${this.marcBase()}/add-parent-after`, {
+                const {data} = await axios.post(`${this.marcBase()}/add-parent-after`, {
                     id_sach: this.$route.params.id_sach,
-                    index  : idx,
+                    index: idx,
                 });
                 if (data.status === 200) {
-                    this.marcRows.splice(idx+1, 0, { ...data.data, children: [] });
+                    this.marcRows.splice(idx + 1, 0, {...data.data, children: []});
                     toastr.success("Đã thêm trường cha mới");
                 }
             } catch (e) {
@@ -306,8 +361,8 @@ export default {
 
         async handleAddChild(parent) {
             try {
-                const { data } = await axios.post(`${this.marcBase()}/child`, {
-                    parent_id    : parent.id_bien_muc_truong_cha,
+                const {data} = await axios.post(`${this.marcBase()}/child`, {
+                    parent_id: parent.id_bien_muc_truong_cha,
                     ma_truong_con: "",       // hoặc gửi ký tự cụ thể tuỳ UI của bạn
                 });
 
@@ -336,7 +391,7 @@ export default {
         },
 
         async handleUpdateParent(parent) {
-            if ((parent.ct1 && parent.ct1.length>1) || (parent.ct2 && parent.ct2.length>1)) {
+            if ((parent.ct1 && parent.ct1.length > 1) || (parent.ct2 && parent.ct2.length > 1)) {
                 return toastr.error("CT1 / CT2 chỉ 1 ký tự");
             }
             if (parent.nhan && !/^\d{3}$/.test(parent.nhan)) {
@@ -344,11 +399,11 @@ export default {
             }
 
             try {
-                await axios.put(`${this.marcBase()}/parent/${parent.id_bien_muc_truong_cha}`,{
+                await axios.put(`${this.marcBase()}/parent/${parent.id_bien_muc_truong_cha}`, {
                     ma_truong: parent.ma_truong,
-                    nhan     : parent.nhan,
-                    ct1      : parent.ct1,
-                    ct2      : parent.ct2,
+                    nhan: parent.nhan,
+                    ct1: parent.ct1,
+                    ct2: parent.ct2,
                 });
                 toastr.success("Đã lưu trường cha");
             } catch (e) {
@@ -363,9 +418,9 @@ export default {
             }
 
             try {
-                await axios.put(`${this.marcBase()}/child/${child.id_bien_muc_truong_con}`,{
+                await axios.put(`${this.marcBase()}/child/${child.id_bien_muc_truong_con}`, {
                     ma_truong_con: child.ma_truong_con,
-                    noi_dung     : child.noi_dung,
+                    noi_dung: child.noi_dung,
                 });
                 toastr.success("Đã lưu trường con");
             } catch (err) {

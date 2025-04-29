@@ -13,7 +13,7 @@
                 <div class="modal-body">
                     <slot></slot>
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer" v-if="showFooter">
                     <button type="button" class="btn btn-primary text-bold" @click="confirm(true)">
                         <i class="far fa-save"></i>&nbsp;
                         {{ save }}
@@ -26,6 +26,12 @@
 
 <script>
 export default {
+    props: {
+        showFooter: {
+            type: Boolean,
+            default: true
+        }
+    },
     data() {
         return {
             title: 'Không tiêu đề',

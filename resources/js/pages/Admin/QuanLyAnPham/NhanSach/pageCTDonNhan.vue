@@ -14,11 +14,11 @@
                                 <i class="fas fa-plus-circle"></i>&nbsp;
                                 Thêm mới
                             </button>
-                            <button type="button" class="btn btn-success mx-1" @click="inDon">
+                            <button type="button" class="btn btn-success mx-1" @click="exportExcelDonNhan">
                                 <i class="fas fa-file-excel"></i>&nbsp;
                                 In đơn
                             </button>
-                            <button type="button" class="btn btn-success mx-1" @click="thongKeTL">
+                            <button type="button" class="btn btn-success mx-1" @click="exportExcelThongKeTL">
                                 <i class="fas fa-file-excel"></i>&nbsp;
                                 Thống kê loại tài liệu
                             </button>
@@ -77,11 +77,10 @@
             </div>
         </div>
     </Modal>
-
 </template>
 
 <script>
-
+import FileSaver from 'file-saver';
 export default {
     name: "pageCTDonNhan",
     data() {
@@ -252,7 +251,42 @@ export default {
                     ten_sach: row.nhan_de
                 }
             });
-        }
+        },
+
+        async exportExcelDonNhan() {
+            const id_don_nhan = this.$route.params.id_don_nhan;
+            if (!id_don_nhan) {
+                toastr.error('Không tìm thấy ID đơn nhận.');
+                return;
+            }
+            toastr.info('Đang chuẩn bị file Excel, vui lòng đợi...');
+            try {
+                // Xây dựng URL đến API export
+                const exportUrl = `/api/quan-ly-an-pham/nhan-sach/don-nhan/chi-tiet-don-nhan/export-don-nhan/${id_don_nhan}`;
+                window.location.href = exportUrl;
+            } catch (error) {
+                console.error('Lỗi không mong đợi khi cố gắng điều hướng tải file:', error);
+                toastr.error('Có lỗi xảy ra khi yêu cầu xuất file.');
+            } finally {
+
+            }
+        },
+
+        async exportExcelThongKeTL() {
+            const id_don_nhan = this.$route.params.id_don_nhan;
+            if (!id_don_nhan) {
+                toastr.error('Không tìm thấy ID đơn nhận.');
+                return;
+            }
+            toastr.info('Đang chuẩn bị file Excel Thống kê loại tài liệu, vui lòng đợi...');
+            try {
+                const exportUrl = `/api/quan-ly-an-pham/nhan-sach/don-nhan/chi-tiet-don-nhan/export-thong-ke-tai-lieu/${id_don_nhan}`;
+                window.location.href = exportUrl;
+            } catch (error) {
+                console.error('Lỗi không mong đợi khi cố gắng điều hướng tải file thống kê:', error);
+                toastr.error('Có lỗi xảy ra khi yêu cầu xuất file Thống kê loại tài liệu.');
+            }
+        },
     },
 };
 </script>
