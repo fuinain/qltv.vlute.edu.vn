@@ -12,7 +12,7 @@ class SSOController extends Controller
 
     public function logout(){
         session()->invalidate();
-        return redirect(Socialite::driver('keycloak')->getLogoutUrl(route("login")));
+        return redirect('/');
     }
 
     public function thayDoiMatKhau(){
@@ -73,13 +73,13 @@ class SSOController extends Controller
                         return redirect('/')->with('error', 'Không xác định được quyền truy cập.');
                 }
             } else {
-                return "Email không tồn tại trong hệ thống.";
+                return redirect('/')->with('error', 'Email không tồn tại trong hệ thống.');
             }
         }
         
-        return "Không thể lấy email từ thông tin đăng nhập.";
+        return redirect('/')->with('error', 'Không thể lấy email từ thông tin đăng nhập.');
     } catch (\Exception $e) {
-        return "Đã xảy ra lỗi: " . $e->getMessage();
+        return redirect('/')->with('error', 'Đã xảy ra lỗi: ' . $e->getMessage());
     }
 }
 

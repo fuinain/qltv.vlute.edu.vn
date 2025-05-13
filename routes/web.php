@@ -4,8 +4,11 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SSOController;
 use Illuminate\Http\Request;
 
+// Trang chủ OPAC
+
+
 // Các route xác thực
-Route::get('/', [SSOController::class, 'dangNhap'])->name('login');
+Route::get('/login', [SSOController::class, 'dangNhap'])->name('login');
 Route::get('/login/callback', [SSOController::class, 'callback'])->name('callback');
 Route::get('/logout', [SSOController::class, 'logout'])->name('logout');
 Route::get('/thayDoiMatKhau', [SSOController::class, 'thayDoiMatKhau'])->name('thayDoiMatKhau');

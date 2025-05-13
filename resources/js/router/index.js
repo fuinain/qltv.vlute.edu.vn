@@ -1,7 +1,6 @@
 // resources/js/router/index.js
 import {createRouter, createWebHistory} from "vue-router";
 import Admin from "@/pages/Admin/pageAdmin.vue";
-import DocGia from "@/pages/DocGia/index.vue";
 import pagePhongKhoa from "@/pages/Admin/DanhMuc/ThongTinChung/PhongKhoa/pagePhongKhoa.vue";
 import pageChucVu from "@/pages/Admin/DanhMuc/ThongTinChung/ChucVu/pageChucVu.vue";
 import pageNamHoc from "@/pages/Admin/DanhMuc/ThongTinChung/NamHoc/pageNamHoc.vue";
@@ -23,21 +22,68 @@ import pageCTDonNhan from "@/pages/Admin/QuanLyAnPham/NhanSach/pageCTDonNhan.vue
 import pageBienMucBieuGhiSach from "@/pages/Admin/QuanLyAnPham/NhanSach/pageBienMucBieuGhiSach.vue";
 import AdminLayout from "@/components/layouts/AdminLayout.vue";
 import PublicLayout from "@/components/layouts/PublicLayout.vue";
+import OpacLayout from "@/components/layouts/OpacLayout.vue";
+import OpacHome from "@/pages/Opac/OpacHome.vue";
+
+// Cần tạo các component này sau
+const OpacGioiThieu = () => import('@/pages/Opac/OpacGioiThieu.vue');
+const OpacHuongDan = () => import('@/pages/Opac/OpacHuongDan.vue');
+const OpacLienHe = () => import('@/pages/Opac/OpacLienHe.vue');
+const OpacSearchResult = () => import('@/pages/Opac/OpacSearchResult.vue');
 
 const routes = [
     {
         path: "/",
-        redirect: (to) => {
-            const userRole = window.userRole;
-
-            if (userRole === "admin") {
-                return "/admin";
-            } else if (userRole === "docgia") {
-                return "/docgia";
-            } else {
-                return "Bạn không có quyền truy cập vào trang này.";
+        component: OpacLayout,
+        children: [
+            {
+                path: "",
+                name: "OpacHome",
+                component: OpacHome,
+                meta: {
+                    title: "Trang chủ thư viện"
+                }
+            },
+            {
+                path: "gioi-thieu",
+                name: "OpacGioiThieu",
+                component: OpacGioiThieu,
+                meta: {
+                    title: "Giới thiệu"
+                }
+            },
+            {
+                path: "huong-dan",
+                name: "OpacHuongDan",
+                component: OpacHuongDan,
+                meta: {
+                    title: "Hướng dẫn sử dụng"
+                }
+            },
+            {
+                path: "lien-he",
+                name: "OpacLienHe",
+                component: OpacLienHe,
+                meta: {
+                    title: "Liên hệ"
+                }
+            },
+            {
+                path: "tim-kiem",
+                name: "OpacSearchResult",
+                component: OpacSearchResult,
+                meta: {
+                    title: "Kết quả tìm kiếm"
+                }
             }
-        },
+        ]
+    },
+    {
+        path: "/login",
+        name: "Login",
+        beforeEnter: (to, from, next) => {
+            window.location.href = '/login';
+        }
     },
     {
         path: "/admin",
@@ -377,11 +423,7 @@ const routes = [
         path: "/docgia",
         component: PublicLayout,
         children: [
-            {
-                path: "",
-                name: "DocGiaIndex",
-                component: DocGia,
-            },
+            // ... existing routes ...
         ],
     },
 ];

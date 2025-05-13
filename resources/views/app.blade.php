@@ -16,6 +16,15 @@
     </div>
     <script>
     window.userRole = "{{ session('Quyen') }}";
+    window.Laravel = {
+        error: "{{ session('error') }}",
+        user: {
+            isLogin: "{{ session('IsLogin') }}",
+            email: "{{ session('Email') }}",
+            username: "{{ session('Username') }}",
+            hoTen: "{{ session('HoTen') }}"
+        }
+    };
     </script>
     @vite('resources/js/app.js')
 </body>
