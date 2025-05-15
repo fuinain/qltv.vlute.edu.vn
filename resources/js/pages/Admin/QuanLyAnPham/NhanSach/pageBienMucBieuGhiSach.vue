@@ -91,6 +91,104 @@
         </div>
     </Modal>
 
+    <!-- ---------- MODAL: GÁN SỐ DKCB ---------- -->
+    <Modal ref="modalGanDKCB">
+        <template #title>GÁN SỐ ĐĂNG KÝ CÁ BIỆT</template>
+        <div class="row">
+            <div class="col-md-12 mb-3">
+                <p><strong>Tên sách:</strong> {{ tenSach }}</p>
+                <p><strong>Số lượng cần gán:</strong> {{ soLuongSach }}</p>
+                <p v-if="danhSachDKCBDaGan.length > 0"><strong>Số lượng đã gán:</strong> {{ danhSachDKCBDaGan.length }}/{{ soLuongSach }}</p>
+            </div>
+            
+            <!-- Hiển thị danh sách DKCB đã gán -->
+            <div class="col-md-12 mb-3" v-if="danhSachDKCBDaGan.length > 0">
+                <div class="card">
+                    <div class="card-header bg-success text-white">
+                        <i class="fas fa-check-circle"></i> Mã DKCB đã gán ({{ danhSachDKCBDaGan.length }} mã)
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
+                            <table class="table table-sm table-bordered table-hover">
+                                <thead class="sticky-top bg-white">
+                                    <tr class="bg-light">
+                                        <th width="10%" class="text-center">STT</th>
+                                        <th>Mã DKCB</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(dkcb, index) in danhSachDKCBDaGan" :key="index">
+                                        <td class="text-center">{{ index + 1 }}</td>
+                                        <td>{{ dkcb.ma_dkcb }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Hiển thị form nhập DKCB nếu chưa gán đủ -->
+            <div class="col-md-12" v-if="danhSachDKCBDaGan.length < soLuongSach">
+                <div class="form-group">
+                    <div class="custom-control custom-checkbox mb-2">
+                        <input type="checkbox" class="custom-control-input" id="autoAssignCheckbox" v-model="formDKCB.isAutoAssign">
+                        <label class="custom-control-label" for="autoAssignCheckbox">
+                            Gán mã DKCB liên tiếp tự động
+                        </label>
+                    </div>
+                    
+                    <label for="inputDKCB">Nhập mã DKCB</label>
+                    <input 
+                        type="text" 
+                        class="form-control" 
+                        id="inputDKCB" 
+                        v-model="formDKCB.ma_dkcb"
+                        placeholder="Ví dụ: KM.000001"
+                    />
+                    <small class="form-text text-muted" v-if="formDKCB.isAutoAssign">
+                        Nhập mã DKCB đầu tiên. Hệ thống sẽ tự động gán liên tiếp {{ soLuongSach - danhSachDKCBDaGan.length }} mã.
+                    </small>
+                    <small class="form-text text-muted" v-else>
+                        Nhập mã DKCB để gán từng mã một. Còn lại {{ soLuongSach - danhSachDKCBDaGan.length }} mã cần gán.
+                    </small>
+                </div>
+            </div>
+            
+            <!-- Hiển thị thông báo đã gán đủ -->
+            <div class="col-md-12" v-if="danhSachDKCBDaGan.length >= soLuongSach">
+                <div class="alert alert-success">
+                    <i class="fas fa-check-circle"></i> Đầu sách này đã được gán đủ {{ soLuongSach }} mã DKCB.
+                </div>
+            </div>
+            
+            <div class="col-md-12 mt-3" v-if="isLoadingDKCB">
+                <div class="text-center">
+                    <i class="fas fa-spinner fa-spin"></i> Đang xử lý...
+                </div>
+            </div>
+            <div class="col-md-12 mt-3" v-if="thongBaoLoi">
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-triangle"></i> {{ thongBaoLoi }}
+                </div>
+            </div>
+        </div>
+        <template #buttons>
+            <!-- Chỉ hiển thị nút Lưu thông tin khi chưa gán đủ số DKCB -->
+            <button 
+                v-if="danhSachDKCBDaGan.length < soLuongSach" 
+                type="button" 
+                class="btn btn-primary" 
+                @click="$refs.modalGanDKCB.submit()"
+                :disabled="isLoadingDKCB || !formDKCB.ma_dkcb">
+                <i class="fas fa-save"></i> Lưu thông tin
+            </button>
+            <button type="button" class="btn btn-secondary" @click="$refs.modalGanDKCB.closeModal()">
+                <i class="fas fa-times"></i> Đóng
+            </button>
+        </template>
+    </Modal>
+
     <!-- ---------- MODAL: THÊM TRƯỜNG CHA ---------- -->
     <Modal ref="modalAddParent">
         <template #title>THÊM TRƯỜNG CHA</template>
@@ -142,6 +240,15 @@ export default {
                 id_chuyen_nganh: null,
             },
 
+            /* ---------- form DKCB ---------- */
+            formDKCB: {
+                ma_dkcb: "",
+                isAutoAssign: true
+            },
+            isLoadingDKCB: false,
+            thongBaoLoi: "",
+            soLuongSach: 0,
+
             /* ---------- danh sách MARC ---------- */
             marcRows: [],
             tenSach: this.$route.query.ten_sach || "",
@@ -150,6 +257,9 @@ export default {
 
             /* ---------- form THÊM TRƯỜNG CHA ---------- */
             newParent: {ma_truong: "", nhan: "", ct1: "", ct2: ""},
+
+            /* ---------- danh sách DKCB đã gán ---------- */
+            danhSachDKCBDaGan: [],
         };
     },
 
@@ -157,6 +267,8 @@ export default {
         this.getListTaiLieu();
         this.getListDonVi();
         this.fetchMarc();
+        this.getSoLuongSach();
+        this.getDanhSachDKCBDaGan();
     },
 
     watch: {
@@ -431,6 +543,103 @@ export default {
                     toastr.error("Không thể thêm trường con");
                 }
                 console.error(err);
+            }
+        },
+
+        async getSoLuongSach() {
+            try {
+                const idSach = this.$route.params.id_sach;
+                const res = await axios.get(`/api/quan-ly-an-pham/nhan-sach/don-nhan/chi-tiet-don-nhan/sach/${idSach}`);
+                
+                if (res.data.status === 200 && res.data.data) {
+                    this.soLuongSach = res.data.data.so_luong || 0;
+                }
+            } catch (e) {
+                console.error(e);
+                toastr.error("Lỗi khi tải thông tin số lượng sách");
+            }
+        },
+
+        async ganDKCB() {
+            // Reset form
+            this.formDKCB = {
+                ma_dkcb: "",
+                isAutoAssign: true
+            };
+            this.thongBaoLoi = "";
+            this.isLoadingDKCB = false;
+            
+            // Lấy danh sách DKCB đã gán
+            await this.getDanhSachDKCBDaGan();
+            
+            // Mở modal gán DKCB
+            while (await this.$refs.modalGanDKCB.openModal()) {
+                try {
+                    if (!this.formDKCB.ma_dkcb) {
+                        toastr.error("Vui lòng nhập mã DKCB");
+                        continue;
+                    }
+                    
+                    this.isLoadingDKCB = true;
+                    
+                    // Thực hiện gán DKCB
+                    const idSach = this.$route.params.id_sach;
+                    const res = await axios.post('/api/quan-ly-an-pham/nhan-sach/don-nhan/chi-tiet-don-nhan/gan-dkcb', {
+                        id_sach: idSach,
+                        ma_dkcb: this.formDKCB.ma_dkcb,
+                        so_luong: this.formDKCB.isAutoAssign ? (this.soLuongSach - this.danhSachDKCBDaGan.length) : 1,
+                        auto_assign: this.formDKCB.isAutoAssign
+                    });
+                    
+                    this.isLoadingDKCB = false;
+                    
+                    if (res.data.status === 200) {
+                        toastr.success(res.data.message || "Đã gán số DKCB thành công");
+                        // Cập nhật danh sách DKCB đã gán
+                        await this.getDanhSachDKCBDaGan();
+                        
+                        // Nếu đã gán đủ số lượng hoặc đang ở chế độ tự động liên tiếp thì đóng modal
+                        if (this.danhSachDKCBDaGan.length >= this.soLuongSach || this.formDKCB.isAutoAssign) {
+                            this.$refs.modalGanDKCB.closeModal();
+                            break;
+                        }
+                        
+                        // Reset form để gán tiếp
+                        this.formDKCB.ma_dkcb = "";
+                    } else {
+                        this.thongBaoLoi = res.data.message || "Gán số DKCB thất bại";
+                        toastr.error(this.thongBaoLoi);
+                    }
+                } catch (e) {
+                    this.isLoadingDKCB = false;
+                    
+                    if (e.response?.status === 422) {
+                        const errors = e.response.data.errors;
+                        if (errors) {
+                            this.thongBaoLoi = Object.values(errors)[0][0] || "Dữ liệu không hợp lệ";
+                            toastr.error(this.thongBaoLoi);
+                        }
+                    } else {
+                        this.thongBaoLoi = e.response?.data?.message || "Lỗi khi gán số DKCB";
+                        toastr.error(this.thongBaoLoi);
+                        console.error(e);
+                    }
+                }
+            }
+        },
+
+        // Hàm mới để lấy danh sách DKCB đã gán cho sách
+        async getDanhSachDKCBDaGan() {
+            try {
+                const idSach = this.$route.params.id_sach;
+                const res = await axios.get(`/api/quan-ly-an-pham/nhan-sach/don-nhan/chi-tiet-don-nhan/sach/dkcb/${idSach}`);
+                
+                if (res.data.status === 200) {
+                    this.danhSachDKCBDaGan = res.data.data || [];
+                }
+            } catch (e) {
+                console.error(e);
+                toastr.error("Lỗi khi tải danh sách DKCB đã gán");
             }
         },
     },

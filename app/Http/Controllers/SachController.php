@@ -618,4 +618,204 @@ class SachController extends Controller
         }
     }
 
+    /**
+     * Lấy thông tin chi tiết sách
+     * 
+     * @param  int  $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function show($id)
+    {
+        try {
+            $sach = SachModel::findOrFail($id);
+            
+            return response()->json([
+                'status' => 200,
+                'data' => $sach
+            ]);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'status' => 404,
+                'message' => 'Không tìm thấy sách'
+            ], 404);
+        } catch (\Exception $e) {
+            Log::error('Lỗi khi lấy chi tiết sách: ' . $e->getMessage());
+            
+            return response()->json([
+                'status' => 500,
+                'message' => 'Đã xảy ra lỗi khi lấy chi tiết sách'
+            ], 500);
+        }
+    }
+
+    /**
+     * Tìm số DKCB khả dụng
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function timDKCB(Request $request)
+    {
+        $validator = \Validator::make($request->all(), [
+            'id_kho_an_pham' => 'required|exists:kho_an_pham,id_kho_an_pham',
+            'so_bat_dau' => 'required|integer|min:1',
+            'so_luong' => 'required|integer|min:1|max:100',
+        ], [
+            'id_kho_an_pham.required' => 'Vui lòng chọn kho ấn phẩm',
+            'id_kho_an_pham.exists' => 'Kho ấn phẩm không tồn tại',
+            'so_bat_dau.required' => 'Vui lòng nhập số bắt đầu',
+            'so_bat_dau.integer' => 'Số bắt đầu phải là số nguyên',
+            'so_bat_dau.min' => 'Số bắt đầu phải lớn hơn 0',
+            'so_luong.required' => 'Vui lòng nhập số lượng',
+            'so_luong.integer' => 'Số lượng phải là số nguyên',
+            'so_luong.min' => 'Số lượng phải lớn hơn 0',
+            'so_luong.max' => 'Số lượng tối đa là 100 nhãn mỗi lần',
+        ]);
+        
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 422,
+                'message' => 'Dữ liệu không hợp lệ',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+        
+        try {
+            $id_kho_an_pham = $request->id_kho_an_pham;
+            $so_bat_dau = $request->so_bat_dau;
+            $so_luong = $request->so_luong;
+            
+            // Sử dụng phương thức timDKCBKhaDung từ DKCBModel
+            $dkcbList = \App\Models\DKCBModel::timDKCBKhaDung($id_kho_an_pham, $so_bat_dau, $so_luong);
+            
+            if ($dkcbList->isEmpty()) {
+                return response()->json([
+                    'status' => 404,
+                    'message' => 'Không tìm thấy số DKCB khả dụng. Vui lòng thử lại với kho hoặc số bắt đầu khác.'
+                ]);
+            }
+            
+            return response()->json([
+                'status' => 200,
+                'data' => $dkcbList,
+                'message' => 'Tìm thấy ' . $dkcbList->count() . ' số DKCB khả dụng'
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Lỗi khi tìm DKCB: ' . $e->getMessage());
+            
+            return response()->json([
+                'status' => 500,
+                'message' => 'Đã xảy ra lỗi khi tìm số DKCB'
+            ], 500);
+        }
+    }
+    
+    /**
+     * Gán số DKCB cho sách
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function ganDKCB(Request $request)
+    {
+        $validator = \Validator::make($request->all(), [
+            'id_sach' => 'required|exists:sach,id_sach',
+            'ma_dkcb' => 'required|string',
+            'so_luong' => 'required|integer|min:1|max:100',
+            'auto_assign' => 'boolean',
+        ], [
+            'id_sach.required' => 'Thiếu thông tin sách',
+            'id_sach.exists' => 'Sách không tồn tại',
+            'ma_dkcb.required' => 'Vui lòng nhập mã DKCB',
+            'so_luong.required' => 'Vui lòng nhập số lượng',
+            'so_luong.integer' => 'Số lượng phải là số nguyên',
+            'so_luong.min' => 'Số lượng phải lớn hơn 0',
+            'so_luong.max' => 'Số lượng tối đa là 100 nhãn mỗi lần',
+        ]);
+        
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 422,
+                'message' => 'Dữ liệu không hợp lệ',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+        
+        try {
+            $id_sach = $request->id_sach;
+            $ma_dkcb = $request->ma_dkcb;
+            $so_luong = $request->so_luong;
+            $auto_assign = $request->auto_assign ?? true;
+            
+            // Kiểm tra sách có tồn tại không
+            $sach = SachModel::find($id_sach);
+            if (!$sach) {
+                return response()->json([
+                    'status' => 404,
+                    'message' => 'Không tìm thấy sách'
+                ], 404);
+            }
+            
+            // Lấy số lượng DKCB đã gán
+            $daGan = \App\Models\DKCBModel::where('id_sach', $id_sach)->count();
+            $conLai = $sach->so_luong - $daGan;
+            
+            // Kiểm tra số lượng DKCB cần gán có phù hợp với số lượng sách còn lại không
+            if ($so_luong > $conLai) {
+                return response()->json([
+                    'status' => 400,
+                    'message' => 'Số lượng DKCB cần gán (' . $so_luong . ') vượt quá số lượng còn lại (' . $conLai . ')'
+                ], 400);
+            }
+            
+            if ($auto_assign) {
+                // Sử dụng phương thức ganDKCBChoSachTheoMa từ DKCBModel để gán tự động
+                $result = \App\Models\DKCBModel::ganDKCBChoSachTheoMa($id_sach, $ma_dkcb, $so_luong);
+            } else {
+                // Gán một mã DKCB duy nhất (không liên tiếp)
+                $result = \App\Models\DKCBModel::ganMotDKCBChoSach($id_sach, $ma_dkcb);
+            }
+            
+            return response()->json($result, $result['status'] == 200 ? 200 : 400);
+        } catch (\Exception $e) {
+            Log::error('Lỗi khi gán DKCB: ' . $e->getMessage());
+            
+            return response()->json([
+                'status' => 500,
+                'message' => 'Đã xảy ra lỗi khi gán số DKCB: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function getDKCBBySach($id_sach)
+    {
+        try {
+            // Kiểm tra sách có tồn tại không
+            $sach = SachModel::find($id_sach);
+            if (!$sach) {
+                return response()->json([
+                    'status' => 404,
+                    'message' => 'Không tìm thấy sách'
+                ], 404);
+            }
+            
+            // Lấy danh sách DKCB đã gán cho sách
+            $danhSachDKCB = \App\Models\DKCBModel::where('id_sach', $id_sach)
+                ->orderBy('ma_dkcb', 'asc')
+                ->get();
+            
+            return response()->json([
+                'status' => 200,
+                'data' => $danhSachDKCB
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Lỗi khi lấy danh sách DKCB của sách: ' . $e->getMessage());
+            
+            return response()->json([
+                'status' => 500,
+                'message' => 'Đã xảy ra lỗi khi lấy danh sách DKCB'
+            ], 500);
+        }
+    }
+
 }

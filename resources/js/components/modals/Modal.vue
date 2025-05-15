@@ -1,7 +1,7 @@
 <!-- resource/js/modals/Modal.vue -->
 <template>
     <div class="modal fade" tabindex="-1" aria-hidden="true" ref="modal">
-        <div class="modal-dialog modal-lg">
+        <div :class="['modal-dialog', `modal-${size}`]">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title text-bold">{{ title }}</h5>
@@ -13,11 +13,13 @@
                 <div class="modal-body">
                     <slot></slot>
                 </div>
-                <div class="modal-footer" v-if="showFooter">
-                    <button type="button" class="btn btn-primary text-bold" @click="confirm(true)">
-                        <i class="far fa-save"></i>&nbsp;
-                        {{ save }}
-                    </button>
+                <div class="modal-footer">
+                    <slot name="buttons">
+                        <button v-if="showFooter" type="button" class="btn btn-primary text-bold" @click="confirm(true)">
+                            <i class="far fa-save"></i>&nbsp;
+                            {{ save }}
+                        </button>
+                    </slot>
                 </div>
             </div>
         </div>
@@ -30,6 +32,13 @@ export default {
         showFooter: {
             type: Boolean,
             default: true
+        },
+        size: {
+            type: String,
+            default: 'lg',
+            validator: function(value) {
+                return ['sm', 'md', 'lg', 'xl'].includes(value);
+            }
         }
     },
     data() {
@@ -52,8 +61,14 @@ export default {
                 this.resolveModal = resolve;
             });
         },
+        show() {
+            this.modalInstance.show();
+        },
         closeModal() {
             this.modalInstance.hide();
+        },
+        submit() {
+            this.confirm(true);
         },
         confirm(result) {
             if (this.resolveModal) {
@@ -73,5 +88,10 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+/* Thêm style cho modal-xl */
+:deep(.modal-xl) {
+    max-width: 1140px;
 }
 </style>

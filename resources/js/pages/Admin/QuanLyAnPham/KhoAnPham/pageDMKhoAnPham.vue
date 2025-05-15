@@ -16,13 +16,13 @@
                                 <!-- Slot cho cột hành động -->
                                 <template v-slot:column-actions="{ row }">
                                     <button type="button"
-                                            class="btn p-1 btn-primary border-0 bg-transparent text-primary shadow-none"
-                                            @click="suaDMKhoAnPham(row)">
+                                        class="btn p-1 btn-primary border-0 bg-transparent text-primary shadow-none"
+                                        @click="suaDMKhoAnPham(row)">
                                         <i class="fas fa-edit"></i>&nbsp;
                                     </button>
                                     <button type="button"
-                                            class="btn p-1 btn-primary border-0 bg-transparent text-danger shadow-none"
-                                            @click="xoaDMKhoAnPham(row)">
+                                        class="btn p-1 btn-primary border-0 bg-transparent text-danger shadow-none"
+                                        @click="xoaDMKhoAnPham(row)">
                                         <i class="fas fa-trash-alt"></i>&nbsp;
                                     </button>
                                 </template>
@@ -38,10 +38,10 @@
     <Modal ref="modal">
         <div class="row">
             <div class="col-md-6">
-                <Input v-model="DMKhoAnPham.ma_kho" label="Mã tài liệu" placeholder="Mã tài liệu ..." type="text"/>
+                <Input v-model="DMKhoAnPham.ma_kho" label="Mã tài liệu" placeholder="Mã tài liệu ..." type="text" />
             </div>
             <div class="col-md-6">
-                <Input v-model="DMKhoAnPham.ten_kho" label="Tên tài liệu" placeholder="Tên tài liệu ..." type="text"/>
+                <Input v-model="DMKhoAnPham.ten_kho" label="Tên tài liệu" placeholder="Tên tài liệu ..." type="text" />
             </div>
         </div>
     </Modal>
@@ -60,12 +60,12 @@ export default {
                 ten_kho: ""
             },
             headers: [
-                {key: 'index', label: 'STT', sortable: false},
-                {key: 'ma_kho', label: 'Mã tài liệu'},
-                {key: 'ten_kho', label: 'Tên tài liệu'},
-                {key: 'ngay_cap_nhat', label: 'Ngày cập nhật', format: 'datetime'},
-                {key: 'ngay_tao', label: 'Ngày tạo', format: 'datetime'},
-                {key: 'actions', label: 'Hành động', sortable: false},
+                { key: 'index', label: 'STT', sortable: false },
+                { key: 'ma_kho', label: 'Mã tài liệu' },
+                { key: 'ten_kho', label: 'Tên tài liệu' },
+                { key: 'ngay_cap_nhat', label: 'Ngày cập nhật', format: 'datetime' },
+                { key: 'ngay_tao', label: 'Ngày tạo', format: 'datetime' },
+                { key: 'actions', label: 'Hành động', sortable: false },
             ],
         };
     },
@@ -133,7 +133,7 @@ export default {
             // Set tiêu đề và điền dữ liệu hiện có vào form
             this.$refs.modal.$data.title = "Cập nhật thông tin";
             this.$refs.modal.$data.save = "Cập nhật";
-            this.DMKhoAnPham = {...row};
+            this.DMKhoAnPham = { ...row };
 
             // Mở modal để chỉnh sửa
             const confirmed = await this.$refs.modal.openModal();

@@ -21,6 +21,7 @@ use App\Http\Controllers\NguonNhanController;
 use App\Http\Controllers\LoaiNhapController;
 use App\Http\Controllers\DonNhanController;
 use App\Http\Controllers\SachController;
+use App\Http\Controllers\DKCBController;
 
 // API chỉ dành cho admin
 Route::middleware(['isLogin:admin'])->group(function () {
@@ -184,7 +185,13 @@ Route::middleware(['isLogin:admin'])->group(function () {
                     Route::delete('/{id}', [SachController::class, 'destroy']);
                     Route::get('/export-don-nhan/{id_don_nhan}', [SachController::class, 'exportExcelDonNhan']);
                     Route::get('/export-thong-ke-tai-lieu/{id_don_nhan}', [SachController::class, 'exportExcelThongKeTaiLieu']);
-
+                    
+                    // Routes cho chức năng gán DKCB
+                    Route::get('/sach/{id}', [SachController::class, 'show']);
+                    Route::get('/tim-dkcb', [SachController::class, 'timDKCB']);
+                    Route::post('/gan-dkcb', [SachController::class, 'ganDKCB']);
+                    Route::get('/sach/dkcb/{id_sach}', [SachController::class, 'getDKCBBySach']);
+                    
                     //API Biên mục biểu ghi
                     Route::prefix('bien-muc-bieu-ghi')->group(function () {
                         Route::get('/{id_sach}', [BienMucBieuGhiController::class, 'show']);
@@ -209,6 +216,18 @@ Route::middleware(['isLogin:admin'])->group(function () {
                         });
                     });
                 });
+            });
+        });
+
+        //API In nhãn phân loại
+        Route::prefix('in-nhan')->group(function () {
+
+            //API Nhãn DKCB
+            Route::prefix('dkcb')->group(function () {
+                Route::get('/', [DKCBController::class, 'soNhan']);
+                Route::post('/tao-nhan', [DKCBController::class, 'taoNhanDKCB']);
+                Route::post('/in-nhan', [DKCBController::class, 'inNhanDKCB']);
+                Route::get('/danh-sach-nhan/{id_kho}', [DKCBController::class, 'danhSachNhanTheoKho']);
             });
         });
 
@@ -243,4 +262,6 @@ Route::middleware(['isLogin', 'web'])->group(function () {
         ]);
     });
 
+
+    Route::get('/quan-ly-an-pham/nhan-sach/don-nhan/chi-tiet-don-nhan/sach/dkcb/{id_sach}', [SachController::class, 'getDKCBBySach']);
 });

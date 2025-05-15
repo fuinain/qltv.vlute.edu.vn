@@ -21,4 +21,9 @@ class KhoAnPhamModel extends Model
             ->select('id_kho_an_pham', 'ten_kho')
             ->get();
     }
+
+    public function dkcb()
+    {
+        return $this->hasMany(DKCBModel::class, 'id_kho_an_pham', 'id_kho_an_pham');
+    }
 }

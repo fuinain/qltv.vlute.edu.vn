@@ -2,7 +2,7 @@
     <div class="row">
         <div class="col-12">
             <div class="table-responsive">
-                <div class="card-header pt-0 d-flex justify-content-end pr-0">
+                <div class="card-header pt-2 d-flex justify-content-end pr-0 pb-2">
                     <input v-model="searchQuery" type="text" class="form-control form-control-sm w-auto"
                            style="min-width: 200px"
                            placeholder="Tìm kiếm..."/>

@@ -20,6 +20,7 @@ import pageDMKhoAnPham from "@/pages/Admin/QuanLyAnPham/KhoAnPham/pageDMKhoAnPha
 import pageDonNhan from "@/pages/Admin/QuanLyAnPham/NhanSach/pageDonNhan.vue";
 import pageCTDonNhan from "@/pages/Admin/QuanLyAnPham/NhanSach/pageCTDonNhan.vue";
 import pageBienMucBieuGhiSach from "@/pages/Admin/QuanLyAnPham/NhanSach/pageBienMucBieuGhiSach.vue";
+import pageInNhanDKCB from "@/pages/Admin/QuanLyAnPham/InNhan/pageInNhanDKCB.vue";
 import AdminLayout from "@/components/layouts/AdminLayout.vue";
 import PublicLayout from "@/components/layouts/PublicLayout.vue";
 import OpacLayout from "@/components/layouts/OpacLayout.vue";
@@ -412,7 +413,26 @@ const routes = [
                                         {name: "Biên mục"},
                                     ],
                                 },
-                            }
+                            },
+                            {
+                                path: "in-nhan",
+                                children: [
+                                    {
+                                        path: "dkcb",
+                                        name: "pageInNhanDKCB",
+                                        component: pageInNhanDKCB,
+                                        meta: {
+                                            title: "In nhãn DKCB",
+                                            breadcrumb: [
+                                                {name: "Home", path: "/"},
+                                                {name: "Quản lý ấn phẩm"},
+                                                {name: "In nhãn"},
+                                                {name: "DKCB"},
+                                            ],
+                                        },
+                                    },
+                                ],
+                            },
                         ],
                     },
                 ],
