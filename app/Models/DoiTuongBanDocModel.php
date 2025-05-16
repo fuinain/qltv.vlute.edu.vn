@@ -12,6 +12,7 @@ class DoiTuongBanDocModel extends Model
     public $timestamps = false;
 
     protected $fillable = [
+        'ma_so_quy_uoc',
         'ma_doi_tuong_ban_doc',
         'ten_doi_tuong_ban_doc',
     ];

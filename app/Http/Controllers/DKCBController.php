@@ -18,25 +18,25 @@ class DKCBController extends Controller
     public function soNhan()
     {
         try {
-            $soNhanArr = DKCBModel::soNhanTheoKho();
+        $soNhanArr = DKCBModel::soNhanTheoKho();
 
-            // Lấy thông tin kho
-            $khoList = KhoAnPhamModel::select('id_kho_an_pham', 'ma_kho', 'ten_kho')->get();
+        // Lấy thông tin kho
+        $khoList = KhoAnPhamModel::select('id_kho_an_pham', 'ma_kho', 'ten_kho')->get();
 
-            // Gộp số nhãn vào từng kho
-            $result = $khoList->map(function ($kho) use ($soNhanArr) {
-                return [
+        // Gộp số nhãn vào từng kho
+        $result = $khoList->map(function ($kho) use ($soNhanArr) {
+            return [
                     'id' => $kho->id_kho_an_pham,
-                    'ma_kho' => $kho->ma_kho,
-                    'ten_kho' => $kho->ten_kho,
+                'ma_kho' => $kho->ma_kho,
+                'ten_kho' => $kho->ten_kho,
                     'so_hien_tai' => $soNhanArr[$kho->id_kho_an_pham] ?? 0,
-                ];
-            });
+            ];
+        });
 
-            return response()->json([
-                'status' => 200,
-                'data' => $result
-            ]);
+        return response()->json([
+            'status' => 200,
+            'data' => $result
+        ]);
         } catch (\Exception $e) {
             Log::error('Lỗi khi lấy số nhãn: ' . $e->getMessage());
             return response()->json([

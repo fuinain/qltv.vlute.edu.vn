@@ -16,9 +16,9 @@
                 <div class="modal-footer">
                     <slot name="buttons">
                         <button v-if="showFooter" type="button" class="btn btn-primary text-bold" @click="confirm(true)">
-                            <i class="far fa-save"></i>&nbsp;
-                            {{ save }}
-                        </button>
+                        <i class="far fa-save"></i>&nbsp;
+                        {{ save }}
+                    </button>
                     </slot>
                 </div>
             </div>
