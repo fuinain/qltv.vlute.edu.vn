@@ -82,27 +82,10 @@ class DoiTuongBanDocController extends Controller
 
 
     public function listDoiTuongBanDocSelectOption(){
-        try {
-            $data = DoiTuongBanDocModel::select('id_doi_tuong_ban_doc', 'ten_doi_tuong_ban_doc')
-                ->orderBy('ten_doi_tuong_ban_doc', 'asc')
-                ->get()
-                ->map(function ($item) {
-                    return [
-                        'id' => $item->id_doi_tuong_ban_doc,
-                        'text' => $item->ten_doi_tuong_ban_doc
-                    ];
-                });
-                
-            return response()->json([
-                'status' => 200,
-                'data' => $data
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'status' => 500,
-                'message' => 'Lỗi khi lấy danh sách đối tượng bạn đọc',
-                'error' => $e->getMessage(),
-            ], 500);
-        }
+        $data = DoiTuongBanDocModel::listDoiTuongBanDoc();
+        return response()->json([
+            'status' => 200,
+            'data' => $data
+        ]);
     }
 }

@@ -2,7 +2,7 @@
     <div class="row">
         <div class="col-12">
             <div class="table-responsive">
-                <div class="pt-2 d-flex justify-content-end pr-0 pb-2">
+                <div v-if="!hideSearch" class="pt-2 d-flex justify-content-end pr-0 pb-2">
                     <input v-model="searchQuery" type="text" class="form-control form-control-sm w-auto"
                         style="min-width: 200px" placeholder="Tìm kiếm..." />
                 </div>
@@ -83,6 +83,10 @@ export default {
             type: Function,
             required: false,
         },
+        hideSearch: {
+            type: Boolean,
+            default: false
+        }
     },
     data() {
         return {

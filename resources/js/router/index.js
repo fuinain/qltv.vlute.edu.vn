@@ -22,7 +22,7 @@ import pageCTDonNhan from "@/pages/Admin/QuanLyAnPham/NhanSach/pageCTDonNhan.vue
 import pageBienMucBieuGhiSach from "@/pages/Admin/QuanLyAnPham/NhanSach/pageBienMucBieuGhiSach.vue";
 import pageInNhanDKCB from "@/pages/Admin/QuanLyAnPham/InNhan/pageInNhanDKCB.vue";
 import pageInNhanPhanLoai from "@/pages/Admin/QuanLyAnPham/InNhan/pageInNhanPhanLoai.vue";
-import pageBanDoc from "@/pages/Admin/QuanLyBanDoc/pageBanDoc.vue";
+import pageDocGia from "@/pages/Admin/QuanLyBanDoc/pageDocGia.vue";
 import AdminLayout from "@/components/layouts/AdminLayout.vue";
 import PublicLayout from "@/components/layouts/PublicLayout.vue";
 import OpacLayout from "@/components/layouts/OpacLayout.vue";
@@ -459,8 +459,8 @@ const routes = [
                 children: [
                     {
                         path: "doc-gia",
-                        name: "pageBanDoc",
-                        component: pageBanDoc,
+                        name: "pageDocGia",
+                        component: pageDocGia,
                         meta: {
                             title: "Quản lý bạn đọc",
                             breadcrumb: [

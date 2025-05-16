@@ -75,7 +75,6 @@ Route::middleware(['isLogin:admin'])->group(function () {
                 Route::delete('/{id}', [ChuyenNganhController::class, 'destroy']);
                 Route::get('/by-don-vi/{id_don_vi}', [ChuyenNganhController::class, 'listByDonViSelectOption']);
                 Route::get('/list-chuyen-nganh-select-option', [ChuyenNganhController::class, 'listChuyenNganhSelectOption']);
-
             });
         });
 
@@ -257,15 +256,14 @@ Route::middleware(['isLogin:admin'])->group(function () {
     // Quản lý bạn đọc
     Route::group(['prefix' => 'quan-ly-ban-doc'], function () {
         Route::prefix('doc-gia')->group(function () {
+            Route::get('/list-dtbd-for-sync', [DocGiaController::class, 'listDoiTuongBanDocForSync']);
+            Route::get('/list-chuyen-nganh-for-sync', [DocGiaController::class, 'listChuyenNganhForSync']);
             Route::get('/', [DocGiaController::class, 'index']);
             Route::post('/', [DocGiaController::class, 'store']);
             Route::get('/{id}', [DocGiaController::class, 'show']);
             Route::put('/{id}', [DocGiaController::class, 'update']);
             Route::delete('/{id}', [DocGiaController::class, 'destroy']);
-            Route::post('/sync-students', [DocGiaController::class, 'syncStudents']);
-            Route::post('/sync-students-batch', [DocGiaController::class, 'syncStudentsBatch']);
-            Route::get('/list-dtbd-for-sync', [DocGiaController::class, 'listDoiTuongBanDocForSync']);
-            Route::get('/list-chuyen-nganh-for-sync', [DocGiaController::class, 'listChuyenNganhForSync']);
+            Route::post('/sync', [DocGiaController::class, 'syncBanDoc']);
         });
     });
 });

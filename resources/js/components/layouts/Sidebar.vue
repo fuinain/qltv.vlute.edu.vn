@@ -269,7 +269,7 @@
                         <!-- Menu cấp 2 -->
                         <ul class="nav nav-treeview">
                             <li class="nav-item">
-                                <router-link :to="{ name: 'pageBanDoc' }" class="nav-link">
+                                <router-link :to="{ name: 'pageDocGia' }" class="nav-link">
                                     <i class="nav-icon far fa-circle"></i> <!-- Icon cấp 2 (không có cấp 3) -->
                                     <p>Danh sách bạn đọc</p>
                                 </router-link>

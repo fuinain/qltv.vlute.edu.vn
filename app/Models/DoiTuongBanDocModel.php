@@ -86,4 +86,9 @@ class DoiTuongBanDocModel extends Model
             ->get();
     }
 
+    public static function listDoiTuongBanDocForSync()
+    {
+        return self::select('ma_so_quy_uoc', 'ten_doi_tuong_ban_doc')->get();
+    }
+
 }

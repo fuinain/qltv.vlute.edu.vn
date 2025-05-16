@@ -31,4 +31,9 @@ class ChuyenNganhModel extends Model
             ->get();
     }
 
+    public static function listChuyenNganhForSync()
+    {
+        return self::select('id_chuyen_nganh', 'ten_chuyen_nganh')->get();
+    }
+
 }
