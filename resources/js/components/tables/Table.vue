@@ -2,44 +2,43 @@
     <div class="row">
         <div class="col-12">
             <div class="table-responsive">
-                <div class="card-header pt-2 d-flex justify-content-end pr-0 pb-2">
+                <div class="pt-2 d-flex justify-content-end pr-0 pb-2">
                     <input v-model="searchQuery" type="text" class="form-control form-control-sm w-auto"
-                           style="min-width: 200px"
-                           placeholder="Tìm kiếm..."/>
+                        style="min-width: 200px" placeholder="Tìm kiếm..." />
                 </div>
                 <!-- Table -->
                 <table class="table table-striped">
                     <thead>
-                    <tr>
-                        <th v-for="column in columns" :key="column.key"
-                            @click="column.sortable !== false && sortBy(column.key)"
-                            :style="{ cursor: column.sortable === false ? 'default' : 'pointer' }">
-                            {{ column.label }}
-                            <span v-if="sortColumn === column.key">
-                  <i v-if="sortAsc" class="fas fa-sort-up"></i>
-                  <i v-else class="fas fa-sort-down"></i>
-                </span>
-                        </th>
+                        <tr>
+                            <th v-for="column in columns" :key="column.key"
+                                @click="column.sortable !== false && sortBy(column.key)"
+                                :style="{ cursor: column.sortable === false ? 'default' : 'pointer' }">
+                                {{ column.label }}
+                                <span v-if="sortColumn === column.key">
+                                    <i v-if="sortAsc" class="fas fa-sort-up"></i>
+                                    <i v-else class="fas fa-sort-down"></i>
+                                </span>
+                            </th>
 
-                    </tr>
+                        </tr>
                     </thead>
                     <tbody>
-                    <tr v-for="(row, rowIndex) in filteredAndSortedData" :key="row.id || rowIndex">
-                        <td v-for="column in columns" :key="column.key">
-                            <slot :name="`column-${column.key}`" :row="row" :row-index="rowIndex">
-                                <template v-if="column.key === 'index'">
-                                    {{ calculateSTT(rowIndex) }}
-                                </template>
-                                <template v-else-if="row[column.key] !== undefined">
-                                    {{ formatValue(row[column.key], column.format) }}
-                                </template>
-                                <template v-else>
-                                    <em class="text-muted">Không có dữ liệu</em>
-                                </template>
-                            </slot>
+                        <tr v-for="(row, rowIndex) in filteredAndSortedData" :key="row.id || rowIndex">
+                            <td v-for="column in columns" :key="column.key">
+                                <slot :name="`column-${column.key}`" :row="row" :row-index="rowIndex">
+                                    <template v-if="column.key === 'index'">
+                                        {{ calculateSTT(rowIndex) }}
+                                    </template>
+                                    <template v-else-if="row[column.key] !== undefined">
+                                        {{ formatValue(row[column.key], column.format) }}
+                                    </template>
+                                    <template v-else>
+                                        <em class="text-muted">Không có dữ liệu</em>
+                                    </template>
+                                </slot>
 
-                        </td>
-                    </tr>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
                 <!-- Pagination -->
@@ -119,8 +118,8 @@ export default {
 
                     // So sánh theo kiểu chuỗi
                     return this.sortAsc
-                        ? valA.toString().localeCompare(valB.toString(), undefined, {numeric: true})
-                        : valB.toString().localeCompare(valA.toString(), undefined, {numeric: true});
+                        ? valA.toString().localeCompare(valB.toString(), undefined, { numeric: true })
+                        : valB.toString().localeCompare(valA.toString(), undefined, { numeric: true });
                 });
             }
 

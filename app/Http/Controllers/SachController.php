@@ -818,4 +818,174 @@ class SachController extends Controller
         }
     }
 
+    public function danhSachSachTheoDonNhan(Request $request)
+    {
+        try {
+            $validated = $this->validate($request, [
+                'don_nhan_bat_dau' => 'required|integer|min:1',
+                'don_nhan_ket_thuc' => 'required|integer|min:1',
+            ], [
+                'don_nhan_bat_dau.required' => 'Vui lòng nhập đơn nhận bắt đầu',
+                'don_nhan_ket_thuc.required' => 'Vui lòng nhập đơn nhận kết thúc',
+                'don_nhan_bat_dau.integer' => 'Đơn nhận bắt đầu phải là số nguyên',
+                'don_nhan_ket_thuc.integer' => 'Đơn nhận kết thúc phải là số nguyên',
+            ]);
+
+            // Đảm bảo don_nhan_bat_dau <= don_nhan_ket_thuc
+            if ($validated['don_nhan_bat_dau'] > $validated['don_nhan_ket_thuc']) {
+                return response()->json([
+                    'status' => 400,
+                    'message' => 'Đơn nhận bắt đầu phải nhỏ hơn hoặc bằng đơn nhận kết thúc'
+                ], 400);
+            }
+
+            // Lấy danh sách đơn nhận trong khoảng
+            $donNhanIds = range($validated['don_nhan_bat_dau'], $validated['don_nhan_ket_thuc']);
+            
+            // Kiểm tra xem các đơn nhận có tồn tại không
+            $cacDonNhanTonTai = DonNhanModel::whereIn('id_don_nhan', $donNhanIds)->pluck('id_don_nhan')->toArray();
+            
+            if (empty($cacDonNhanTonTai)) {
+                return response()->json([
+                    'status' => 404,
+                    'message' => 'Không tìm thấy đơn nhận nào trong khoảng này'
+                ], 404);
+            }
+
+            // Lấy danh sách sách từ các đơn nhận
+            $danhSachSach = SachModel::whereIn('id_don_nhan', $cacDonNhanTonTai)
+                ->with(['bienMucBieuGhi.truongCha.children'])
+                ->get();
+
+            $ketQua = [];
+
+            foreach ($danhSachSach as $sach) {
+                $phanLoai = ['', ''];
+                $dkcbList = [];
+
+                // Lấy DKCB của sách
+                $danhSachDKCB = DB::table('dkcb')
+                    ->where('id_sach', $sach->id_sach)
+                    ->where('trang_thai', 1)
+                    ->get();
+
+                foreach ($danhSachDKCB as $dkcb) {
+                    $dkcbList[] = $dkcb->ma_dkcb;
+                }
+
+                // Tìm trường phân loại 082
+                if ($sach->bienMucBieuGhi) {
+                    $truong082 = $sach->bienMucBieuGhi->truongCha
+                        ->where('ma_truong', '082')
+                        ->first();
+
+                    if ($truong082) {
+                        // Tìm các trường con a và b
+                        $con_a = $truong082->children->where('ma_truong_con', 'a')->first();
+                        $con_b = $truong082->children->where('ma_truong_con', 'b')->first();
+
+                        if ($con_a && !empty($con_a->noi_dung)) {
+                            $phanLoai[0] = $con_a->noi_dung;
+                        }
+                        if ($con_b && !empty($con_b->noi_dung)) {
+                            $phanLoai[1] = $con_b->noi_dung;
+                        }
+                    }
+                }
+
+                // Thêm vào kết quả
+                $ketQua[] = [
+                    'id_don_nhan' => $sach->id_don_nhan,
+                    'id_sach' => $sach->id_sach,
+                    'nhan_de' => $sach->nhan_de,
+                    'tac_gia' => $sach->tac_gia,
+                    'nam_xuat_ban' => $sach->nam_xuat_ban,
+                    'phan_loai_1' => $phanLoai[0],
+                    'phan_loai_2' => $phanLoai[1],
+                    'so_luong' => $sach->so_luong,
+                    'dkcb_list' => $dkcbList
+                ];
+            }
+
+            return response()->json([
+                'status' => 200,
+                'message' => 'Lấy dữ liệu thành công',
+                'data' => $ketQua,
+                'don_nhan_ids' => $cacDonNhanTonTai
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Lỗi khi lấy danh sách sách theo đơn nhận: ' . $e->getMessage());
+            return response()->json([
+                'status' => 500,
+                'message' => 'Đã xảy ra lỗi: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function taoNhanPhanLoai(Request $request)
+    {
+        try {
+            $validated = $this->validate($request, [
+                'id_sach' => 'required|array',
+                'id_sach.*' => 'integer|exists:sach,id_sach',
+            ], [
+                'id_sach.required' => 'Vui lòng chọn ít nhất một sách',
+                'id_sach.array' => 'Danh sách id sách không hợp lệ',
+            ]);
+
+            $danhSachSach = SachModel::whereIn('id_sach', $validated['id_sach'])
+                ->with(['bienMucBieuGhi.truongCha.children'])
+                ->get();
+
+            $ketQua = [];
+
+            foreach ($danhSachSach as $sach) {
+                $phanLoai = ['', ''];
+
+                // Tìm trường phân loại 082
+                if ($sach->bienMucBieuGhi) {
+                    $truong082 = $sach->bienMucBieuGhi->truongCha
+                        ->where('ma_truong', '082')
+                        ->first();
+
+                    if ($truong082) {
+                        // Tìm các trường con a và b
+                        $con_a = $truong082->children->where('ma_truong_con', 'a')->first();
+                        $con_b = $truong082->children->where('ma_truong_con', 'b')->first();
+
+                        if ($con_a && !empty($con_a->noi_dung)) {
+                            $phanLoai[0] = $con_a->noi_dung;
+                        }
+                        if ($con_b && !empty($con_b->noi_dung)) {
+                            $phanLoai[1] = $con_b->noi_dung;
+                        }
+                    }
+                }
+
+                // Nếu có phân loại, thêm số lượng nhãn tương ứng với số lượng sách
+                if (!empty($phanLoai[0]) || !empty($phanLoai[1])) {
+                    for ($i = 0; $i < $sach->so_luong; $i++) {
+                        $ketQua[] = [
+                            'id_sach' => $sach->id_sach,
+                            'phan_loai_1' => $phanLoai[0],
+                            'phan_loai_2' => $phanLoai[1]
+                        ];
+                    }
+                }
+            }
+
+            return response()->json([
+                'status' => 200,
+                'message' => 'Tạo nhãn phân loại thành công',
+                'data' => $ketQua
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Lỗi khi tạo nhãn phân loại: ' . $e->getMessage());
+            return response()->json([
+                'status' => 500,
+                'message' => 'Đã xảy ra lỗi: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
 }

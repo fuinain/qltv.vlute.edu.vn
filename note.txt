@@ -30,3 +30,58 @@
         28
         29
         30
+
+// Dữ liệu mẫu của sinh viên có MSSV 18004001 từ api
+{
+    "status": "success",
+    "data": {
+        "mssv": "18004001",
+        "hoten": "Lê Trường An",
+        "ngaysinh": "05/11/1999",
+        "phai": "Nam",
+        "cmnd": "331853091",
+        "ngaycap": "08/04/2015",
+        "noicap": "Vĩnh Long",
+        "sdtcanhan": "0356.947.449",
+        "diachinha": "số 238A/18, ấp Bình Hòa 1, xã Bình Hòa Phước, huyện Long Hồ, tỉnh Vĩnh Long",
+        "tongiao": "Không",
+        "dantoc": "Kinh",
+        "hotencha": "Lê Trường Thoại",
+        "nghenghiepcha": "Làm Vườn",
+        "hotenme": "Trần Thị Cẩm Thúy",
+        "nghenghiepme": "Làm Vườn",
+        "giadinhchinhsach": null,
+        "sdtchame": "0335.254.537",
+        "sdtanhchi": null,
+        "malop": "1CTT18A1",
+        "tenlop": "ĐH CNTT 2018 A1",
+        "hedaotao": "Đại học",
+        "khoahoc": "43",
+        "khoa": "Công nghệ thông tin",
+        "ngayvaotruong": "09/2018",
+        "ngayratruong": "09/2022",
+        "nganh": "Công nghệ thông tin",
+        "tengvql": "Nguyễn Hoài Nam"
+    }
+}
+
+
+ho_ten = hoten
+mssv = mssv
+ma_lop = malop
+ten_lop = tenlop
+so_the = mssv 
+ngay_sinh = ngaysinh 
+ngay_cap_the = ngayvaotruong
+han_the = ngayratruong
+lan_cap_the = default: 1 
+ho_khau = diachinha
+ghi_chu = ""
+rut_han = default: 1 (1-Mở kho; 2-Rút hạn)
+id_don_vi 
+nien_khoa = ngayvaotruong - ngayratruong (lấy năm)
+id_doi_tuong_ban_doc = số thứ 3 trong mssv
+id_chuyen_nganh = số thứ 4 và 5 trong mssv
+email = "mssv@st.vlute.edu.vn"
+
+http://cgtdt-dsa.vlute.edu.vn/api/sinhvien/${mssv}

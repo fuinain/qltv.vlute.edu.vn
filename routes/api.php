@@ -22,6 +22,7 @@ use App\Http\Controllers\LoaiNhapController;
 use App\Http\Controllers\DonNhanController;
 use App\Http\Controllers\SachController;
 use App\Http\Controllers\DKCBController;
+use App\Http\Controllers\DocGiaController;
 
 // API chỉ dành cho admin
 Route::middleware(['isLogin:admin'])->group(function () {
@@ -73,6 +74,8 @@ Route::middleware(['isLogin:admin'])->group(function () {
                 Route::put('/{id}', [ChuyenNganhController::class, 'update']);
                 Route::delete('/{id}', [ChuyenNganhController::class, 'destroy']);
                 Route::get('/by-don-vi/{id_don_vi}', [ChuyenNganhController::class, 'listByDonViSelectOption']);
+                Route::get('/list-chuyen-nganh-select-option', [ChuyenNganhController::class, 'listChuyenNganhSelectOption']);
+
             });
         });
 
@@ -185,13 +188,13 @@ Route::middleware(['isLogin:admin'])->group(function () {
                     Route::delete('/{id}', [SachController::class, 'destroy']);
                     Route::get('/export-don-nhan/{id_don_nhan}', [SachController::class, 'exportExcelDonNhan']);
                     Route::get('/export-thong-ke-tai-lieu/{id_don_nhan}', [SachController::class, 'exportExcelThongKeTaiLieu']);
-                    
+
                     // Routes cho chức năng gán DKCB
                     Route::get('/sach/{id}', [SachController::class, 'show']);
                     Route::get('/tim-dkcb', [SachController::class, 'timDKCB']);
                     Route::post('/gan-dkcb', [SachController::class, 'ganDKCB']);
                     Route::get('/sach/dkcb/{id_sach}', [SachController::class, 'getDKCBBySach']);
-                    
+
                     //API Biên mục biểu ghi
                     Route::prefix('bien-muc-bieu-ghi')->group(function () {
                         Route::get('/{id_sach}', [BienMucBieuGhiController::class, 'show']);
@@ -199,20 +202,20 @@ Route::middleware(['isLogin:admin'])->group(function () {
 
                         Route::prefix('bien-muc/marc')->group(function () {
                             // Lấy toàn bộ cha–con của một cuốn
-                            Route::get   ('/by-sach/{id_sach}', [MarcController::class, 'index']);
+                            Route::get('/by-sach/{id_sach}', [MarcController::class, 'index']);
 
                             /* ---------- TRƯỜNG CHA ---------- */
-                            Route::post  ('/parent',        [MarcController::class, 'storeParent']);   // thêm mới
-                            Route::put   ('/parent/{id}',   [MarcController::class, 'updateParent']);  // cập nhật
-                            Route::delete('/parent/{id}',   [MarcController::class, 'destroyParent']); // xoá
+                            Route::post('/parent', [MarcController::class, 'storeParent']);   // thêm mới
+                            Route::put('/parent/{id}', [MarcController::class, 'updateParent']);  // cập nhật
+                            Route::delete('/parent/{id}', [MarcController::class, 'destroyParent']); // xoá
 
                             // thêm cha rỗng ngay sau vị trí idx (FE truyền idx)
-                            Route::post  ('/add-parent-after', [MarcController::class, 'addParentAfter']);
+                            Route::post('/add-parent-after', [MarcController::class, 'addParentAfter']);
 
                             /* ---------- TRƯỜNG CON ---------- */
-                            Route::post  ('/child',        [MarcController::class, 'storeChild']);     // thêm mới
-                            Route::put   ('/child/{id}',   [MarcController::class, 'updateChild']);    // cập nhật
-                            Route::delete('/child/{id}',   [MarcController::class, 'destroyChild']);   // xoá
+                            Route::post('/child', [MarcController::class, 'storeChild']);     // thêm mới
+                            Route::put('/child/{id}', [MarcController::class, 'updateChild']);    // cập nhật
+                            Route::delete('/child/{id}', [MarcController::class, 'destroyChild']);   // xoá
                         });
                     });
                 });
@@ -229,6 +232,12 @@ Route::middleware(['isLogin:admin'])->group(function () {
                 Route::post('/in-nhan', [DKCBController::class, 'inNhanDKCB']);
                 Route::get('/danh-sach-nhan/{id_kho}', [DKCBController::class, 'danhSachNhanTheoKho']);
             });
+
+            //API In nhãn phân loại
+            Route::prefix('phan-loai')->group(function () {
+                Route::post('/danh-sach-sach', [SachController::class, 'danhSachSachTheoDonNhan']);
+                Route::post('/tao-nhan', [SachController::class, 'taoNhanPhanLoai']);
+            });
         });
 
         //API Kho ấn phẩm
@@ -242,6 +251,21 @@ Route::middleware(['isLogin:admin'])->group(function () {
                 Route::delete('/{id}', [KhoAnPhamController::class, 'destroy']);
                 Route::get('/list-dmkho-select-option', [KhoAnPhamController::class, 'listDanhMucKhoAnPhamSelectOption']);
             });
+        });
+    });
+
+    // Quản lý bạn đọc
+    Route::group(['prefix' => 'quan-ly-ban-doc'], function () {
+        Route::prefix('doc-gia')->group(function () {
+            Route::get('/', [DocGiaController::class, 'index']);
+            Route::post('/', [DocGiaController::class, 'store']);
+            Route::get('/{id}', [DocGiaController::class, 'show']);
+            Route::put('/{id}', [DocGiaController::class, 'update']);
+            Route::delete('/{id}', [DocGiaController::class, 'destroy']);
+            Route::post('/sync-students', [DocGiaController::class, 'syncStudents']);
+            Route::post('/sync-students-batch', [DocGiaController::class, 'syncStudentsBatch']);
+            Route::get('/list-dtbd-for-sync', [DocGiaController::class, 'listDoiTuongBanDocForSync']);
+            Route::get('/list-chuyen-nganh-for-sync', [DocGiaController::class, 'listChuyenNganhForSync']);
         });
     });
 });
@@ -261,7 +285,6 @@ Route::middleware(['isLogin', 'web'])->group(function () {
             'quyen' => $request->session()->get('Quyen'),
         ]);
     });
-
-
-    Route::get('/quan-ly-an-pham/nhan-sach/don-nhan/chi-tiet-don-nhan/sach/dkcb/{id_sach}', [SachController::class, 'getDKCBBySach']);
 });
+
+

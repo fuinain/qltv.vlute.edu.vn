@@ -21,6 +21,8 @@ import pageDonNhan from "@/pages/Admin/QuanLyAnPham/NhanSach/pageDonNhan.vue";
 import pageCTDonNhan from "@/pages/Admin/QuanLyAnPham/NhanSach/pageCTDonNhan.vue";
 import pageBienMucBieuGhiSach from "@/pages/Admin/QuanLyAnPham/NhanSach/pageBienMucBieuGhiSach.vue";
 import pageInNhanDKCB from "@/pages/Admin/QuanLyAnPham/InNhan/pageInNhanDKCB.vue";
+import pageInNhanPhanLoai from "@/pages/Admin/QuanLyAnPham/InNhan/pageInNhanPhanLoai.vue";
+import pageBanDoc from "@/pages/Admin/QuanLyBanDoc/pageBanDoc.vue";
 import AdminLayout from "@/components/layouts/AdminLayout.vue";
 import PublicLayout from "@/components/layouts/PublicLayout.vue";
 import OpacLayout from "@/components/layouts/OpacLayout.vue";
@@ -431,12 +433,45 @@ const routes = [
                                             ],
                                         },
                                     },
+                                    {
+                                        path: "phan-loai",
+                                        name: "pageInNhanPhanLoai",
+                                        component: pageInNhanPhanLoai,
+                                        meta: {
+                                            title: "In nhãn phân loại",
+                                            breadcrumb: [
+                                                {name: "Home", path: "/"},
+                                                {name: "Quản lý ấn phẩm"},
+                                                {name: "In nhãn"},
+                                                {name: "Phân loại"},
+                                            ],
+                                        },
+                                    },
                                 ],
                             },
                         ],
                     },
                 ],
-            }
+            },
+            // Quản lý bạn đọc route
+            {
+                path: "quan-ly-ban-doc",
+                children: [
+                    {
+                        path: "doc-gia",
+                        name: "pageBanDoc",
+                        component: pageBanDoc,
+                        meta: {
+                            title: "Quản lý bạn đọc",
+                            breadcrumb: [
+                                {name: "Home", path: "/"},
+                                {name: "Quản lý bạn đọc"},
+                                {name: "Danh sách bạn đọc"},
+                            ],
+                        },
+                    },
+                ],
+            },
         ],
     },
     {

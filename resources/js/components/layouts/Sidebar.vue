@@ -218,7 +218,7 @@
                                 </a>
                                 <ul class="nav nav-treeview">
                                     <li class="nav-item">
-                                        <router-link class="nav-link">
+                                        <router-link :to="{name: 'pageInNhanPhanLoai'}" class="nav-link">
                                             <i class="fas fa-angle-right nav-icon"></i> <!-- Icon cấp 3 -->
                                             <p>In nhãn phân loại</p>
                                         </router-link>
@@ -269,10 +269,10 @@
                         <!-- Menu cấp 2 -->
                         <ul class="nav nav-treeview">
                             <li class="nav-item">
-                                <a href="#" class="nav-link">
+                                <router-link :to="{ name: 'pageBanDoc' }" class="nav-link">
                                     <i class="nav-icon far fa-circle"></i> <!-- Icon cấp 2 (không có cấp 3) -->
-                                    <p>Nhập mới bạn đọc</p>
-                                </a>
+                                    <p>Danh sách bạn đọc</p>
+                                </router-link>
                             </li>
                             <li class="nav-item">
                                 <a href="#" class="nav-link">
