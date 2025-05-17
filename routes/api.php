@@ -48,6 +48,7 @@ Route::middleware(['isLogin:admin'])->group(function () {
                 Route::get('/', [ChucVuController::class, 'index']);
                 Route::put('/{id}', [ChucVuController::class, 'update']);
                 Route::delete('/{id}', [ChucVuController::class, 'destroy']);
+                Route::get('/list-chuc-vu-select-option', [ChucVuController::class, 'listChucVuSelectOption']); 
             });
 
             //API quản lý học kỳ
@@ -140,6 +141,8 @@ Route::middleware(['isLogin:admin'])->group(function () {
                 Route::put('/{id}', [DoiTuongBanDocController::class, 'update']);
                 Route::delete('/{id}', [DoiTuongBanDocController::class, 'destroy']);
                 Route::get('/list-dtbd-select-option', [DoiTuongBanDocController::class, 'listDoiTuongBanDocSelectOption']);
+                Route::get('/thong-ke', [DoiTuongBanDocController::class, 'thongKeDoiTuongBanDoc']);
+                Route::get('/chi-tiet/{ma_so_quy_uoc}', [DoiTuongBanDocController::class, 'chiTietDocGiaTheoDoiTuong']);
             });
 
             //API điểm lưu thông

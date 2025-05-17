@@ -53,7 +53,10 @@
     <!-- ---------- MODAL: THÔNG TIN BIÊN MỤC (đã có) ---------- -->
     <Modal ref="modal">
         <div class="row">
-            <div class="col-6">
+            <div class="col-4">
+                <Input v-model="BienMuc.id_sach" label="Mã tài liệu" type="text" :isDisabled="true"/>
+            </div>
+            <div class="col-4">
                 <SelectOption
                     v-model="BienMuc.id_tai_lieu"
                     :options="dsTaiLieu"
@@ -61,7 +64,7 @@
                     placeholder="Chọn loại tài liệu"
                 />
             </div>
-            <div class="col-6">
+            <div class="col-4">
                 <SelectOption
                     v-model="BienMuc.trang_thai_bieu_ghi"
                     :options="[

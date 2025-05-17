@@ -28,5 +28,6 @@ class DocGiaModel extends Model
         'ma_so_quy_uoc',
         'id_chuyen_nganh',
         'email',
+        'chuc_vu',
     ];
 }

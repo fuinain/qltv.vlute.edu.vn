@@ -1,6 +1,6 @@
 <template>
     <div class="form-group">
-        <label>{{ label }}</label>
+        <label>{{ label }} <span v-if="note" class="input-note">{{ note }}</span></label>
         <select
             :class="selectClass"
             :id="selectId"
@@ -47,6 +47,18 @@ export default {
             type: Boolean,
             default: false,
         },
+        note: {
+            type: String,
+            default: '',
+        },
     },
 }
 </script>
+<style scoped>
+.input-note {
+  color: #dc3545;
+  font-size: 12px;
+  font-style: italic;
+  font-weight: bold;
+}
+</style>

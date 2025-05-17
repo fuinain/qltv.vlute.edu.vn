@@ -38,4 +38,10 @@ class ChucVuController extends Controller
         ChucVuModel::destroy($id);
         return response()->json(['status' => 200, 'message' => 'Xóa thành công']);
     }
+
+    public function listChucVuSelectOption()
+    {
+        $chucvu = ChucVuModel::select('ma_chuc_vu', 'ten_chuc_vu')->get();
+        return response()->json(['status' => 200, 'data' => $chucvu]);
+    }
 }

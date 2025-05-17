@@ -60,13 +60,14 @@ class DocGiaController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'ho_ten' => 'required',
-            'mssv' => 'required|unique:doc_gia',
-            'ma_lop' => 'required',
-            'ten_lop' => 'required',
-            'so_the' => 'required',
-            'ngay_sinh' => 'nullable',
-            'ngay_cap_the' => 'nullable',
-            'han_the' => 'nullable',
+            'mssv' => 'nullable|unique:doc_gia',
+            'ma_lop' => 'nullable',
+            'ten_lop' => 'nullable',
+            'chuc_vu' => 'nullable',
+            'so_the' => 'required|unique:doc_gia,so_the',
+            'ngay_sinh' => 'nullable|date',
+            'ngay_cap_the' => 'nullable|date',
+            'han_the' => 'required|date',
             'ma_so_quy_uoc' => 'required',
             'id_chuyen_nganh' => 'required'
         ]);
@@ -78,28 +79,16 @@ class DocGiaController extends Controller
             ], 422);
         }
         
-        // Chuyển đổi định dạng ngày sinh từ DD/MM/YYYY sang YYYY-MM-DD
-        $ngaySinh = null;
-        if (!empty($request->ngay_sinh)) {
-            $ngaySinhParts = explode('/', $request->ngay_sinh);
-            if (count($ngaySinhParts) === 3) {
-                $ngaySinh = $ngaySinhParts[2] . '-' . $ngaySinhParts[1] . '-' . $ngaySinhParts[0];
-            }
-        }
-        
-        // Định dạng năm cấp thẻ và hạn thẻ
-        $ngayCapThe = !empty($request->ngay_cap_the) ? $request->ngay_cap_the . '-01-01' : null;
-        $hanThe = !empty($request->han_the) ? $request->han_the . '-12-31' : null;
-        
         $docGia = DocGiaModel::create([
             'ho_ten' => $request->ho_ten,
             'mssv' => $request->mssv,
             'ma_lop' => $request->ma_lop,
             'ten_lop' => $request->ten_lop,
+            'chuc_vu' => $request->chuc_vu,
             'so_the' => $request->so_the,
-            'ngay_sinh' => $ngaySinh,
-            'ngay_cap_the' => $ngayCapThe,
-            'han_the' => $hanThe,
+            'ngay_sinh' => $request->ngay_sinh,
+            'ngay_cap_the' => $request->ngay_cap_the,
+            'han_the' => $request->han_the,
             'lan_cap_the' => $request->lan_cap_the ?? 1,
             'ho_khau' => $request->ho_khau ?? '',
             'ghi_chu' => $request->ghi_chu ?? '',
@@ -130,11 +119,14 @@ class DocGiaController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'ho_ten' => 'required',
-            'mssv' => 'required|unique:doc_gia,mssv,' . $id . ',id_doc_gia',
-            'ma_lop' => 'required',
-            'ten_lop' => 'required',
-            'so_the' => 'required',
-            'ngay_sinh' => 'nullable',
+            'mssv' => 'nullable|unique:doc_gia,mssv,' . $id . ',id_doc_gia',
+            'ma_lop' => 'nullable',
+            'ten_lop' => 'nullable',
+            'chuc_vu' => 'nullable',
+            'so_the' => 'required|unique:doc_gia,so_the,' . $id . ',id_doc_gia',
+            'ngay_sinh' => 'nullable|date',
+            'ngay_cap_the' => 'nullable|date',
+            'han_the' => 'required|date',
             'ma_so_quy_uoc' => 'required',
             'id_chuyen_nganh' => 'required'
         ]);
@@ -146,29 +138,17 @@ class DocGiaController extends Controller
             ], 422);
         }
         
-        // Chuyển đổi định dạng ngày sinh từ DD/MM/YYYY sang YYYY-MM-DD
-        $ngaySinh = null;
-        if (!empty($request->ngay_sinh)) {
-            $ngaySinhParts = explode('/', $request->ngay_sinh);
-            if (count($ngaySinhParts) === 3) {
-                $ngaySinh = $ngaySinhParts[2] . '-' . $ngaySinhParts[1] . '-' . $ngaySinhParts[0];
-            }
-        }
-        
-        // Định dạng năm cấp thẻ và hạn thẻ
-        $ngayCapThe = !empty($request->ngay_cap_the) ? $request->ngay_cap_the . '-01-01' : null;
-        $hanThe = !empty($request->han_the) ? $request->han_the . '-12-31' : null;
-        
         $docGia = DocGiaModel::findOrFail($id);
         $docGia->update([
             'ho_ten' => $request->ho_ten,
             'mssv' => $request->mssv,
             'ma_lop' => $request->ma_lop,
             'ten_lop' => $request->ten_lop,
+            'chuc_vu' => $request->chuc_vu,
             'so_the' => $request->so_the,
-            'ngay_sinh' => $ngaySinh,
-            'ngay_cap_the' => $ngayCapThe,
-            'han_the' => $hanThe,
+            'ngay_sinh' => $request->ngay_sinh,
+            'ngay_cap_the' => $request->ngay_cap_the,
+            'han_the' => $request->han_the,
             'lan_cap_the' => $request->lan_cap_the ?? $docGia->lan_cap_the,
             'ho_khau' => $request->ho_khau ?? $docGia->ho_khau,
             'ghi_chu' => $request->ghi_chu ?? $docGia->ghi_chu,

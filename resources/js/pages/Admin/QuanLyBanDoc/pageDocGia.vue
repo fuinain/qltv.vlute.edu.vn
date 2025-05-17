@@ -1,5 +1,5 @@
 <template>
-    <ContentWrapper title="QUẢN LÝ BẠN ĐỌC">
+    <ContentWrapper title="QUẢN LÝ ĐỌC GIẢ">
         <template #ContentPage>
             <div class="row">
                 <div class="col-12">
@@ -7,7 +7,7 @@
                         <template #ContentCardHeader>
                             <div class="d-flex justify-content-between">
                                 <div>
-                                    <button type="button" class="btn btn-primary me-2" @click="themBanDoc">
+                                    <button type="button" class="btn btn-primary mr-2" @click="themBanDoc">
                                         <i class="fas fa-plus-circle"></i>&nbsp;
                                         Thêm mới
                                     </button>
@@ -22,15 +22,16 @@
                             <div class="row mb-2">
                                 <div class="col-md-8">                               
                                 </div>
-                                <div class="col-md-4">
-                                    <div class="input-group search-group float-end" style="width: 320px;">
+                                <div class="col-md-4 d-flex justify-content-end">
+                                    <div class="input-group search-group" style="width: 320px;">
                                         <input type="text" v-model="search" class="form-control"
                                             placeholder="Tìm kiếm..." @keyup.enter="timKiem"
                                             style="border-top-right-radius: 0; border-bottom-right-radius: 0;">
-                                        <button type="button" class="btn btn-search" @click="timKiem"
-                                            style="border-top-left-radius: 0; border-bottom-left-radius: 0;">
-                                            <i class="fas fa-search"></i>
-                                        </button>
+                                        <div class="input-group-append">
+                                            <button type="button" class="btn btn-default" @click="timKiem">
+                                                <i class="fas fa-search"></i>
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -50,12 +51,7 @@
                                                 class="btn p-1 btn-primary border-0 bg-transparent text-danger shadow-none"
                                                 @click="xoaBanDoc(row)">
                                                 <i class="fas fa-trash-alt"></i>&nbsp;
-                                            </button>
-                                            <button type="button"
-                                                class="btn p-1 btn-primary border-0 bg-transparent text-info shadow-none"
-                                                @click="xemChiTiet(row)">
-                                                <i class="fas fa-eye"></i>&nbsp;
-                                            </button>
+                                            </button>                                    
                                         </template>
                                     </Table>
                                 </div>
@@ -71,41 +67,53 @@
     <Modal ref="modal">
         <div class="row">
             <div class="col-md-6">
-                <Input v-model="banDoc.ho_ten" label="Họ tên" placeholder="Nhập họ tên..." type="text" required />
+                <Input v-model="banDoc.ho_ten" label="Họ tên" note="(*)" placeholder="Nhập họ tên..." type="text" required />
             </div>
             <div class="col-md-6">
-                <Input v-model="banDoc.mssv" label="MSSV" placeholder="Nhập MSSV..." type="text" required />
+                <Input v-model="banDoc.mssv" label="MSSV" note="(Nếu là SV/HV)" placeholder="Nhập MSSV..." type="text" required />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <Input v-model="banDoc.ma_lop" label="Mã lớp" note="(Nếu là SV/HV)" placeholder="Nhập mã lớp..." type="text" required />
+            </div>
+            <div class="col-md-4">
+                <Input v-model="banDoc.ten_lop" label="Tên lớp" note="(Nếu là SV/HV)" placeholder="Nhập tên lớp..." type="text" required />
+            </div>
+            <div class="col-md-4">
+                <SelectOption
+                    v-model="banDoc.chuc_vu"
+                    :options="dsChucVu"
+                    label="Chức vụ"
+                    note="(Nếu là CB/GV)"
+                    placeholder="Chọn chức vụ"
+                />
             </div>
         </div>
         <div class="row">
             <div class="col-md-6">
-                <Input v-model="banDoc.ma_lop" label="Mã lớp" placeholder="Nhập mã lớp..." type="text" required />
+                <Input v-model="banDoc.so_the" label="Số thẻ" note="(*)" placeholder="Nhập số thẻ..." type="text" required />
             </div>
             <div class="col-md-6">
-                <Input v-model="banDoc.ten_lop" label="Tên lớp" placeholder="Nhập tên lớp..." type="text" required />
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6">
-                <Input v-model="banDoc.so_the" label="Số thẻ" placeholder="Nhập số thẻ..." type="text" required />
-            </div>
-            <div class="col-md-6">
-                <Input v-model="banDoc.ngay_sinh" label="Ngày sinh" placeholder="Nhập ngày sinh (DD/MM/YYYY)..."
-                    type="text" />
+                <Input v-model="banDoc.ngay_sinh" label="Ngày sinh" type="date" />
             </div>
         </div>
         <div class="row">
             <div class="col-md-6">
-                <Input v-model="banDoc.ngay_cap_the" label="Năm cấp thẻ" placeholder="Nhập năm cấp thẻ..."
-                    type="text" />
+                <Input v-model="banDoc.ngay_cap_the" label="Ngày cấp thẻ" type="date" />
             </div>
             <div class="col-md-6">
-                <Input v-model="banDoc.han_the" label="Năm hết hạn" placeholder="Nhập năm hết hạn..." type="text" />
+                <Input v-model="banDoc.han_the" note="(*)" label="Hạn thẻ" type="date" />
             </div>
         </div>
         <div class="row">
             <div class="col-md-6">
-                <Input v-model="banDoc.nien_khoa" label="Niên khóa" placeholder="Nhập niên khóa..." type="text" />
+                <SelectOption
+                    v-model="banDoc.nien_khoa"
+                    :options="dsNienKhoa"
+                    label="Niên khoá"
+                    placeholder="Chọn niên khoá"
+                />
             </div>
             <div class="col-md-6">
                 <Input v-model="banDoc.email" label="Email" placeholder="Nhập email..." type="text" />
@@ -114,11 +122,11 @@
         <div class="row">
             <div class="col-md-6">
                 <SelectOption v-model="banDoc.ma_so_quy_uoc" label="Đối tượng bạn đọc"
-                    placeholder="Chọn đối tượng bạn đọc..." :options="dsDoiTuongBanDocOptions" required />
+                    placeholder="Chọn đối tượng bạn đọc..." :options="dsDoiTuongBanDocOptions" note="(*)" required />
             </div>
             <div class="col-md-6">
                 <SelectOption v-model="banDoc.id_chuyen_nganh" label="Chuyên ngành" placeholder="Chọn chuyên ngành..."
-                    :options="dsChuyenNganhOptions" required />
+                    :options="dsChuyenNganhOptions" note="(*)" required />
             </div>
         </div>
         <div class="row">
@@ -203,13 +211,14 @@ export default {
                 ghi_chu: "",
                 rut_han: 1,
                 nien_khoa: "",
+                chuc_vu: "",
                 ma_so_quy_uoc: "",
                 id_chuyen_nganh: "",
                 email: ""
             },
             headers: [
                 { key: 'index', label: 'STT', sortable: false },
-                { key: 'mssv', label: 'MSSV' },
+                { key: 'so_the', label: 'Số thẻ' },
                 { key: 'ho_ten', label: 'Tên SV' },
                 { key: 'ten_lop', label: 'Lớp' },
                 { key: 'ngay_cap_the', label: 'Năm cấp', format: 'normalDateTime' },
@@ -221,6 +230,8 @@ export default {
             dsDoiTuongBanDocOptions: [],
             dsChuyenNganh: [],
             dsChuyenNganhOptions: [],
+            dsNienKhoa: [],
+            dsChucVu: [],
             syncData: {
                 nam: new Date().getFullYear(),
                 ma_so_quy_uoc: "",
@@ -235,6 +246,8 @@ export default {
         this.fetchData();
         this.loadDoiTuongBanDoc();
         this.loadChuyenNganh();
+        this.getListNienKhoa();
+        this.loadChucVu();
     },
     methods: {
         async fetchData(page = 1) {
@@ -270,6 +283,21 @@ export default {
             }
         },
 
+        async loadChucVu() {
+            try {
+                const response = await axios.get('/api/danh-muc/thong-tin-chung/chuc-vu/list-chuc-vu-select-option');
+                if (response.data.status === 200) {
+                    this.dsChucVu = response.data.data;
+                    this.dsChucVu = this.dsChucVu.map(item => ({
+                        value: item.ten_chuc_vu,
+                        text: item.ten_chuc_vu
+                    }));
+                }
+            } catch (error) {
+                console.error("Lỗi khi load chức vụ:", error);
+            }
+        },
+
         async loadChuyenNganh() {
             try {
                 const response = await axios.get('/api/quan-ly-ban-doc/doc-gia/list-chuyen-nganh-for-sync');
@@ -285,19 +313,34 @@ export default {
             }
         },
 
+        async getListNienKhoa() {
+            try {
+                const res = await axios.get("/api/danh-muc/thong-tin-chung/hoc-ky/list-nien-khoa");
+                if (res.data.status === 200) {
+                    this.dsNienKhoa = res.data.data.map(item => ({
+                        value: item,
+                        text: item,
+                    }));
+                }
+            } catch (e) {
+                console.error("Lỗi load dữ liệu:", e);
+            }
+        },
+
         async themBanDoc() {
             // Reset form cho trường hợp thêm mới
             this.$refs.modal.$data.title = "Thêm mới bạn đọc";
             this.$refs.modal.$data.save = "Thêm mới";
+            const today = new Date().toISOString().split('T')[0];
             this.banDoc = {
                 ho_ten: "",
                 mssv: "",
                 ma_lop: "",
                 ten_lop: "",
                 so_the: "",
-                ngay_sinh: "",
-                ngay_cap_the: "",
-                han_the: "",
+                ngay_sinh: null,
+                ngay_cap_the: today,
+                han_the: null,
                 lan_cap_the: 1,
                 ho_khau: "",
                 ghi_chu: "",
@@ -305,6 +348,7 @@ export default {
                 nien_khoa: "",
                 ma_so_quy_uoc: "",
                 id_chuyen_nganh: "",
+                chuc_vu: "",
                 email: ""
             };
 
@@ -312,22 +356,20 @@ export default {
             const confirmed = await this.$refs.modal.openModal();
             if (!confirmed) return;
 
-            // Kiểm tra validate
-            if (
-                !this.banDoc.ho_ten.trim() ||
-                !this.banDoc.mssv.trim() ||
-                !this.banDoc.ma_lop.trim() ||
-                !this.banDoc.ten_lop.trim() ||
-                !this.banDoc.so_the.trim() ||
-                !this.banDoc.ma_so_quy_uoc ||
-                !this.banDoc.id_chuyen_nganh
-            ) {
-                toastr.error("Vui lòng nhập đầy đủ thông tin bắt buộc.");
-                return;
+            // Format lại các trường ngày tháng trước khi gửi
+            const formData = { ...this.banDoc };
+            if (formData.ngay_sinh) {
+                formData.ngay_sinh = formData.ngay_sinh;
+            }
+            if (formData.ngay_cap_the) {
+                formData.ngay_cap_the = formData.ngay_cap_the;
+            }
+            if (formData.han_the) {
+                formData.han_the = formData.han_the;
             }
 
             try {
-                const response = await axios.post("/api/quan-ly-ban-doc/doc-gia", this.banDoc);
+                const response = await axios.post("/api/quan-ly-ban-doc/doc-gia", formData);
                 if (response.data.status === 200) {
                     toastr.success(response.data.message);
                     this.fetchData();
@@ -348,14 +390,39 @@ export default {
             // Set tiêu đề và điền dữ liệu hiện có vào form
             this.$refs.modal.$data.title = "Cập nhật bạn đọc";
             this.$refs.modal.$data.save = "Cập nhật";
-            this.banDoc = { ...row };
+            
+            // Format lại các trường ngày tháng khi load dữ liệu
+            const formattedRow = { ...row };
+            if (formattedRow.ngay_sinh) {
+                formattedRow.ngay_sinh = formattedRow.ngay_sinh.split(' ')[0];
+            }
+            if (formattedRow.ngay_cap_the) {
+                formattedRow.ngay_cap_the = formattedRow.ngay_cap_the.split(' ')[0];
+            }
+            if (formattedRow.han_the) {
+                formattedRow.han_the = formattedRow.han_the.split(' ')[0];
+            }
+            
+            this.banDoc = formattedRow;
 
             // Mở modal để chỉnh sửa
             const confirmed = await this.$refs.modal.openModal();
             if (!confirmed) return;
 
+            // Format lại các trường ngày tháng trước khi gửi
+            const formData = { ...this.banDoc };
+            if (formData.ngay_sinh) {
+                formData.ngay_sinh = formData.ngay_sinh;
+            }
+            if (formData.ngay_cap_the) {
+                formData.ngay_cap_the = formData.ngay_cap_the;
+            }
+            if (formData.han_the) {
+                formData.han_the = formData.han_the;
+            }
+
             try {
-                const response = await axios.put(`/api/quan-ly-ban-doc/doc-gia/${row.id_doc_gia}`, this.banDoc);
+                const response = await axios.put(`/api/quan-ly-ban-doc/doc-gia/${row.id_doc_gia}`, formData);
                 if (response.data.status === 200) {
                     toastr.success(response.data.message);
                     this.fetchData();
@@ -439,16 +506,6 @@ export default {
                 this.$refs.syncModal.$data.loading = false;
                 this.$refs.syncModal.$data.disableButtons = false;
             }
-        },
-
-        async xemChiTiet(row) {
-            if (!row || !row.id_doc_gia) return;
-
-            // Chuyển hướng đến trang chi tiết
-            this.$router.push({
-                name: 'pageChiTietDocGia',
-                params: { id: row.id_doc_gia }
-            });
         },
 
         timKiem() {

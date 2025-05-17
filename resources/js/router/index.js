@@ -23,6 +23,8 @@ import pageBienMucBieuGhiSach from "@/pages/Admin/QuanLyAnPham/NhanSach/pageBien
 import pageInNhanDKCB from "@/pages/Admin/QuanLyAnPham/InNhan/pageInNhanDKCB.vue";
 import pageInNhanPhanLoai from "@/pages/Admin/QuanLyAnPham/InNhan/pageInNhanPhanLoai.vue";
 import pageDocGia from "@/pages/Admin/QuanLyBanDoc/pageDocGia.vue";
+import pageTKBanDocTheoDT from "@/pages/Admin/QuanLyBanDoc/pageTKBanDocTheoDT.vue";
+import pageChiTietBanDocTheoDT from "@/pages/Admin/QuanLyBanDoc/pageChiTietBanDocTheoDT.vue";
 import AdminLayout from "@/components/layouts/AdminLayout.vue";
 import PublicLayout from "@/components/layouts/PublicLayout.vue";
 import OpacLayout from "@/components/layouts/OpacLayout.vue";
@@ -467,6 +469,33 @@ const routes = [
                                 {name: "Home", path: "/"},
                                 {name: "Quản lý bạn đọc"},
                                 {name: "Danh sách bạn đọc"},
+                            ],
+                        },
+                    },
+                    {
+                        path: "thong-ke-theo-doi-tuong",
+                        name: "pageTKBanDocTheoDT",
+                        component: pageTKBanDocTheoDT,
+                        meta: {
+                            title: "Thống kê bạn đọc theo đối tượng",
+                            breadcrumb: [
+                                {name: "Home", path: "/"},
+                                {name: "Quản lý bạn đọc"},
+                                {name: "Thống kê theo đối tượng"},
+                            ],
+                        },
+                    },
+                    {
+                        path: "chi-tiet-doi-tuong/:ma_so_quy_uoc/:ten_doi_tuong",
+                        name: "pageChiTietBanDocTheoDT",
+                        component: pageChiTietBanDocTheoDT,
+                        meta: {
+                            title: "Chi tiết bạn đọc theo đối tượng",
+                            breadcrumb: [
+                                {name: "Home", path: "/"},
+                                {name: "Quản lý bạn đọc"},
+                                {name: "Thống kê theo đối tượng", path: "/admin/quan-ly-ban-doc/thong-ke-theo-doi-tuong"},
+                                {name: "Chi tiết bạn đọc"},
                             ],
                         },
                     },

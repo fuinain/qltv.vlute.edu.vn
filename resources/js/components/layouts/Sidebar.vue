@@ -77,25 +77,25 @@
                                 </a>
                                 <ul class="nav nav-treeview">
                                     <li class="nav-item">
-                                        <router-link :to="{name: 'pageNCC'}" class="nav-link">
+                                        <router-link :to="{ name: 'pageNCC' }" class="nav-link">
                                             <i class="fas fa-angle-right nav-icon"></i> <!-- Icon cấp 3 -->
                                             <p>Nhà cung cấp</p>
                                         </router-link>
                                     </li>
                                     <li class="nav-item">
-                                        <router-link :to="{name: 'pageTrangThaiDon'}" class="nav-link">
+                                        <router-link :to="{ name: 'pageTrangThaiDon' }" class="nav-link">
                                             <i class="fas fa-angle-right nav-icon"></i> <!-- Icon cấp 3 -->
                                             <p>Trạng thái đơn</p>
                                         </router-link>
                                     </li>
                                     <li class="nav-item">
-                                        <router-link :to="{name: 'pageNguonNhan'}" class="nav-link">
+                                        <router-link :to="{ name: 'pageNguonNhan' }" class="nav-link">
                                             <i class="fas fa-angle-right nav-icon"></i> <!-- Icon cấp 3 -->
                                             <p>Nguồn nhận</p>
                                         </router-link>
                                     </li>
                                     <li class="nav-item">
-                                        <router-link :to="{name: 'pageLoaiNhap'}" class="nav-link">
+                                        <router-link :to="{ name: 'pageLoaiNhap' }" class="nav-link">
                                             <i class="fas fa-angle-right nav-icon"></i> <!-- Icon cấp 3 -->
                                             <p>Loại nhập</p>
                                         </router-link>
@@ -112,7 +112,7 @@
                                 </a>
                                 <ul class="nav nav-treeview">
                                     <li class="nav-item">
-                                        <router-link :to="{name: 'pageTaiLieuThuMuc'}" class="nav-link">
+                                        <router-link :to="{ name: 'pageTaiLieuThuMuc' }" class="nav-link">
                                             <i class="fas fa-angle-right nav-icon"></i> <!-- Icon cấp 3 -->
                                             <p>Cấu hình thư mục và loại tài liệu</p>
                                         </router-link>
@@ -154,23 +154,6 @@
                                     </li>
                                 </ul>
                             </li>
-<!--                            <li class="nav-item has-treeview">-->
-<!--                                <a href="#" class="nav-link">-->
-<!--                                    <i class="nav-icon far fa-circle"></i> &lt;!&ndash; Icon cấp 2 &ndash;&gt;-->
-<!--                                    <p>-->
-<!--                                        Quản trị hệ thống-->
-<!--                                        <i class="fas fa-angle-left right"></i>-->
-<!--                                    </p>-->
-<!--                                </a>-->
-<!--                                <ul class="nav nav-treeview">-->
-<!--                                    <li class="nav-item">-->
-<!--                                        <a href="#" class="nav-link">-->
-<!--                                            <i class="fas fa-angle-right nav-icon"></i> &lt;!&ndash; Icon cấp 3 &ndash;&gt;-->
-<!--                                            <p>Khai báo người dùng</p>-->
-<!--                                        </a>-->
-<!--                                    </li>-->
-<!--                                </ul>-->
-<!--                            </li>-->
                         </ul>
                     </li>
 
@@ -218,13 +201,13 @@
                                 </a>
                                 <ul class="nav nav-treeview">
                                     <li class="nav-item">
-                                        <router-link :to="{name: 'pageInNhanPhanLoai'}" class="nav-link">
+                                        <router-link :to="{ name: 'pageInNhanPhanLoai' }" class="nav-link">
                                             <i class="fas fa-angle-right nav-icon"></i> <!-- Icon cấp 3 -->
                                             <p>In nhãn phân loại</p>
                                         </router-link>
                                     </li>
                                     <li class="nav-item">
-                                        <router-link :to="{name: 'pageInNhanDKCB'}" class="nav-link">
+                                        <router-link :to="{ name: 'pageInNhanDKCB' }" class="nav-link">
                                             <i class="fas fa-angle-right nav-icon"></i> <!-- Icon cấp 3 -->
                                             <p>In nhãn Đăng ký cá biệt</p>
                                         </router-link>
@@ -241,7 +224,7 @@
                                 </a>
                                 <ul class="nav nav-treeview">
                                     <li class="nav-item">
-                                        <router-link :to="{name: 'pageDMKhoAnPham'}" class="nav-link">
+                                        <router-link :to="{ name: 'pageDMKhoAnPham' }" class="nav-link">
                                             <i class="fas fa-angle-right nav-icon"></i> <!-- Icon cấp 3 -->
                                             <p>Danh mục kho ấn phẩm</p>
                                         </router-link>
@@ -275,16 +258,10 @@
                                 </router-link>
                             </li>
                             <li class="nav-item">
-                                <a href="#" class="nav-link">
-                                    <i class="nav-icon far fa-circle"></i> <!-- Icon cấp 2 -->
-                                    <p>Tra cứu cập nhật hồ sơ bạn đọc</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="#" class="nav-link">
+                                <router-link :to="{ name: 'pageTKBanDocTheoDT' }" class="nav-link">
                                     <i class="nav-icon far fa-circle"></i> <!-- Icon cấp 2 -->
                                     <p>Thống kê bạn đọc theo đối tượng</p>
-                                </a>
+                                </router-link>
                             </li>
                         </ul>
                     </li>
@@ -299,30 +276,52 @@
                             </p>
                         </a>
                         <!-- Menu cấp 2 -->
+
                         <ul class="nav nav-treeview">
-                            <li class="nav-item">
+                            <li class="nav-item has-treeview">
                                 <a href="#" class="nav-link">
                                     <i class="nav-icon far fa-circle"></i> <!-- Icon cấp 2 -->
-                                    <p>Mượn tài liệu về nhà</p>
+                                    <p>
+                                        Quản lý lưu thông TL
+                                        <i class="fas fa-angle-left right"></i>
+                                    </p>
                                 </a>
-                            </li>
-                            <li class="nav-item">
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a href="#" class="nav-link">
+                                            <i class="fas fa-angle-right nav-icon"></i> <!-- Icon cấp 2 -->
+                                            <p>Quản lý mượn tài liệu</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="#" class="nav-link">
+                                            <i class="fas fa-angle-right nav-icon"></i> <!-- Icon cấp 2 -->
+                                            <p>Báo cáo hoạt động</p>
+                                        </a>
+                                    </li>
+                                </ul>
+
                                 <a href="#" class="nav-link">
                                     <i class="nav-icon far fa-circle"></i> <!-- Icon cấp 2 -->
-                                    <p>Mượn tài liệu đọc tại chỗ</p>
+                                    <p>
+                                        Thông tin OPAC
+                                        <i class="fas fa-angle-left right"></i>
+                                    </p>
                                 </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="#" class="nav-link">
-                                    <i class="nav-icon far fa-circle"></i> <!-- Icon cấp 2 -->
-                                    <p>Quản lý tin tức-bài viết</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="#" class="nav-link">
-                                    <i class="nav-icon far fa-circle"></i> <!-- Icon cấp 2 -->
-                                    <p>Thống kê truy cập OPAC</p>
-                                </a>
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a href="#" class="nav-link">
+                                            <i class="fas fa-angle-right nav-icon"></i> <!-- Icon cấp 2 -->
+                                            <p>Quản lý tin tức-bài viết</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="#" class="nav-link">
+                                            <i class="fas fa-angle-right nav-icon"></i> <!-- Icon cấp 2 -->
+                                            <p>Thống kê truy cập OPAC</p>
+                                        </a>
+                                    </li>
+                                </ul>
                             </li>
                         </ul>
                     </li>
@@ -391,4 +390,3 @@ export default {
     },
 };
 </script>
-

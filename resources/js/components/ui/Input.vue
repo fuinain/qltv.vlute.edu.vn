@@ -1,6 +1,6 @@
 <template>
   <div class="form-group" v-if="visible">
-    <label>{{ label }}</label>
+    <label>{{ label }} <span v-if="note" class="input-note">{{ note }}</span></label>
     <input :placeholder="placeholder" :type="type" :class="inputClass" :id="inputId" :value="modelValue"
       :disabled="isDisabled" @input="$emit('update:modelValue', $event.target.value)" />
   </div>
@@ -40,6 +40,19 @@ export default {
       type: Boolean,
       default: true,
     },
+    note: {
+      type: String,
+      default: '',
+    }
   },
 }
 </script>
+
+<style scoped>
+.input-note {
+  color: #dc3545;
+  font-size: 12px;
+  font-style: italic;
+  font-weight: bold;
+}
+</style>
