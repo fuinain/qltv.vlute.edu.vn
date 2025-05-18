@@ -25,6 +25,8 @@ import pageInNhanPhanLoai from "@/pages/Admin/QuanLyAnPham/InNhan/pageInNhanPhan
 import pageDocGia from "@/pages/Admin/QuanLyBanDoc/pageDocGia.vue";
 import pageTKBanDocTheoDT from "@/pages/Admin/QuanLyBanDoc/pageTKBanDocTheoDT.vue";
 import pageChiTietBanDocTheoDT from "@/pages/Admin/QuanLyBanDoc/pageChiTietBanDocTheoDT.vue";
+import pageMuonTaiLieu from "@/pages/Admin/QuanLyDichVu/QuanLyLuuThong/pageMuonTaiLieu.vue";
+import pageDocTaiCho from "@/pages/Admin/QuanLyDichVu/QuanLyLuuThong/pageDocTaiCho.vue";
 import AdminLayout from "@/components/layouts/AdminLayout.vue";
 import PublicLayout from "@/components/layouts/PublicLayout.vue";
 import OpacLayout from "@/components/layouts/OpacLayout.vue";
@@ -498,6 +500,45 @@ const routes = [
                                 {name: "Chi tiết bạn đọc"},
                             ],
                         },
+                    },
+                ],
+            },
+            // Thêm mới phần Quản lý dịch vụ
+            {
+                path: "quan-ly-dich-vu",
+                children: [
+                    {
+                        path: "quan-ly-luu-thong",
+                        children: [
+                            {
+                                path: "muon-tai-lieu",
+                                name: "pageMuonTaiLieu",
+                                component: pageMuonTaiLieu,
+                                meta: {
+                                    title: "Mượn tài liệu",
+                                    breadcrumb: [
+                                        {name: "Home", path: "/"},
+                                        {name: "Quản lý dịch vụ"},
+                                        {name: "Quản lý lưu thông"},
+                                        {name: "Mượn tài liệu"},
+                                    ],
+                                },
+                            },
+                            {
+                                path: "doc-tai-cho",
+                                name: "pageDocTaiCho",
+                                component: pageDocTaiCho,
+                                meta: {
+                                    title: "Đọc tại chỗ",
+                                    breadcrumb: [
+                                        {name: "Home", path: "/"},
+                                        {name: "Quản lý dịch vụ"},
+                                        {name: "Quản lý lưu thông"},
+                                        {name: "Đọc tại chỗ"},
+                                    ],
+                                },
+                            },
+                        ],
                     },
                 ],
             },

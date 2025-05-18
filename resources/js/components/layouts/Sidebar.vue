@@ -288,10 +288,16 @@
                                 </a>
                                 <ul class="nav nav-treeview">
                                     <li class="nav-item">
-                                        <a href="#" class="nav-link">
+                                        <router-link :to="{ name: 'pageMuonTaiLieu' }" class="nav-link">
                                             <i class="fas fa-angle-right nav-icon"></i> <!-- Icon cấp 2 -->
                                             <p>Quản lý mượn tài liệu</p>
-                                        </a>
+                                        </router-link>
+                                    </li>
+                                    <li class="nav-item">
+                                        <router-link :to="{ name: 'pageDocTaiCho' }" class="nav-link">
+                                            <i class="fas fa-angle-right nav-icon"></i> <!-- Icon cấp 2 -->
+                                            <p>Quản lý đọc tại chổ</p>
+                                        </router-link>
                                     </li>
                                     <li class="nav-item">
                                         <a href="#" class="nav-link">
@@ -300,7 +306,8 @@
                                         </a>
                                     </li>
                                 </ul>
-
+                            </li>
+                            <li class="nav-item has-treeview">
                                 <a href="#" class="nav-link">
                                     <i class="nav-icon far fa-circle"></i> <!-- Icon cấp 2 -->
                                     <p>

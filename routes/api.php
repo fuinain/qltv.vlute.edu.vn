@@ -23,6 +23,8 @@ use App\Http\Controllers\DonNhanController;
 use App\Http\Controllers\SachController;
 use App\Http\Controllers\DKCBController;
 use App\Http\Controllers\DocGiaController;
+use App\Http\Controllers\MuonSachController;
+use App\Http\Controllers\DocTaiChoController;
 
 // API chỉ dành cho admin
 Route::middleware(['isLogin:admin'])->group(function () {
@@ -267,6 +269,24 @@ Route::middleware(['isLogin:admin'])->group(function () {
             Route::put('/{id}', [DocGiaController::class, 'update']);
             Route::delete('/{id}', [DocGiaController::class, 'destroy']);
             Route::post('/sync', [DocGiaController::class, 'syncBanDoc']);
+        });
+    });
+
+    // Quản lý dịch vụ
+    Route::group(['prefix' => 'quan-ly-dich-vu'], function () {
+        Route::prefix('muon-tra')->group(function () {
+            Route::get('/ban-doc/{search_value}', [MuonSachController::class, 'timBanDoc']);
+            Route::get('/kiem-tra-dkcb/{ma_dkcb}', [MuonSachController::class, 'kiemTraDKCB']);
+            Route::post('/muon', [MuonSachController::class, 'muon']);
+            Route::put('/gia-han/{id_muon_sach}', [MuonSachController::class, 'giaHan']);
+            Route::put('/tra-sach/{id_muon_sach}', [MuonSachController::class, 'traSach']);
+        });
+
+        Route::prefix('doc-tai-cho')->group(function () {
+            Route::get('/ban-doc/{search_value}', [DocTaiChoController::class, 'timBanDoc']);
+            Route::get('/kiem-tra-dkcb/{ma_dkcb}', [DocTaiChoController::class, 'kiemTraDKCB']);
+            Route::post('/muon', [DocTaiChoController::class, 'muon']);
+            Route::put('/tra-sach/{id_doc_tai_cho}', [DocTaiChoController::class, 'traSach']);
         });
     });
 });
