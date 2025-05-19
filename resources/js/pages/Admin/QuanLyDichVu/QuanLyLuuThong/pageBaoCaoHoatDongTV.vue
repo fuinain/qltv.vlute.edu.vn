@@ -218,16 +218,16 @@
         },
         methods: {
             async loadDMBaoCao() {
-                try {
-                    const response = await axios.get('/api/danh-muc/nghiep-vu-bo-sung/dm-bao-cao/list-dm-bao-cao-select-option');
-                    if (response.data.status === 200) {
-                        this.dsBaoCaoOptions = response.data.data;
-                        this.dsBaoCaoOptions = this.dsBaoCaoOptions.map(item => ({
-                            value: item.id_dm_bao_cao,
-                            text: item.ten_bao_cao
-                        }));
-                    }
-                } catch (error) {
+            try {
+                const response = await axios.get('/api/danh-muc/nghiep-vu-bo-sung/dm-bao-cao/list-dm-bao-cao-select-option');
+                if (response.data.status === 200) {
+                    this.dsBaoCaoOptions = response.data.data;
+                    this.dsBaoCaoOptions = this.dsBaoCaoOptions.map(item => ({
+                        value: item.id_dm_bao_cao,
+                        text: item.ten_bao_cao
+                    }));
+                }
+            } catch (error) {
                     console.error("Lỗi khi load báo cáo:", error);
                     toastr.error("Đã xảy ra lỗi khi tải danh sách báo cáo!");
                 }

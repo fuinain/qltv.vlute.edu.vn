@@ -24,6 +24,6 @@ return Application::configure(basePath: dirname(__DIR__))
         //
     })
     ->withSchedule(function (Schedule $schedule) {
-        $schedule->command(KiemTraQuaHan::class)->hourly();
+        $schedule->command(KiemTraQuaHan::class)->everyThirtyMinutes();
     })
     ->create();

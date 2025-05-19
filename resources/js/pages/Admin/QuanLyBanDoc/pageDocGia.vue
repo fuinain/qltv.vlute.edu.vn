@@ -161,7 +161,6 @@
         <div v-if="isSyncing" class="mt-4">
             <div class="text-center my-4">
                 <div class="spinner-border text-primary" role="status">
-                    <span class="visually-hidden">Đang đồng bộ...</span>
                 </div>
                 <p class="mt-2 mb-0">Đang đồng bộ dữ liệu, vui lòng đợi...</p>
                 <p class="text-muted small">Quá trình này có thể diễn ra trong vài phút. Vui lòng không tắt ứng dụng.
