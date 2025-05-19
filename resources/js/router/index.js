@@ -22,11 +22,14 @@ import pageCTDonNhan from "@/pages/Admin/QuanLyAnPham/NhanSach/pageCTDonNhan.vue
 import pageBienMucBieuGhiSach from "@/pages/Admin/QuanLyAnPham/NhanSach/pageBienMucBieuGhiSach.vue";
 import pageInNhanDKCB from "@/pages/Admin/QuanLyAnPham/InNhan/pageInNhanDKCB.vue";
 import pageInNhanPhanLoai from "@/pages/Admin/QuanLyAnPham/InNhan/pageInNhanPhanLoai.vue";
+import pageBCNhanSachPhanKho from "@/pages/Admin/QuanLyAnPham/NhanSach/pageBCNhanSachPhanKho.vue";
 import pageDocGia from "@/pages/Admin/QuanLyBanDoc/pageDocGia.vue";
 import pageTKBanDocTheoDT from "@/pages/Admin/QuanLyBanDoc/pageTKBanDocTheoDT.vue";
 import pageChiTietBanDocTheoDT from "@/pages/Admin/QuanLyBanDoc/pageChiTietBanDocTheoDT.vue";
 import pageMuonTaiLieu from "@/pages/Admin/QuanLyDichVu/QuanLyLuuThong/pageMuonTaiLieu.vue";
 import pageDocTaiCho from "@/pages/Admin/QuanLyDichVu/QuanLyLuuThong/pageDocTaiCho.vue";
+import pageBaoCaoHoatDongTV from "@/pages/Admin/QuanLyDichVu/QuanLyLuuThong/pageBaoCaoHoatDongTV.vue";
+import pageDMBaoCao from "@/pages/Admin/DanhMuc/NghiepVuBoSung/DMBaoCao/pageDMBaoCao.vue";
 import AdminLayout from "@/components/layouts/AdminLayout.vue";
 import PublicLayout from "@/components/layouts/PublicLayout.vue";
 import OpacLayout from "@/components/layouts/OpacLayout.vue";
@@ -235,6 +238,20 @@ const routes = [
                                         {name: "Danh mục"},
                                         {name: "Nghiệp vụ bổ sung"},
                                         {name: "Loại nhập"},
+                                    ],
+                                },
+                            },
+                            {
+                                path: "dm-bao-cao",
+                                name: "pageDMBaoCao",
+                                component: pageDMBaoCao,
+                                meta: {
+                                    title: "Báo cáo",
+                                    breadcrumb: [
+                                        {name: "Home", path: "/"},
+                                        {name: "Danh mục"},
+                                        {name: "Nghiệp vụ bổ sung"},
+                                        {name: "Báo cáo"},
                                     ],
                                 },
                             },
@@ -453,6 +470,20 @@ const routes = [
                                     },
                                 ],
                             },
+                            {
+                                path: "bao-cao-nhan-sach-phan-kho",
+                                name: "pageBCNhanSachPhanKho",
+                                component: pageBCNhanSachPhanKho,
+                                meta: {
+                                    title: "Báo cáo nhận sách phân kho",
+                                    breadcrumb: [
+                                        {name: "Home", path: "/"},
+                                        {name: "Quản lý ấn phẩm"},
+                                        {name: "Quản lý nhận sách"},
+                                        {name: "Báo cáo nhận sách phân kho"},
+                                    ],
+                                },
+                            },
                         ],
                     },
                 ],
@@ -535,6 +566,20 @@ const routes = [
                                         {name: "Quản lý dịch vụ"},
                                         {name: "Quản lý lưu thông"},
                                         {name: "Đọc tại chỗ"},
+                                    ],
+                                },
+                            },
+                            {
+                                path: "bao-cao-hoat-dong-tv",
+                                name: "pageBaoCaoHoatDongTV",
+                                component: pageBaoCaoHoatDongTV,
+                                meta: {
+                                    title: "Báo cáo hoạt động thư viện",
+                                    breadcrumb: [
+                                        {name: "Home", path: "/"},
+                                        {name: "Quản lý dịch vụ"},
+                                        {name: "Quản lý lưu thông"},
+                                        {name: "Báo cáo hoạt động thư viện"},
                                     ],
                                 },
                             },

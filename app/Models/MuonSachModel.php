@@ -16,5 +16,6 @@ class MuonSachModel extends Model
         'ngay_muon',
         'han_tra',
         'gia_han',  
+        'qua_han',  
     ];
 }

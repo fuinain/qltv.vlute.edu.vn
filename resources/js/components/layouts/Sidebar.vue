@@ -100,6 +100,12 @@
                                             <p>Loại nhập</p>
                                         </router-link>
                                     </li>
+                                    <li class="nav-item">
+                                        <router-link :to="{ name: 'pageDMBaoCao' }" class="nav-link">
+                                            <i class="fas fa-angle-right nav-icon"></i> <!-- Icon cấp 3 -->
+                                            <p>Báo cáo</p>
+                                        </router-link>
+                                    </li>
                                 </ul>
                             </li>
                             <li class="nav-item has-treeview">
@@ -184,10 +190,10 @@
                                         </router-link>
                                     </li>
                                     <li class="nav-item">
-                                        <a href="#" class="nav-link">
+                                        <router-link :to="{ name: 'pageBCNhanSachPhanKho' }" class="nav-link">
                                             <i class="fas fa-angle-right nav-icon"></i> <!-- Icon cấp 3 -->
                                             <p>Báo cáo nhận sách - phân kho</p>
-                                        </a>
+                                        </router-link>
                                     </li>
                                 </ul>
                             </li>
@@ -300,10 +306,10 @@
                                         </router-link>
                                     </li>
                                     <li class="nav-item">
-                                        <a href="#" class="nav-link">
+                                        <router-link :to="{ name: 'pageBaoCaoHoatDongTV' }" class="nav-link">
                                             <i class="fas fa-angle-right nav-icon"></i> <!-- Icon cấp 2 -->
                                             <p>Báo cáo hoạt động</p>
-                                        </a>
+                                        </router-link>
                                     </li>
                                 </ul>
                             </li>

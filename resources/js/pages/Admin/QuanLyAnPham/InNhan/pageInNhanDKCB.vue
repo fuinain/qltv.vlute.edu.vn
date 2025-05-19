@@ -52,7 +52,7 @@
                                     </Card>
                                 </div>
                                 <div class="col-md-6">
-                                    <Card>
+                                    <Card title="In nhãn DKCB">
                                         <template #ContentCardBody>
                                             <div class="form-group row">
                                                 <label class="col-sm-4 col-form-label">Kho ấn phẩm:</label>

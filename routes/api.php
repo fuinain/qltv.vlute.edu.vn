@@ -25,7 +25,7 @@ use App\Http\Controllers\DKCBController;
 use App\Http\Controllers\DocGiaController;
 use App\Http\Controllers\MuonSachController;
 use App\Http\Controllers\DocTaiChoController;
-
+use App\Http\Controllers\DMBaoCaoController;
 // API chỉ dành cho admin
 Route::middleware(['isLogin:admin'])->group(function () {
 
@@ -50,7 +50,7 @@ Route::middleware(['isLogin:admin'])->group(function () {
                 Route::get('/', [ChucVuController::class, 'index']);
                 Route::put('/{id}', [ChucVuController::class, 'update']);
                 Route::delete('/{id}', [ChucVuController::class, 'destroy']);
-                Route::get('/list-chuc-vu-select-option', [ChucVuController::class, 'listChucVuSelectOption']); 
+                Route::get('/list-chuc-vu-select-option', [ChucVuController::class, 'listChucVuSelectOption']);
             });
 
             //API quản lý học kỳ
@@ -131,6 +131,15 @@ Route::middleware(['isLogin:admin'])->group(function () {
                 Route::put('/{id}', [LoaiNhapController::class, 'update']);
                 Route::delete('/{id}', [LoaiNhapController::class, 'destroy']);
                 Route::get('/list-loai-nhap-select-option', [LoaiNhapController::class, 'listLoaiNhapSelectOption']);
+            });
+
+            //API Báo cáo
+            Route::prefix('dm-bao-cao')->group(function () {
+                Route::post('/', [DMBaoCaoController::class, 'store']);
+                Route::get('/', [DMBaoCaoController::class, 'index']);
+                Route::put('/{id}', [DMBaoCaoController::class, 'update']);
+                Route::delete('/{id}', [DMBaoCaoController::class, 'destroy']);
+                Route::get('/list-dm-bao-cao-select-option', [DMBaoCaoController::class, 'listDMBaoCaoSelectOption']);
             });
         });
 
@@ -224,11 +233,15 @@ Route::middleware(['isLogin:admin'])->group(function () {
                     });
                 });
             });
+
+            //API Báo cáo nhận sách phân kho
+            Route::prefix('bao-cao-nhan-sach-phan-kho')->group(function () {
+                Route::get('/export', [\App\Http\Controllers\BCNhanSachPhanKhoController::class, 'export']);
+            });
         });
 
         //API In nhãn phân loại
         Route::prefix('in-nhan')->group(function () {
-
             //API Nhãn DKCB
             Route::prefix('dkcb')->group(function () {
                 Route::get('/', [DKCBController::class, 'soNhan']);
@@ -287,6 +300,15 @@ Route::middleware(['isLogin:admin'])->group(function () {
             Route::get('/kiem-tra-dkcb/{ma_dkcb}', [DocTaiChoController::class, 'kiemTraDKCB']);
             Route::post('/muon', [DocTaiChoController::class, 'muon']);
             Route::put('/tra-sach/{id_doc_tai_cho}', [DocTaiChoController::class, 'traSach']);
+        });
+
+        Route::prefix('bao-cao')->group(function () {
+            Route::post('/thong-ke-sach-dang-muon', [DMBaoCaoController::class, 'thongKeSachDangMuon']);
+            Route::post('/xuat-excel-sach-dang-muon', [DMBaoCaoController::class, 'xuatExcelSachDangMuon']);
+            Route::post('/thong-ke-sach-da-tra', [DMBaoCaoController::class, 'thongKeSachDaTra']);
+            Route::post('/xuat-excel-sach-da-tra', [DMBaoCaoController::class, 'xuatExcelSachDaTra']);
+            Route::post('/thong-ke-sach-qua-han', [DMBaoCaoController::class, 'thongKeSachQuaHan']);
+            Route::post('/xuat-excel-sach-qua-han', [DMBaoCaoController::class, 'xuatExcelSachQuaHan']);
         });
     });
 });

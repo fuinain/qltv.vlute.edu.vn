@@ -10,6 +10,7 @@ use App\Models\SachModel;
 use App\Models\KhoAnPhamModel;
 use App\Models\DoiTuongBanDocModel;
 use App\Models\ChiTietThamSoLuuThongModel;
+use App\Models\LichSuMuonTraModel;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -266,7 +267,8 @@ class MuonSachController extends Controller
             'id_dkcb' => $idDKCB,
             'ngay_muon' => $ngayMuon,
             'han_tra' => $hanTra,
-            'gia_han' => 0
+            'gia_han' => 0,
+            'qua_han' => 0,
         ]);
 
         // Lấy thông tin sách
@@ -362,6 +364,19 @@ class MuonSachController extends Controller
         $phieuMuon->gia_han = 1; // Đánh dấu đã gia hạn
         $phieuMuon->save();
 
+        // Cập nhật lịch sử mượn trả
+        $lichSu = LichSuMuonTraModel::where('id_ban_doc', $phieuMuon->id_ban_doc)
+            ->where('id_dkcb', $phieuMuon->id_dkcb)
+            ->whereNull('ngay_tra')
+            ->where('tai_cho', 0) // 0 = mượn về
+            ->first();
+            
+        if ($lichSu) {
+            $lichSu->han_tra = $hanTraMoi;
+            $lichSu->gia_han = 1;
+            $lichSu->save();
+        }
+
         return response()->json([
             'status' => 200,
             'message' => 'Gia hạn thành công',
@@ -385,6 +400,26 @@ class MuonSachController extends Controller
                 'message' => 'Không tìm thấy phiếu mượn'
             ]);
         }
+
+        // Lấy thông tin sách và DKCB trước khi xóa phiếu mượn
+        $dkcb = DKCBModel::find($phieuMuon->id_dkcb);
+        $sach = null;
+        if ($dkcb) {
+            $sach = SachModel::find($dkcb->id_sach);
+        }
+
+        // Lưu vào lịch sử mượn trả trước khi xóa
+        LichSuMuonTraModel::create([
+            'id_ban_doc' => $phieuMuon->id_ban_doc,
+            'id_dkcb' => $phieuMuon->id_dkcb,
+            'ma_dkcb' => $dkcb ? $dkcb->ma_dkcb : 'Không xác định',
+            'ten_sach' => $sach ? $sach->nhan_de : 'Không xác định',
+            'ngay_muon' => $phieuMuon->ngay_muon,
+            'han_tra' => $phieuMuon->han_tra,
+            'ngay_tra' => Carbon::now(),
+            'tai_cho' => 1, 
+            'gia_han' => $phieuMuon->gia_han
+        ]);
 
         // Xóa bản ghi mượn sách
         $phieuMuon->delete();

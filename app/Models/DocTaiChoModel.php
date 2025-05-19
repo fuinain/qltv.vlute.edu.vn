@@ -15,5 +15,6 @@ class DocTaiChoModel extends Model
         'id_dkcb',
         'gio_muon',
         'gio_tra',
+        'qua_han',
     ];
 }

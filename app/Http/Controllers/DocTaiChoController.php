@@ -12,6 +12,7 @@ use App\Models\DoiTuongBanDocModel;
 use App\Models\ChiTietThamSoLuuThongModel;
 use App\Models\BienMucBieuGhiModel;
 use App\Models\BienMucTruongChaModel;
+use App\Models\LichSuMuonTraModel;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -284,7 +285,8 @@ class DocTaiChoController extends Controller
             'id_ban_doc' => $idBanDoc,
             'id_dkcb' => $idDKCB,
             'gio_muon' => $gioMuon,
-            'gio_tra' => $gioTra
+            'gio_tra' => $gioTra,
+            'qua_han' => 0
         ]);
 
         // Lấy thông tin sách và phân loại
@@ -328,6 +330,26 @@ class DocTaiChoController extends Controller
                 'message' => 'Không tìm thấy phiếu mượn'
             ]);
         }
+
+        // Lấy thông tin sách và DKCB trước khi xóa phiếu mượn
+        $dkcb = DKCBModel::find($phieuMuon->id_dkcb);
+        $sach = null;
+        if ($dkcb) {
+            $sach = SachModel::find($dkcb->id_sach);
+        }
+
+        // Lưu vào lịch sử mượn trả trước khi xóa
+        LichSuMuonTraModel::create([
+            'id_ban_doc' => $phieuMuon->id_ban_doc,
+            'id_dkcb' => $phieuMuon->id_dkcb,
+            'ma_dkcb' => $dkcb ? $dkcb->ma_dkcb : 'Không xác định',
+            'ten_sach' => $sach ? $sach->nhan_de : 'Không xác định',
+            'ngay_muon' => $phieuMuon->gio_muon,
+            'han_tra' => $phieuMuon->gio_tra,
+            'ngay_tra' => Carbon::now(),
+            'tai_cho' => 1, 
+            'gia_han' => 0
+        ]);
 
         // Xóa bản ghi mượn đọc tại chỗ
         $phieuMuon->delete();
