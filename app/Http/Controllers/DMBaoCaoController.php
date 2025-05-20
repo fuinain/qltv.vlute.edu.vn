@@ -11,6 +11,7 @@ use App\Models\DocGiaModel;
 use App\Models\ChuyenNganhModel;
 use App\Models\DonViModel;
 use App\Models\LichSuMuonTraModel;
+use App\Models\CheckinBanDocModel;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
@@ -1153,6 +1154,272 @@ class DMBaoCaoController extends Controller
             
         } catch (\Throwable $e) {
             \Illuminate\Support\Facades\Log::error('Lỗi xuất báo cáo sách quá hạn: ' . $e->getMessage());
+            return response()->json([
+                'status' => 500, 
+                'message' => 'Đã xảy ra lỗi khi xuất báo cáo: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function thongKeBanDocDenThuVien(Request $request)
+    {
+        try {
+            $request->validate([
+                'tu_ngay' => 'required|date',
+                'den_ngay' => 'required|date|after_or_equal:tu_ngay',
+            ]);
+
+            $tuNgay = Carbon::parse($request->tu_ngay)->startOfDay();
+            $denNgay = Carbon::parse($request->den_ngay)->endOfDay();
+
+            // Lấy dữ liệu từ bảng checkin_ban_doc
+            $checkinBanDoc = CheckinBanDocModel::whereBetween('thoi_gian_den', [$tuNgay, $denNgay])
+                ->get();
+
+            $ketQua = [];
+
+            foreach ($checkinBanDoc as $checkin) {
+                $docGia = DocGiaModel::find($checkin->id_ban_doc);
+                if (!$docGia) continue;
+
+                $chuyenNganh = null;
+                $donVi = null;
+
+                if ($docGia->id_chuyen_nganh) {
+                    $chuyenNganh = ChuyenNganhModel::find($docGia->id_chuyen_nganh);
+                    if ($chuyenNganh && $chuyenNganh->id_don_vi) {
+                        $donVi = DonViModel::find($chuyenNganh->id_don_vi);
+                    }
+                }
+
+                $donViQuanLy = '';
+                if ($donVi && $chuyenNganh) {
+                    $donViQuanLy = $donVi->ten_don_vi . ' - ' . $chuyenNganh->ten_chuyen_nganh;
+                } elseif ($chuyenNganh) {
+                    $donViQuanLy = $chuyenNganh->ten_chuyen_nganh;
+                }
+
+                // Đếm số lượng sách mượn trong ngày
+                $soLuongMuon = MuonSachModel::where('id_ban_doc', $checkin->id_ban_doc)
+                    ->whereDate('ngay_muon', Carbon::parse($checkin->thoi_gian_den)->toDateString())
+                    ->count();
+
+                // Đếm số lượng sách đọc tại chỗ trong ngày
+                $soLuongDocTaiCho = DocTaiChoModel::where('id_ban_doc', $checkin->id_ban_doc)
+                    ->whereDate('gio_muon', Carbon::parse($checkin->thoi_gian_den)->toDateString())
+                    ->count();
+
+                // Đếm số lượng sách trả trong ngày
+                $soLuongTra = LichSuMuonTraModel::where('id_ban_doc', $checkin->id_ban_doc)
+                    ->whereDate('ngay_tra', Carbon::parse($checkin->thoi_gian_den)->toDateString())
+                    ->count();
+
+                $ketQua[] = [
+                    'id_checkin' => $checkin->id_checkin_ban_doc,
+                    'so_the' => $docGia->so_the,
+                    'ho_ten' => $docGia->ho_ten,
+                    'don_vi_quan_ly' => $donViQuanLy,
+                    'thoi_gian_den' => $checkin->thoi_gian_den,
+                    'so_luong_muon' => $soLuongMuon + $soLuongDocTaiCho,
+                    'so_luong_tra' => $soLuongTra
+                ];
+            }
+
+            return response()->json([
+                'status' => 200,
+                'message' => 'Lấy thống kê bạn đọc đến thư viện thành công',
+                'data' => $ketQua
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 500,
+                'message' => 'Lỗi khi lấy thống kê bạn đọc đến thư viện',
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
+
+    public function xuatExcelBanDocDenThuVien(Request $request)
+    {
+        try {
+            $validated = $this->validate($request, [
+                'tu_ngay' => 'required|date',
+                'den_ngay' => 'required|date|after_or_equal:tu_ngay',
+            ], [
+                'tu_ngay.required' => 'Vui lòng chọn ngày bắt đầu',
+                'den_ngay.required' => 'Vui lòng chọn ngày kết thúc',
+                'den_ngay.after_or_equal' => 'Ngày kết thúc phải sau hoặc bằng ngày bắt đầu',
+            ]);
+
+            $tuNgay = Carbon::parse($validated['tu_ngay'])->startOfDay();
+            $denNgay = Carbon::parse($validated['den_ngay'])->endOfDay();
+
+            // Lấy dữ liệu từ bảng checkin_ban_doc
+            $checkinBanDoc = CheckinBanDocModel::whereBetween('thoi_gian_den', [$tuNgay, $denNgay])
+                ->get();
+
+            $ketQua = [];
+
+            foreach ($checkinBanDoc as $checkin) {
+                $docGia = DocGiaModel::find($checkin->id_ban_doc);
+                if (!$docGia) continue;
+
+                $chuyenNganh = null;
+                $donVi = null;
+
+                if ($docGia->id_chuyen_nganh) {
+                    $chuyenNganh = ChuyenNganhModel::find($docGia->id_chuyen_nganh);
+                    if ($chuyenNganh && $chuyenNganh->id_don_vi) {
+                        $donVi = DonViModel::find($chuyenNganh->id_don_vi);
+                    }
+                }
+
+                $donViQuanLy = '';
+                if ($donVi && $chuyenNganh) {
+                    $donViQuanLy = $donVi->ten_don_vi . ' - ' . $chuyenNganh->ten_chuyen_nganh;
+                } elseif ($chuyenNganh) {
+                    $donViQuanLy = $chuyenNganh->ten_chuyen_nganh;
+                }
+
+                // Đếm số lượng sách mượn trong ngày
+                $soLuongMuon = MuonSachModel::where('id_ban_doc', $checkin->id_ban_doc)
+                    ->whereDate('ngay_muon', Carbon::parse($checkin->thoi_gian_den)->toDateString())
+                    ->count();
+
+                // Đếm số lượng sách đọc tại chỗ trong ngày
+                $soLuongDocTaiCho = DocTaiChoModel::where('id_ban_doc', $checkin->id_ban_doc)
+                    ->whereDate('gio_muon', Carbon::parse($checkin->thoi_gian_den)->toDateString())
+                    ->count();
+
+                // Đếm số lượng sách trả trong ngày
+                $soLuongTra = LichSuMuonTraModel::where('id_ban_doc', $checkin->id_ban_doc)
+                    ->whereDate('ngay_tra', Carbon::parse($checkin->thoi_gian_den)->toDateString())
+                    ->count();
+
+                $ketQua[] = [
+                    'id_checkin' => $checkin->id_checkin_ban_doc,
+                    'so_the' => $docGia->so_the,
+                    'ho_ten' => $docGia->ho_ten,
+                    'don_vi_quan_ly' => $donViQuanLy,
+                    'thoi_gian_den' => $checkin->thoi_gian_den,
+                    'so_luong_muon' => $soLuongMuon + $soLuongDocTaiCho,
+                    'so_luong_tra' => $soLuongTra
+                ];
+            }
+
+            // Xuất Excel dựa trên template
+            $templatePath = public_path('template_excel/template_excel_bctk_ban_doc_den_thu_vien.xlsx');
+            if (!file_exists($templatePath)) {
+                return response()->json([
+                    'status' => 500,
+                    'message' => 'Không tìm thấy file mẫu báo cáo'
+                ], 500);
+            }
+
+            // Tạo đối tượng PhpSpreadsheet từ file mẫu
+            $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($templatePath);
+            $sheet = $spreadsheet->getActiveSheet();
+
+            // Thiết lập font chữ Times New Roman và kích thước 13 cho toàn bộ sheet
+            $defaultFont = [
+                'font' => [
+                    'name' => 'Times New Roman',
+                    'size' => 13,
+                ]
+            ];
+            $sheet->getParent()->getDefaultStyle()->applyFromArray($defaultFont);
+
+            // Cài đặt thông tin chung - Từ ngày đến ngày
+            $tuNgayFormatted = Carbon::parse($validated['tu_ngay'])->format('d-m-Y');
+            $denNgayFormatted = Carbon::parse($validated['den_ngay'])->format('d-m-Y');
+            $sheet->setCellValue('A5', "Từ ngày: {$tuNgayFormatted} Đến ngày: {$denNgayFormatted}");
+
+            // Chuẩn bị kiểu border
+            $borderStyle = [
+                'borders' => [
+                    'allBorders' => [
+                        'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                        'color' => ['argb' => 'FF000000'],
+                    ],
+                ],
+            ];
+
+            // Điền dữ liệu bạn đọc
+            $startRow = 8;
+            $stt = 1;
+            $currentRow = $startRow;
+
+            foreach ($ketQua as $item) {
+                // Điền dữ liệu vào hàng hiện tại
+                $sheet->setCellValue('A' . $currentRow, $stt);
+                $sheet->setCellValue('B' . $currentRow, $item['so_the']);
+                $sheet->setCellValue('C' . $currentRow, $item['ho_ten']);
+                $sheet->setCellValue('D' . $currentRow, $item['don_vi_quan_ly']);
+                $sheet->setCellValue('E' . $currentRow, Carbon::parse($item['thoi_gian_den'])->format('d/m/Y'));
+                $sheet->setCellValue('F' . $currentRow, $item['so_luong_muon']);
+                $sheet->setCellValue('G' . $currentRow, $item['so_luong_tra']);
+                
+                // Căn giữa các cột số
+                $sheet->getStyle('A' . $currentRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+                $sheet->getStyle('F' . $currentRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+                $sheet->getStyle('G' . $currentRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+
+                // Style cho hàng
+                $sheet->getStyle('A' . $currentRow . ':G' . $currentRow)->applyFromArray($borderStyle);
+                $sheet->getStyle('A' . $currentRow . ':G' . $currentRow)->applyFromArray($defaultFont);
+                
+                // Tăng số thứ tự và chuyển sang hàng tiếp theo
+                $stt++;
+                $currentRow++;
+            }
+            
+            // Thêm dòng tổng cộng
+            $tongSoBanDoc = count($ketQua);
+            $sheet->setCellValue('A' . $currentRow, 'TC');
+            $sheet->setCellValue('B' . $currentRow, $tongSoBanDoc);
+            
+            // Định dạng dòng tổng cộng
+            $sheet->getStyle('A' . $currentRow)->getFont()->setBold(true);
+            $sheet->getStyle('B' . $currentRow)->getFont()->setBold(true);
+            $sheet->getStyle('A' . $currentRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+            
+            // Style cho hàng tổng cộng
+            $sheet->getStyle('A' . $currentRow . ':G' . $currentRow)->applyFromArray($borderStyle);
+            $sheet->getStyle('A' . $currentRow . ':G' . $currentRow)->applyFromArray($defaultFont);
+            
+            // Thêm thông tin người lập báo cáo ở cuối
+            $currentRow += 2;
+            $sheet->setCellValue('E' . $currentRow, "Vĩnh Long, ngày " . Carbon::now()->day . " tháng " . Carbon::now()->month . " năm " . Carbon::now()->year);
+            $sheet->mergeCells('E' . $currentRow . ':G' . $currentRow);
+            $sheet->getStyle('E' . $currentRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+            $sheet->getStyle('E' . $currentRow)->applyFromArray($defaultFont);
+            
+            $currentRow += 1;
+            $sheet->setCellValue('E' . $currentRow, "Người lập báo cáo");
+            $sheet->mergeCells('E' . $currentRow . ':G' . $currentRow);
+            $sheet->getStyle('E' . $currentRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+            $sheet->getStyle('E' . $currentRow)->getFont()->setBold(true);
+            $sheet->getStyle('E' . $currentRow)->applyFromArray($defaultFont);
+            
+            $currentRow += 4;
+            $sheet->setCellValue('E' . $currentRow, session('HoTen') ?? '');
+            $sheet->mergeCells('E' . $currentRow . ':G' . $currentRow);
+            $sheet->getStyle('E' . $currentRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+            $sheet->getStyle('E' . $currentRow)->applyFromArray($defaultFont);
+            
+            // Tên file xuất 
+            $fileName = 'BC_Ban_Doc_Den_Thu_Vien_' . Carbon::now()->format('dmY_His') . '.xlsx';
+            
+            // Trả về file Excel
+            $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+            return response()->streamDownload(function () use ($writer) {
+                $writer->save('php://output');
+            }, $fileName, [
+                'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            ]);
+            
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error('Lỗi xuất báo cáo bạn đọc đến thư viện: ' . $e->getMessage());
             return response()->json([
                 'status' => 500, 
                 'message' => 'Đã xảy ra lỗi khi xuất báo cáo: ' . $e->getMessage()

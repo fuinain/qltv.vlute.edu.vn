@@ -309,6 +309,8 @@ Route::middleware(['isLogin:admin'])->group(function () {
             Route::post('/xuat-excel-sach-da-tra', [DMBaoCaoController::class, 'xuatExcelSachDaTra']);
             Route::post('/thong-ke-sach-qua-han', [DMBaoCaoController::class, 'thongKeSachQuaHan']);
             Route::post('/xuat-excel-sach-qua-han', [DMBaoCaoController::class, 'xuatExcelSachQuaHan']);
+            Route::post('/thong-ke-ban-doc-den-thu-vien', [DMBaoCaoController::class, 'thongKeBanDocDenThuVien']);
+            Route::post('/xuat-excel-ban-doc-den-thu-vien', [DMBaoCaoController::class, 'xuatExcelBanDocDenThuVien']);
         });
     });
 });

@@ -13,6 +13,7 @@ use App\Models\ChiTietThamSoLuuThongModel;
 use App\Models\BienMucBieuGhiModel;
 use App\Models\BienMucTruongChaModel;
 use App\Models\LichSuMuonTraModel;
+use App\Models\CheckinBanDocModel;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -30,6 +31,22 @@ class DocTaiChoController extends Controller
             return response()->json([
                 'status' => 404,
                 'message' => 'Không tìm thấy thông tin bạn đọc'
+            ]);
+        }
+
+        // Kiểm tra xem bạn đọc đã checkin trong ngày chưa
+        $today = Carbon::now()->startOfDay();
+        $tomorrow = Carbon::now()->endOfDay();
+        
+        $existingCheckin = CheckinBanDocModel::where('id_ban_doc', $banDoc->id_doc_gia)
+            ->whereBetween('thoi_gian_den', [$today, $tomorrow])
+            ->first();
+
+        // Nếu chưa có checkin trong ngày thì thêm mới
+        if (!$existingCheckin) {
+            CheckinBanDocModel::create([
+                'id_ban_doc' => $banDoc->id_doc_gia,
+                'thoi_gian_den' => Carbon::now()
             ]);
         }
 

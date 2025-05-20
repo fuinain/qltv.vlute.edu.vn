@@ -12,10 +12,6 @@
                                         <i class="fas fa-spinner fa-spin" v-else></i>&nbsp;
                                         Báo cáo
                                     </button>
-                                    <button type="button" class="btn btn-success ml-2" @click="xuatExcel" :disabled="isLoading || !ketQuaThongKe.length">
-                                        <i class="fas fa-file-excel"></i>&nbsp;
-                                        Xuất Excel
-                                    </button>
                                 </div>                              
                             </div>
                         </template>
@@ -48,8 +44,16 @@
                             <div class="row mt-4" v-if="ketQuaThongKe.length > 0 && formBaoCao.id_dm_bao_cao == 2">
                                 <div class="col-12">
                                     <Card title="Thống kê sách đang mượn">
+                                        <template #ContentCardHeader>
+                                            <div class="d-flex align-items-center">
+                                                <button type="button" class="btn btn-success btn-sm" @click="xuatExcelSachDangMuon" :disabled="isLoading">
+                                                    <i class="fas fa-file-excel"></i>&nbsp;
+                                                    Xuất Excel
+                                                </button>
+                                            </div>
+                                        </template>
                                         <template #ContentCardBody>
-                                            <Table :columns="headersSachDangMuon" :data="ketQuaThongKe">
+                                            <Table :columns="headersSachDangMuon" :data="ketQuaThongKe" :hideSearch="true">
                                                 <!-- Slot cho cột STT -->
                                                 <template v-slot:column-index="{ row, rowIndex }">
                                                     {{ rowIndex + 1 }}
@@ -90,8 +94,16 @@
                             <div class="row mt-4" v-if="ketQuaThongKe.length > 0 && formBaoCao.id_dm_bao_cao == 3">
                                 <div class="col-12">
                                     <Card title="Thống kê sách đã trả">
+                                        <template #ContentCardHeader>
+                                            <div class="d-flex align-items-center">
+                                                <button type="button" class="btn btn-success btn-sm" @click="xuatExcelSachDaTra" :disabled="isLoading">
+                                                    <i class="fas fa-file-excel"></i>&nbsp;
+                                                    Xuất Excel
+                                                </button>
+                                            </div>
+                                        </template>
                                         <template #ContentCardBody>
-                                            <Table :columns="headersSachDaTra" :data="ketQuaThongKe">
+                                            <Table :columns="headersSachDaTra" :data="ketQuaThongKe" :hideSearch="true">
                                                 <!-- Slot cho cột STT -->
                                                 <template v-slot:column-index="{ row, rowIndex }">
                                                     {{ rowIndex + 1 }}
@@ -133,8 +145,16 @@
                             <div class="row mt-4" v-if="ketQuaThongKe.length > 0 && formBaoCao.id_dm_bao_cao == 5">
                                 <div class="col-12">
                                     <Card title="Thống kê sách đang mượn quá hạn">
+                                        <template #ContentCardHeader>
+                                            <div class="d-flex align-items-center">
+                                                <button type="button" class="btn btn-success btn-sm" @click="xuatExcelSachQuaHan" :disabled="isLoading">
+                                                    <i class="fas fa-file-excel"></i>&nbsp;
+                                                    Xuất Excel
+                                                </button>
+                                            </div>
+                                        </template>
                                         <template #ContentCardBody>
-                                            <Table :columns="headersSachQuaHan" :data="ketQuaThongKe">
+                                            <Table :columns="headersSachQuaHan" :data="ketQuaThongKe" :hideSearch="true">
                                                 <!-- Slot cho cột STT -->
                                                 <template v-slot:column-index="{ row, rowIndex }">
                                                     {{ rowIndex + 1 }}
@@ -163,6 +183,48 @@
                                                         <strong>Ngày mượn:</strong> {{ formatDateTime(row.ngay_muon) }}<br>
                                                         <strong>Hạn trả:</strong> {{ formatDateTime(row.han_tra) }}<br>
                                                         <strong>Số ngày trễ:</strong> <span class="text-danger font-weight-bold">{{ row.so_ngay_tre }}</span><br>
+                                                    </div>
+                                                </template>
+                                            </Table>
+                                        </template>
+                                    </Card>
+                                </div>
+                            </div>
+
+                            <!-- Hiển thị kết quả thống kê bạn đọc đến thư viện -->
+                            <div class="row mt-4" v-if="ketQuaThongKe.length > 0 && formBaoCao.id_dm_bao_cao == 4">
+                                <div class="col-12">
+                                    <Card title="Thống kê bạn đọc đến thư viện">
+                                        <template #ContentCardHeader>
+                                            <div class="d-flex align-items-center">
+                                                <button type="button" class="btn btn-success btn-sm" @click="xuatExcelBanDocDenThuVien" :disabled="isLoading">
+                                                    <i class="fas fa-file-excel"></i>&nbsp;
+                                                    Xuất Excel
+                                                </button>
+                                            </div>
+                                        </template>
+                                        <template #ContentCardBody>
+                                            <Table :columns="headersBanDocDenThuVien" :data="ketQuaThongKe" :hideSearch="true">
+                                                <!-- Slot cho cột STT -->
+                                                <template v-slot:column-index="{ row, rowIndex }">
+                                                    {{ rowIndex + 1 }}
+                                                </template>
+                                                
+                                                <!-- Slot cho thông tin độc giả -->
+                                                <template v-slot:column-thong_tin_doc_gia="{ row }">
+                                                    <div>
+                                                        <strong>Số thẻ:</strong> {{ row.so_the }}<br>
+                                                        <strong>Họ tên:</strong> {{ row.ho_ten }}<br>
+                                                        <strong>Đơn vị:</strong> {{ row.don_vi_quan_ly || 'Chưa có' }}
+                                                    </div>
+                                                </template>
+                                                
+                                                <!-- Slot cho thông tin hoạt động -->
+                                                <template v-slot:column-thong_tin_hoat_dong="{ row }">
+                                                    <div>
+                                                        <strong>Thời gian đến:</strong> {{ formatDateTime(row.thoi_gian_den) }}<br>
+                                                        <strong>Số lượng mượn:</strong> {{ row.so_luong_muon }}<br>
+                                                        <strong>Số lượng trả:</strong> {{ row.so_luong_tra }}
                                                     </div>
                                                 </template>
                                             </Table>
@@ -210,6 +272,11 @@
                     { key: 'thong_tin_an_pham', label: 'Thông tin ấn phẩm', sortable: false, width: '25%' },
                     { key: 'thong_tin_doc_gia', label: 'Thông tin độc giả', sortable: false, width: '35%' },
                     { key: 'thong_tin_thoi_gian', label: 'Thời gian và trạng thái', sortable: false, width: '35%' },
+                ],
+                headersBanDocDenThuVien: [
+                    { key: 'index', label: 'STT', sortable: false, width: '5%' },
+                    { key: 'thong_tin_doc_gia', label: 'Thông tin bạn đọc', sortable: false, width: '45%' },
+                    { key: 'thong_tin_hoat_dong', label: 'Thông tin hoạt động', sortable: false, width: '50%' },
                 ],
             }
         },                       
@@ -293,6 +360,18 @@
                         } else {
                             toastr.error(response.data.message || "Đã xảy ra lỗi khi thống kê!");
                         }
+                    } else if (this.formBaoCao.id_dm_bao_cao == 4) { // Thống kê bạn đọc đến thư viện
+                        const response = await axios.post('/api/quan-ly-dich-vu/bao-cao/thong-ke-ban-doc-den-thu-vien', {
+                            tu_ngay: this.formBaoCao.tu_ngay,
+                            den_ngay: this.formBaoCao.den_ngay
+                        });
+                        
+                        if (response.data.status === 200) {
+                            this.ketQuaThongKe = response.data.data;
+                            toastr.success(`Đã thống kê được ${this.ketQuaThongKe.length} bạn đọc đến thư viện`);
+                        } else {
+                            toastr.error(response.data.message || "Đã xảy ra lỗi khi thống kê!");
+                        }
                     } else if (this.formBaoCao.id_dm_bao_cao == 5) { // Thống kê sách quá hạn
                         const response = await axios.post('/api/quan-ly-dich-vu/bao-cao/thong-ke-sach-qua-han', {
                             tu_ngay: this.formBaoCao.tu_ngay,
@@ -316,130 +395,172 @@
                 }
             },
             
-            xuatExcel() {
-                if (this.formBaoCao.id_dm_bao_cao == 2) { // Thống kê sách đang mượn
-                    if (!this.ketQuaThongKe.length) {
-                        toastr.error("Không có dữ liệu để xuất báo cáo!");
-                        return;
-                    }
-                    
-                    // Tạo form để submit POST request và tải xuống file Excel
-                    const form = document.createElement('form');
-                    form.method = 'POST';
-                    form.action = '/api/quan-ly-dich-vu/bao-cao/xuat-excel-sach-dang-muon';
-                    form.target = '_blank';
-                    
-                    // Thêm input cho từ ngày
-                    const tuNgayInput = document.createElement('input');
-                    tuNgayInput.type = 'hidden';
-                    tuNgayInput.name = 'tu_ngay';
-                    tuNgayInput.value = this.formBaoCao.tu_ngay;
-                    form.appendChild(tuNgayInput);
-                    
-                    // Thêm input cho đến ngày
-                    const denNgayInput = document.createElement('input');
-                    denNgayInput.type = 'hidden';
-                    denNgayInput.name = 'den_ngay';
-                    denNgayInput.value = this.formBaoCao.den_ngay;
-                    form.appendChild(denNgayInput);
-                    
-                    // Thêm CSRF token nếu cần
-                    const tokenElement = document.head.querySelector('meta[name="csrf-token"]');
-                    if (tokenElement) {
-                        const csrfInput = document.createElement('input');
-                        csrfInput.type = 'hidden';
-                        csrfInput.name = '_token';
-                        csrfInput.value = tokenElement.content;
-                        form.appendChild(csrfInput);
-                    }
-                    
-                    // Thêm form vào body, submit và sau đó xóa form
-                    document.body.appendChild(form);
-                    form.submit();
-                    document.body.removeChild(form);
-                } else if (this.formBaoCao.id_dm_bao_cao == 3) { // Thống kê sách đã trả
-                    if (!this.ketQuaThongKe.length) {
-                        toastr.error("Không có dữ liệu để xuất báo cáo!");
-                        return;
-                    }
-                    
-                    // Tạo form để submit POST request và tải xuống file Excel
-                    const form = document.createElement('form');
-                    form.method = 'POST';
-                    form.action = '/api/quan-ly-dich-vu/bao-cao/xuat-excel-sach-da-tra';
-                    form.target = '_blank';
-                    
-                    // Thêm input cho từ ngày
-                    const tuNgayInput = document.createElement('input');
-                    tuNgayInput.type = 'hidden';
-                    tuNgayInput.name = 'tu_ngay';
-                    tuNgayInput.value = this.formBaoCao.tu_ngay;
-                    form.appendChild(tuNgayInput);
-                    
-                    // Thêm input cho đến ngày
-                    const denNgayInput = document.createElement('input');
-                    denNgayInput.type = 'hidden';
-                    denNgayInput.name = 'den_ngay';
-                    denNgayInput.value = this.formBaoCao.den_ngay;
-                    form.appendChild(denNgayInput);
-                    
-                    // Thêm CSRF token nếu cần
-                    const tokenElement = document.head.querySelector('meta[name="csrf-token"]');
-                    if (tokenElement) {
-                        const csrfInput = document.createElement('input');
-                        csrfInput.type = 'hidden';
-                        csrfInput.name = '_token';
-                        csrfInput.value = tokenElement.content;
-                        form.appendChild(csrfInput);
-                    }
-                    
-                    // Thêm form vào body, submit và sau đó xóa form
-                    document.body.appendChild(form);
-                    form.submit();
-                    document.body.removeChild(form);
-                } else if (this.formBaoCao.id_dm_bao_cao == 5) { // Thống kê sách quá hạn
-                    if (!this.ketQuaThongKe.length) {
-                        toastr.error("Không có dữ liệu để xuất báo cáo!");
-                        return;
-                    }
-                    
-                    // Tạo form để submit POST request và tải xuống file Excel
-                    const form = document.createElement('form');
-                    form.method = 'POST';
-                    form.action = '/api/quan-ly-dich-vu/bao-cao/xuat-excel-sach-qua-han';
-                    form.target = '_blank';
-                    
-                    // Thêm input cho từ ngày
-                    const tuNgayInput = document.createElement('input');
-                    tuNgayInput.type = 'hidden';
-                    tuNgayInput.name = 'tu_ngay';
-                    tuNgayInput.value = this.formBaoCao.tu_ngay;
-                    form.appendChild(tuNgayInput);
-                    
-                    // Thêm input cho đến ngày
-                    const denNgayInput = document.createElement('input');
-                    denNgayInput.type = 'hidden';
-                    denNgayInput.name = 'den_ngay';
-                    denNgayInput.value = this.formBaoCao.den_ngay;
-                    form.appendChild(denNgayInput);
-                    
-                    // Thêm CSRF token nếu cần
-                    const tokenElement = document.head.querySelector('meta[name="csrf-token"]');
-                    if (tokenElement) {
-                        const csrfInput = document.createElement('input');
-                        csrfInput.type = 'hidden';
-                        csrfInput.name = '_token';
-                        csrfInput.value = tokenElement.content;
-                        form.appendChild(csrfInput);
-                    }
-                    
-                    // Thêm form vào body, submit và sau đó xóa form
-                    document.body.appendChild(form);
-                    form.submit();
-                    document.body.removeChild(form);
-                } else {
-                    toastr.warning("Loại báo cáo này chưa hỗ trợ xuất Excel!");
+            xuatExcelSachDangMuon() {
+                if (!this.ketQuaThongKe.length) {
+                    toastr.error("Không có dữ liệu để xuất báo cáo!");
+                    return;
                 }
+                
+                // Tạo form để submit POST request và tải xuống file Excel
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '/api/quan-ly-dich-vu/bao-cao/xuat-excel-sach-dang-muon';
+                form.target = '_blank';
+                
+                // Thêm input cho từ ngày
+                const tuNgayInput = document.createElement('input');
+                tuNgayInput.type = 'hidden';
+                tuNgayInput.name = 'tu_ngay';
+                tuNgayInput.value = this.formBaoCao.tu_ngay;
+                form.appendChild(tuNgayInput);
+                
+                // Thêm input cho đến ngày
+                const denNgayInput = document.createElement('input');
+                denNgayInput.type = 'hidden';
+                denNgayInput.name = 'den_ngay';
+                denNgayInput.value = this.formBaoCao.den_ngay;
+                form.appendChild(denNgayInput);
+                
+                // Thêm CSRF token nếu cần
+                const tokenElement = document.head.querySelector('meta[name="csrf-token"]');
+                if (tokenElement) {
+                    const csrfInput = document.createElement('input');
+                    csrfInput.type = 'hidden';
+                    csrfInput.name = '_token';
+                    csrfInput.value = tokenElement.content;
+                    form.appendChild(csrfInput);
+                }
+                
+                // Thêm form vào body, submit và sau đó xóa form
+                document.body.appendChild(form);
+                form.submit();
+                document.body.removeChild(form);
+            },
+            
+            xuatExcelSachDaTra() {
+                if (!this.ketQuaThongKe.length) {
+                    toastr.error("Không có dữ liệu để xuất báo cáo!");
+                    return;
+                }
+                
+                // Tạo form để submit POST request và tải xuống file Excel
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '/api/quan-ly-dich-vu/bao-cao/xuat-excel-sach-da-tra';
+                form.target = '_blank';
+                
+                // Thêm input cho từ ngày
+                const tuNgayInput = document.createElement('input');
+                tuNgayInput.type = 'hidden';
+                tuNgayInput.name = 'tu_ngay';
+                tuNgayInput.value = this.formBaoCao.tu_ngay;
+                form.appendChild(tuNgayInput);
+                
+                // Thêm input cho đến ngày
+                const denNgayInput = document.createElement('input');
+                denNgayInput.type = 'hidden';
+                denNgayInput.name = 'den_ngay';
+                denNgayInput.value = this.formBaoCao.den_ngay;
+                form.appendChild(denNgayInput);
+                
+                // Thêm CSRF token nếu cần
+                const tokenElement = document.head.querySelector('meta[name="csrf-token"]');
+                if (tokenElement) {
+                    const csrfInput = document.createElement('input');
+                    csrfInput.type = 'hidden';
+                    csrfInput.name = '_token';
+                    csrfInput.value = tokenElement.content;
+                    form.appendChild(csrfInput);
+                }
+                
+                // Thêm form vào body, submit và sau đó xóa form
+                document.body.appendChild(form);
+                form.submit();
+                document.body.removeChild(form);
+            },
+            
+            xuatExcelBanDocDenThuVien() {
+                if (!this.ketQuaThongKe.length) {
+                    toastr.error("Không có dữ liệu để xuất báo cáo!");
+                    return;
+                }
+                
+                // Tạo form để submit POST request và tải xuống file Excel
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '/api/quan-ly-dich-vu/bao-cao/xuat-excel-ban-doc-den-thu-vien';
+                form.target = '_blank';
+                
+                // Thêm input cho từ ngày
+                const tuNgayInput = document.createElement('input');
+                tuNgayInput.type = 'hidden';
+                tuNgayInput.name = 'tu_ngay';
+                tuNgayInput.value = this.formBaoCao.tu_ngay;
+                form.appendChild(tuNgayInput);
+                
+                // Thêm input cho đến ngày
+                const denNgayInput = document.createElement('input');
+                denNgayInput.type = 'hidden';
+                denNgayInput.name = 'den_ngay';
+                denNgayInput.value = this.formBaoCao.den_ngay;
+                form.appendChild(denNgayInput);
+                
+                // Thêm CSRF token nếu cần
+                const tokenElement = document.head.querySelector('meta[name="csrf-token"]');
+                if (tokenElement) {
+                    const csrfInput = document.createElement('input');
+                    csrfInput.type = 'hidden';
+                    csrfInput.name = '_token';
+                    csrfInput.value = tokenElement.content;
+                    form.appendChild(csrfInput);
+                }
+                
+                // Thêm form vào body, submit và sau đó xóa form
+                document.body.appendChild(form);
+                form.submit();
+                document.body.removeChild(form);
+            },
+            
+            xuatExcelSachQuaHan() {
+                if (!this.ketQuaThongKe.length) {
+                    toastr.error("Không có dữ liệu để xuất báo cáo!");
+                    return;
+                }
+                
+                // Tạo form để submit POST request và tải xuống file Excel
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '/api/quan-ly-dich-vu/bao-cao/xuat-excel-sach-qua-han';
+                form.target = '_blank';
+                
+                // Thêm input cho từ ngày
+                const tuNgayInput = document.createElement('input');
+                tuNgayInput.type = 'hidden';
+                tuNgayInput.name = 'tu_ngay';
+                tuNgayInput.value = this.formBaoCao.tu_ngay;
+                form.appendChild(tuNgayInput);
+                
+                // Thêm input cho đến ngày
+                const denNgayInput = document.createElement('input');
+                denNgayInput.type = 'hidden';
+                denNgayInput.name = 'den_ngay';
+                denNgayInput.value = this.formBaoCao.den_ngay;
+                form.appendChild(denNgayInput);
+                
+                // Thêm CSRF token nếu cần
+                const tokenElement = document.head.querySelector('meta[name="csrf-token"]');
+                if (tokenElement) {
+                    const csrfInput = document.createElement('input');
+                    csrfInput.type = 'hidden';
+                    csrfInput.name = '_token';
+                    csrfInput.value = tokenElement.content;
+                    form.appendChild(csrfInput);
+                }
+                
+                // Thêm form vào body, submit và sau đó xóa form
+                document.body.appendChild(form);
+                form.submit();
+                document.body.removeChild(form);
             },
             
             formatDateTime(dateTimeStr) {
