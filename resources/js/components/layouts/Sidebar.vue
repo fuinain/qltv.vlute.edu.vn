@@ -306,6 +306,12 @@
                                         </router-link>
                                     </li>
                                     <li class="nav-item">
+                                        <router-link :to="{ name: 'pageXuLyViPham' }" class="nav-link">
+                                            <i class="fas fa-angle-right nav-icon"></i> <!-- Icon cấp 2 -->
+                                            <p>Xử lý vi phạm</p>
+                                        </router-link>
+                                    </li>
+                                    <li class="nav-item">
                                         <router-link :to="{ name: 'pageBaoCaoHoatDongTV' }" class="nav-link">
                                             <i class="fas fa-angle-right nav-icon"></i> <!-- Icon cấp 2 -->
                                             <p>Báo cáo hoạt động</p>

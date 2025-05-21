@@ -5,51 +5,52 @@
                 <div class="col-12">
                     <Card>
                         <template #ContentCardHeader>
-                            <h5 class="mb-0">Tìm bạn đọc</h5>
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h5 class="card-title">Tìm kiếm bạn đọc</h5>
+                                </div>
+                            </div>
                         </template>
                         <template #ContentCardBody>
-                            <div class="card card-primary card-outline">
-                                <div class="card-body">
-                                    <div class="row mb-3">
-                                        <div class="col-md-12">
-                                            <div class="input-group">
-                                                <input 
-                                                    type="text" 
-                                                    v-model="searchBanDoc" 
-                                                    class="form-control" 
-                                                    placeholder="Nhập MSSV hoặc số thẻ..."
-                                                    @keyup.enter="timBanDoc"
-                                                />
-                                                <div class="input-group-append">
-                                                    <button class="btn btn-primary" @click="timBanDoc">
-                                                        <i class="fas fa-search"></i> Tìm kiếm
-                                                    </button>
-                                                </div>
-                                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="input-group mb-3">
+                                        <input type="text" class="form-control" placeholder="Nhập mã số sinh viên hoặc số thẻ..." v-model="searchBanDoc" @keyup.enter="timBanDoc">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-primary" type="button" @click="timBanDoc" :disabled="isLoading">
+                                                <i class="fas fa-search" v-if="!isLoading"></i>
+                                                <i class="fas fa-spinner fa-spin" v-else></i>
+                                                Tìm kiếm
+                                            </button>
                                         </div>
                                     </div>
+                                </div>
+                            </div>
 
-                                    <!-- Thông tin bạn đọc khi tìm thấy -->
-                                    <div v-if="banDoc.id_doc_gia" class="row">
-                                        <div class="col-md-12">
-                                            <div class="alert alert-info">
-                                                <div class="row">
-                                                    <div class="col-md-3">
-                                                        <p><b>Họ tên:</b> {{ banDoc.ho_ten }}</p>
-                                                        <p><b>MSSV:</b> {{ banDoc.mssv }}</p>
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <p><b>Số thẻ:</b> {{ banDoc.so_the }}</p>
-                                                        <p><b>Lớp:</b> {{ banDoc.ten_lop }}</p>
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <p><b>Đối tượng:</b> {{ banDoc.ten_doi_tuong_ban_doc }}</p>
-                                                        <p><b>Hạn thẻ:</b> {{ formatDate(banDoc.han_the) }}</p>
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <p><b>SL có thể mượn:</b> {{ thongTinMuon.soLuongCoTheMuon }}</p>
-                                                        <p><b>SL đang mượn:</b> {{ danhSachDangMuon.length }}</p>
-                                                    </div>
+                            <!-- Thông tin bạn đọc khi tìm thấy -->
+                            <div class="row mt-4" v-if="banDoc.id_doc_gia">
+                                <div class="col-12">
+                                    <div class="card card-primary card-outline">
+                                        <div class="card-header">
+                                            <h3 class="card-title">Thông tin bạn đọc</h3>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <p><strong>Họ tên:</strong> {{ banDoc.ho_ten }}</p>
+                                                    <p><strong>MSSV:</strong> {{ banDoc.mssv }}</p>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <p><strong>Số thẻ:</strong> {{ banDoc.so_the }}</p>
+                                                    <p><strong>Lớp:</strong> {{ banDoc.ten_lop }}</p>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <p><strong>Đối tượng:</strong> {{ banDoc.ten_doi_tuong_ban_doc }}</p>
+                                                    <p><strong>Hạn thẻ:</strong> {{ formatDate(banDoc.han_the) }}</p>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <p><strong>SL có thể mượn:</strong> {{ thongTinMuon.soLuongCoTheMuon }}</p>
+                                                    <p><strong>SL đang mượn:</strong> {{ danhSachDangMuon.length }}</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -177,6 +178,7 @@ export default {
     data() {
         return {
             searchBanDoc: '',
+            isLoading: false,
             banDoc: {},
             danhSachDangMuon: [],
             thongTinMuon: {
@@ -206,6 +208,7 @@ export default {
                 return;
             }
 
+            this.isLoading = true;
             axios.get(`/api/quan-ly-dich-vu/muon-tra/ban-doc/${this.searchBanDoc}`)
                 .then(response => {
                     if (response.data.status === 200) {
@@ -226,6 +229,9 @@ export default {
                 .catch(error => {
                     console.error(error);
                     toastr.error("Không tìm thấy bạn đọc hoặc có lỗi xảy ra");
+                })
+                .finally(() => {
+                    this.isLoading = false;
                 });
         },
         muonTaiLieu() {

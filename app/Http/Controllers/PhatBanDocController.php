@@ -55,4 +55,17 @@ class PhatBanDocController extends Controller
         PhatBanDocModel::destroy($id);
         return response()->json(['status' => 200, 'message' => 'Xóa thành công']);
     }
+
+    public function listPhatBanDocSelectOption()
+    {
+        $data = PhatBanDocModel::select('id_phat_ban_doc', 'ten_loai_phat', 'ghi_chu')
+            ->get()
+            ->map(function($item) {
+                return [
+                    'id_phat_ban_doc' => $item->id_phat_ban_doc,
+                    'ten_loai_phat' => $item->ten_loai_phat . ' / ' . $item->ghi_chu
+                ];
+            });
+        return response()->json(['status' => 200, 'data' => $data]);
+    }
 }

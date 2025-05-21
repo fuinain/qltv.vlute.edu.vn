@@ -29,6 +29,7 @@ import pageChiTietBanDocTheoDT from "@/pages/Admin/QuanLyBanDoc/pageChiTietBanDo
 import pageMuonTaiLieu from "@/pages/Admin/QuanLyDichVu/QuanLyLuuThong/pageMuonTaiLieu.vue";
 import pageDocTaiCho from "@/pages/Admin/QuanLyDichVu/QuanLyLuuThong/pageDocTaiCho.vue";
 import pageBaoCaoHoatDongTV from "@/pages/Admin/QuanLyDichVu/QuanLyLuuThong/pageBaoCaoHoatDongTV.vue";
+import pageXuLyViPham from "@/pages/Admin/QuanLyDichVu/QuanLyLuuThong/pageXuLyViPham.vue";
 import pageDMBaoCao from "@/pages/Admin/DanhMuc/NghiepVuBoSung/DMBaoCao/pageDMBaoCao.vue";
 import AdminLayout from "@/components/layouts/AdminLayout.vue";
 import PublicLayout from "@/components/layouts/PublicLayout.vue";
@@ -580,6 +581,20 @@ const routes = [
                                         {name: "Quản lý dịch vụ"},
                                         {name: "Quản lý lưu thông"},
                                         {name: "Báo cáo hoạt động thư viện"},
+                                    ],
+                                },
+                            },
+                            {
+                                path: "xu-ly-vi-pham",
+                                name: "pageXuLyViPham",
+                                component: pageXuLyViPham,
+                                meta: {
+                                    title: "Xử lý vi phạm",
+                                    breadcrumb: [
+                                        {name: "Home", path: "/"},
+                                        {name: "Quản lý dịch vụ"},
+                                        {name: "Quản lý lưu thông"},
+                                        {name: "Xử lý vi phạm"},
                                     ],
                                 },
                             },

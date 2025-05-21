@@ -26,6 +26,7 @@ use App\Http\Controllers\DocGiaController;
 use App\Http\Controllers\MuonSachController;
 use App\Http\Controllers\DocTaiChoController;
 use App\Http\Controllers\DMBaoCaoController;
+use App\Http\Controllers\XuLyViPhamController;
 // API chỉ dành cho admin
 Route::middleware(['isLogin:admin'])->group(function () {
 
@@ -177,6 +178,7 @@ Route::middleware(['isLogin:admin'])->group(function () {
                 Route::get('/', [PhatBanDocController::class, 'index']);
                 Route::put('/{id}', [PhatBanDocController::class, 'update']);
                 Route::delete('/{id}', [PhatBanDocController::class, 'destroy']);
+                Route::get('/list-phat-ban-doc-select-option', [PhatBanDocController::class, 'listPhatBanDocSelectOption']);
             });
         });
     });
@@ -302,6 +304,13 @@ Route::middleware(['isLogin:admin'])->group(function () {
             Route::put('/tra-sach/{id_doc_tai_cho}', [DocTaiChoController::class, 'traSach']);
         });
 
+        Route::prefix('xu-ly-vi-pham')->group(function () {
+            Route::get('/ban-doc/{mssv}', [XuLyViPhamController::class, 'timBanDoc']);
+            Route::post('/them-vi-pham', [XuLyViPhamController::class, 'themViPham']);
+            Route::get('/danh-sach-vi-pham/{mssv}', [XuLyViPhamController::class, 'danhSachViPham']);
+            Route::delete('/xoa-vi-pham/{id}', [XuLyViPhamController::class, 'xoaViPham']);
+        });
+
         Route::prefix('bao-cao')->group(function () {
             Route::post('/thong-ke-sach-dang-muon', [DMBaoCaoController::class, 'thongKeSachDangMuon']);
             Route::post('/xuat-excel-sach-dang-muon', [DMBaoCaoController::class, 'xuatExcelSachDangMuon']);
@@ -311,6 +320,8 @@ Route::middleware(['isLogin:admin'])->group(function () {
             Route::post('/xuat-excel-sach-qua-han', [DMBaoCaoController::class, 'xuatExcelSachQuaHan']);
             Route::post('/thong-ke-ban-doc-den-thu-vien', [DMBaoCaoController::class, 'thongKeBanDocDenThuVien']);
             Route::post('/xuat-excel-ban-doc-den-thu-vien', [DMBaoCaoController::class, 'xuatExcelBanDocDenThuVien']);
+            Route::post('/thong-ke-tinh-hinh-phuc-vu-ban-doc', [DMBaoCaoController::class, 'thongKeTinhHinhPhucVuBanDoc']);
+            Route::post('/xuat-excel-tinh-hinh-phuc-vu-ban-doc', [DMBaoCaoController::class, 'xuatExcelTinhHinhPhucVuBanDoc']);
         });
     });
 });
