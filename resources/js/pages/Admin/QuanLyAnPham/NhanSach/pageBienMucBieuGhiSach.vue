@@ -34,15 +34,10 @@
                             </button>
 
                             <!-- BẢNG MARC -->
-                            <TableMarc
-                                :rows="marcRowsSorted()"
-                                @add-parent-after="handleAddParentAfter"
-                                @remove-parent="handleRemoveParent"
-                                @add-child="handleAddChild"
-                                @remove-child="handleRemoveChild"
-                                @update-parent="handleUpdateParent"
-                                @update-child="handleUpdateChild"
-                            />
+                            <TableMarc :rows="marcRowsSorted()" @add-parent-after="handleAddParentAfter"
+                                @remove-parent="handleRemoveParent" @add-child="handleAddChild"
+                                @remove-child="handleRemoveChild" @update-parent="handleUpdateParent"
+                                @update-child="handleUpdateChild" />
                         </template>
                     </Card>
                 </div>
@@ -54,42 +49,24 @@
     <Modal ref="modal">
         <div class="row">
             <div class="col-4">
-                <Input v-model="BienMuc.id_sach" label="Mã tài liệu" type="text" :isDisabled="true"/>
+                <Input v-model="BienMuc.id_sach" label="Mã tài liệu" type="text" :isDisabled="true" />
             </div>
             <div class="col-4">
-                <SelectOption
-                    v-model="BienMuc.id_tai_lieu"
-                    :options="dsTaiLieu"
-                    label="Loại tài liệu"
-                    placeholder="Chọn loại tài liệu"
-                />
+                <SelectOption v-model="BienMuc.id_tai_lieu" :options="dsTaiLieu" label="Loại tài liệu"
+                    placeholder="Chọn loại tài liệu" />
             </div>
             <div class="col-4">
-                <SelectOption
-                    v-model="BienMuc.trang_thai_bieu_ghi"
-                    :options="[
-            { value: 'dang-bien-muc', text: 'Đang biên mục' },
-            { value: 'da-duyet',      text: 'Đã duyệt' }
-          ]"
-                    label="Trạng thái"
-                    placeholder="Chọn TT biểu ghi"
-                />
+                <SelectOption v-model="BienMuc.trang_thai_bieu_ghi" :options="[
+                    { value: 'dang-bien-muc', text: 'Đang biên mục' },
+                    { value: 'da-duyet', text: 'Đã duyệt' }
+                ]" label="Trạng thái" placeholder="Chọn TT biểu ghi" />
             </div>
             <div class="col-6">
-                <SelectOption
-                    v-model="BienMuc.id_don_vi"
-                    :options="dsDonVi"
-                    label="Đơn vị"
-                    placeholder="Chọn đơn vị"
-                />
+                <SelectOption v-model="BienMuc.id_don_vi" :options="dsDonVi" label="Đơn vị" placeholder="Chọn đơn vị" />
             </div>
             <div class="col-6">
-                <SelectOption
-                    v-model="BienMuc.id_chuyen_nganh"
-                    :options="dsChuyenNganh"
-                    label="Chuyên ngành"
-                    :disabled="!BienMuc.id_don_vi"
-                />
+                <SelectOption v-model="BienMuc.id_chuyen_nganh" :options="dsChuyenNganh" label="Chuyên ngành"
+                    :disabled="!BienMuc.id_don_vi" />
             </div>
         </div>
     </Modal>
@@ -101,9 +78,11 @@
             <div class="col-md-12 mb-3">
                 <p><strong>Tên sách:</strong> {{ tenSach }}</p>
                 <p><strong>Số lượng cần gán:</strong> {{ soLuongSach }}</p>
-                <p v-if="danhSachDKCBDaGan.length > 0"><strong>Số lượng đã gán:</strong> {{ danhSachDKCBDaGan.length }}/{{ soLuongSach }}</p>
+                <p v-if="danhSachDKCBDaGan.length > 0"><strong>Số lượng đã gán:</strong> {{ danhSachDKCBDaGan.length
+                    }}/{{
+                    soLuongSach }}</p>
             </div>
-            
+
             <!-- Hiển thị danh sách DKCB đã gán -->
             <div class="col-md-12 mb-3" v-if="danhSachDKCBDaGan.length > 0">
                 <div class="card">
@@ -130,41 +109,40 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- Hiển thị form nhập DKCB nếu chưa gán đủ -->
             <div class="col-md-12" v-if="danhSachDKCBDaGan.length < soLuongSach">
                 <div class="form-group">
                     <div class="custom-control custom-checkbox mb-2">
-                        <input type="checkbox" class="custom-control-input" id="autoAssignCheckbox" v-model="formDKCB.isAutoAssign">
+                        <input type="checkbox" class="custom-control-input" id="autoAssignCheckbox"
+                            v-model="formDKCB.isAutoAssign">
                         <label class="custom-control-label" for="autoAssignCheckbox">
                             Gán mã DKCB liên tiếp tự động
                         </label>
                     </div>
-                    
+
                     <label for="inputDKCB">Nhập mã DKCB</label>
-                    <input 
-                        type="text" 
-                        class="form-control" 
-                        id="inputDKCB" 
-                        v-model="formDKCB.ma_dkcb"
-                        placeholder="Ví dụ: KM.000001"
-                    />
+                    <input type="text" class="form-control" id="inputDKCB" v-model="formDKCB.ma_dkcb"
+                        placeholder="Ví dụ: KM.000001" />
                     <small class="form-text text-muted" v-if="formDKCB.isAutoAssign">
-                        Nhập mã DKCB đầu tiên. Hệ thống sẽ tự động gán liên tiếp {{ soLuongSach - danhSachDKCBDaGan.length }} mã.
+                        Nhập mã DKCB đầu tiên. Hệ thống sẽ tự động gán liên tiếp {{ soLuongSach -
+                        danhSachDKCBDaGan.length
+                        }} mã.
                     </small>
                     <small class="form-text text-muted" v-else>
-                        Nhập mã DKCB để gán từng mã một. Còn lại {{ soLuongSach - danhSachDKCBDaGan.length }} mã cần gán.
+                        Nhập mã DKCB để gán từng mã một. Còn lại {{ soLuongSach - danhSachDKCBDaGan.length }} mã cần
+                        gán.
                     </small>
                 </div>
             </div>
-            
+
             <!-- Hiển thị thông báo đã gán đủ -->
             <div class="col-md-12" v-if="danhSachDKCBDaGan.length >= soLuongSach">
                 <div class="alert alert-success">
                     <i class="fas fa-check-circle"></i> Đầu sách này đã được gán đủ {{ soLuongSach }} mã DKCB.
                 </div>
             </div>
-            
+
             <div class="col-md-12 mt-3" v-if="isLoadingDKCB">
                 <div class="text-center">
                     <i class="fas fa-spinner fa-spin"></i> Đang xử lý...
@@ -178,12 +156,8 @@
         </div>
         <template #buttons>
             <!-- Chỉ hiển thị nút Lưu thông tin khi chưa gán đủ số DKCB -->
-            <button 
-                v-if="danhSachDKCBDaGan.length < soLuongSach" 
-                type="button" 
-                class="btn btn-primary" 
-                @click="$refs.modalGanDKCB.submit()"
-                :disabled="isLoadingDKCB || !formDKCB.ma_dkcb">
+            <button v-if="danhSachDKCBDaGan.length < soLuongSach" type="button" class="btn btn-primary"
+                @click="$refs.modalGanDKCB.submit()" :disabled="isLoadingDKCB || !formDKCB.ma_dkcb">
                 <i class="fas fa-save"></i> Lưu thông tin
             </button>
             <button type="button" class="btn btn-secondary" @click="$refs.modalGanDKCB.closeModal()">
@@ -198,21 +172,18 @@
         <div class="row">
             <div class="col-4">
                 <label class="small mb-1">Nhãn (3 chữ số)</label>
-                <input v-model="newParent.ma_truong"
-                       class="form-control form-control-sm"
-                       maxlength="3" placeholder="vd: 050"/>
+                <input v-model="newParent.ma_truong" class="form-control form-control-sm" maxlength="3"
+                    placeholder="vd: 050" />
             </div>
             <div class="col-4">
                 <label class="small mb-1">CT1 (1 ký tự)</label>
-                <input v-model="newParent.ct1"
-                       class="form-control form-control-sm"
-                       maxlength="1" placeholder="a / # / …"/>
+                <input v-model="newParent.ct1" class="form-control form-control-sm" maxlength="1"
+                    placeholder="a / # / …" />
             </div>
             <div class="col-4">
                 <label class="small mb-1">CT2 (1 ký tự)</label>
-                <input v-model="newParent.ct2"
-                       class="form-control form-control-sm"
-                       maxlength="1" placeholder="# / 0 / …"/>
+                <input v-model="newParent.ct2" class="form-control form-control-sm" maxlength="1"
+                    placeholder="# / 0 / …" />
             </div>
         </div>
     </Modal>
@@ -230,8 +201,8 @@ export default {
             dsDonVi: [],
             dsChuyenNganh: [],
             dsTrangThai: [
-                {value: "dang-bien-muc", text: "Đang biên mục"},
-                {value: "da-duyet", text: "Đã duyệt"},
+                { value: "dang-bien-muc", text: "Đang biên mục" },
+                { value: "da-duyet", text: "Đã duyệt" },
             ],
 
             /* ---------- form Biên Mục ---------- */
@@ -259,7 +230,7 @@ export default {
             isLoadingBienMuc: false,
 
             /* ---------- form THÊM TRƯỜNG CHA ---------- */
-            newParent: {ma_truong: "", nhan: "", ct1: "", ct2: ""},
+            newParent: { ma_truong: "", nhan: "", ct1: "", ct2: "" },
 
             /* ---------- danh sách DKCB đã gán ---------- */
             danhSachDKCBDaGan: [],
@@ -297,13 +268,13 @@ export default {
 
             return [...this.marcRows]
                 .sort((a, b) => byNum(a.ma_truong, b.ma_truong))
-                .map(p => ({...p, children: sortChildren(p.children || [])}));
+                .map(p => ({ ...p, children: sortChildren(p.children || []) }));
         },
 
         /* ---------- COMBO DATA ---------- */
         async getListTaiLieu() {
             try {
-                const {data} = await axios.get(
+                const { data } = await axios.get(
                     "/api/danh-muc/nghiep-vu-bien-muc/tai-lieu/list-tai-lieu-select-option"
                 );
                 if (data.status === 200) {
@@ -318,7 +289,7 @@ export default {
         },
 
         async getListDonVi() {
-            const {data} = await axios.get(
+            const { data } = await axios.get(
                 "/api/danh-muc/thong-tin-chung/don-vi/list-don-vi-select-option"
             );
             if (data.status === 200) {
@@ -335,7 +306,7 @@ export default {
                 return;
             }
 
-            const {data} = await axios.get(
+            const { data } = await axios.get(
                 `/api/danh-muc/thong-tin-chung/chuyen-nganh/by-don-vi/${id}`
             );
             if (data.status === 200) {
@@ -349,10 +320,10 @@ export default {
         async thongTinBienMuc() {
             this.$refs.modal.$data.title = 'Thông tin biên mục';
             Object.assign(this.BienMuc, {
-                id_tai_lieu        : null,
+                id_tai_lieu: null,
                 trang_thai_bieu_ghi: 'dang-bien-muc',
-                id_don_vi          : null,
-                id_chuyen_nganh    : null,
+                id_don_vi: null,
+                id_chuyen_nganh: null,
             });
 
             const idSach = this.$route.params.id_sach;
@@ -405,7 +376,7 @@ export default {
 
         async fetchMarc() {
             this.isLoadingMarc = true;
-            const {data} = await axios.get(
+            const { data } = await axios.get(
                 `${this.marcBase()}/by-sach/${this.$route.params.id_sach}`
             );
             if (data.status === 200) this.marcRows = data.data;
@@ -414,7 +385,7 @@ export default {
 
         /* ----------------- THÊM TRƯỜNG CHA (MODAL) ----------------- */
         async themTruongCha() {
-            this.newParent = {ma_truong: "", nhan: "", ct1: "", ct2: ""};
+            this.newParent = { ma_truong: "", nhan: "", ct1: "", ct2: "" };
 
             while (await this.$refs.modalAddParent.openModal()) {
 
@@ -425,13 +396,13 @@ export default {
                 }
 
                 try {
-                    const {data} = await axios.post(`${this.marcBase()}/parent`, {
+                    const { data } = await axios.post(`${this.marcBase()}/parent`, {
                         id_sach: this.$route.params.id_sach,
                         ...this.newParent,
                     });
 
                     /* THÀNH CÔNG */
-                    this.marcRows.push({...data.data, children: []});
+                    this.marcRows.push({ ...data.data, children: [] });
                     this.marcRows.sort((a, b) => Number(a.ma_truong) - Number(b.ma_truong));
                     toastr.success("Đã thêm trường cha");
                     this.$refs.modalAddParent.closeModal();
@@ -455,12 +426,12 @@ export default {
         /* ---------- CALLBACKS TỪ TABLE ---------- */
         async handleAddParentAfter(idx) {
             try {
-                const {data} = await axios.post(`${this.marcBase()}/add-parent-after`, {
+                const { data } = await axios.post(`${this.marcBase()}/add-parent-after`, {
                     id_sach: this.$route.params.id_sach,
                     index: idx,
                 });
                 if (data.status === 200) {
-                    this.marcRows.splice(idx + 1, 0, {...data.data, children: []});
+                    this.marcRows.splice(idx + 1, 0, { ...data.data, children: [] });
                     toastr.success("Đã thêm trường cha mới");
                 }
             } catch (e) {
@@ -476,7 +447,7 @@ export default {
 
         async handleAddChild(parent) {
             try {
-                const {data} = await axios.post(`${this.marcBase()}/child`, {
+                const { data } = await axios.post(`${this.marcBase()}/child`, {
                     parent_id: parent.id_bien_muc_truong_cha,
                     ma_truong_con: "",       // hoặc gửi ký tự cụ thể tuỳ UI của bạn
                 });
@@ -553,7 +524,7 @@ export default {
             try {
                 const idSach = this.$route.params.id_sach;
                 const res = await axios.get(`/api/quan-ly-an-pham/nhan-sach/don-nhan/chi-tiet-don-nhan/sach/${idSach}`);
-                
+
                 if (res.data.status === 200 && res.data.data) {
                     this.soLuongSach = res.data.data.so_luong || 0;
                 }
@@ -571,10 +542,10 @@ export default {
             };
             this.thongBaoLoi = "";
             this.isLoadingDKCB = false;
-            
+
             // Lấy danh sách DKCB đã gán
             await this.getDanhSachDKCBDaGan();
-            
+
             // Mở modal gán DKCB
             while (await this.$refs.modalGanDKCB.openModal()) {
                 try {
@@ -582,9 +553,9 @@ export default {
                         toastr.error("Vui lòng nhập mã DKCB");
                         continue;
                     }
-                    
+
                     this.isLoadingDKCB = true;
-                    
+
                     // Thực hiện gán DKCB
                     const idSach = this.$route.params.id_sach;
                     const res = await axios.post('/api/quan-ly-an-pham/nhan-sach/don-nhan/chi-tiet-don-nhan/gan-dkcb', {
@@ -593,20 +564,20 @@ export default {
                         so_luong: this.formDKCB.isAutoAssign ? (this.soLuongSach - this.danhSachDKCBDaGan.length) : 1,
                         auto_assign: this.formDKCB.isAutoAssign
                     });
-                    
+
                     this.isLoadingDKCB = false;
-                    
+
                     if (res.data.status === 200) {
                         toastr.success(res.data.message || "Đã gán số DKCB thành công");
                         // Cập nhật danh sách DKCB đã gán
                         await this.getDanhSachDKCBDaGan();
-                        
+
                         // Nếu đã gán đủ số lượng hoặc đang ở chế độ tự động liên tiếp thì đóng modal
                         if (this.danhSachDKCBDaGan.length >= this.soLuongSach || this.formDKCB.isAutoAssign) {
                             this.$refs.modalGanDKCB.closeModal();
                             break;
                         }
-                        
+
                         // Reset form để gán tiếp
                         this.formDKCB.ma_dkcb = "";
                     } else {
@@ -615,7 +586,7 @@ export default {
                     }
                 } catch (e) {
                     this.isLoadingDKCB = false;
-                    
+
                     if (e.response?.status === 422) {
                         const errors = e.response.data.errors;
                         if (errors) {
@@ -636,7 +607,7 @@ export default {
             try {
                 const idSach = this.$route.params.id_sach;
                 const res = await axios.get(`/api/quan-ly-an-pham/nhan-sach/don-nhan/chi-tiet-don-nhan/sach/dkcb/${idSach}`);
-                
+
                 if (res.data.status === 200) {
                     this.danhSachDKCBDaGan = res.data.data || [];
                 }

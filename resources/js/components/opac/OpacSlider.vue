@@ -1,7 +1,7 @@
 <template>
   <div class="slider-container mt-1">
     <div class="container-xl">
-      <div id="mainCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="5000">
+      <div id="mainCarousel" class="carousel slide carousel-fade" data-ride="carousel">
         <div class="carousel-inner">
           <div v-for="(image, index) in sliderImages" :key="`slide-${index}`" 
                :class="['carousel-item', index === 0 ? 'active' : '']">
@@ -16,23 +16,21 @@
           </div>
         </div>
         
-        <button class="carousel-control-prev" type="button" data-bs-target="#mainCarousel" data-bs-slide="prev">
+        <a class="carousel-control-prev" href="#mainCarousel" role="button" data-slide="prev">
           <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Previous</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#mainCarousel" data-bs-slide="next">
+          <span class="sr-only">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#mainCarousel" role="button" data-slide="next">
           <span class="carousel-control-next-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Next</span>
-        </button>
+          <span class="sr-only">Next</span>
+        </a>
         
         <!-- Điều hướng dưới slider -->
-        <div class="slider-navigation">
-          <div class="slider-dots">
-            <span v-for="(image, index) in sliderImages" :key="`dot-${index}`" 
-                  :class="['dot', index === activeDotIndex ? 'active' : '']"
-                  @click="goToSlide(index)"></span>
-          </div>
-        </div>
+        <ol class="carousel-indicators">
+          <li v-for="(image, index) in sliderImages" :key="`indicator-${index}`"
+              :data-target="'#mainCarousel'" :data-slide-to="index"
+              :class="[index === activeDotIndex ? 'active' : '']"></li>
+        </ol>
       </div>
     </div>
   </div>
@@ -51,63 +49,43 @@ export default {
         'slider5.jpg'
       ],
       activeDotIndex: 0,
-      carouselInstance: null
+      carouselInterval: null
     }
   },
   mounted() {
-    // Khởi tạo carousel khi component được mount
-    this.initCarousel();
+    // Tự động chuyển slide
+    this.startCarouselInterval();
     
-    // Đảm bảo carousel được khởi tạo lại nếu cần
-    window.addEventListener('resize', this.handleResize);
-    
-    // Preload các hình ảnh để tránh trễ khi chuyển slide
-    this.preloadImages();
+    // Lắng nghe sự kiện carousel từ jQuery
+    if (window.jQuery) {
+      $('#mainCarousel').on('slide.bs.carousel', (event) => {
+        this.activeDotIndex = $(event.relatedTarget).index();
+      });
+    }
   },
   beforeUnmount() {
-    // Dọn dẹp
-    window.removeEventListener('resize', this.handleResize);
+    // Dừng interval khi component bị hủy
+    this.clearCarouselInterval();
   },
   methods: {
     getSliderImageUrl(image) {
       return `/images/image_slider/${image}`;
     },
-    goToSlide(index) {
-      if (this.carouselInstance) {
-        this.carouselInstance.to(index);
-        this.activeDotIndex = index;
-      }
+    startCarouselInterval() {
+      // Tự động chuyển slide mỗi 5 giây nếu AdminLTE không tự xử lý
+      this.carouselInterval = setInterval(() => {
+        if (window.jQuery) {
+          $('#mainCarousel').carousel('next');
+        } else {
+          this.activeDotIndex = (this.activeDotIndex + 1) % this.sliderImages.length;
+          // Cần gọi carousel thủ công nếu không có jQuery
+        }
+      }, 5000);
     },
-    initCarousel() {
-      // Theo dõi các sự kiện của Bootstrap carousel
-      const carouselElement = document.getElementById('mainCarousel');
-      if (carouselElement) {
-        // Lưu instance để có thể điều khiển carousel
-        this.carouselInstance = new bootstrap.Carousel(carouselElement, {
-          interval: 5000,
-          keyboard: true,
-          pause: 'hover',
-          wrap: true,
-          touch: true
-        });
-        
-        carouselElement.addEventListener('slide.bs.carousel', (event) => {
-          this.activeDotIndex = event.to;
-        });
+    clearCarouselInterval() {
+      if (this.carouselInterval) {
+        clearInterval(this.carouselInterval);
       }
-    },
-    handleResize() {
-      // Khởi tạo lại carousel nếu cần
-      if (!this.carouselInstance) {
-        this.initCarousel();
-      }
-    },
-    preloadImages() {
-      // Preload tất cả các hình ảnh để tránh hiện tượng trắng khi chuyển slide
-      this.sliderImages.forEach(image => {
-        const img = new Image();
-        img.src = this.getSliderImageUrl(image);
-      });
     }
   }
 }
@@ -122,20 +100,12 @@ export default {
 .carousel {
   overflow: hidden;
   border-radius: 8px;
-}
-
-.carousel-fade .carousel-item {
-  opacity: 0;
-  transition: opacity 0.6s ease-in-out;
-}
-
-.carousel-fade .carousel-item.active {
-  opacity: 1;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
 .carousel-item {
   position: relative;
-  height: 400px; /* Giảm chiều cao xuống để tỷ lệ hợp lý hơn */
+  height: 400px;
 }
 
 .carousel-image-container {
@@ -151,9 +121,8 @@ export default {
 .carousel-image-container img {
   width: 100%;
   height: 100%;
-  object-fit: cover; /* Đảm bảo ảnh không bị méo */
+  object-fit: cover;
   object-position: center;
-  transition: transform 0.6s ease;
 }
 
 .carousel-overlay {
@@ -162,7 +131,7 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.3); /* Lớp overlay tối để text dễ đọc */
+  background: rgba(0, 0, 0, 0.3);
   border-radius: 8px;
 }
 
@@ -195,54 +164,23 @@ export default {
   margin: 0 auto;
 }
 
-.carousel-control-prev,
-.carousel-control-next {
-  opacity: 0.7;
-  width: 5%;
-  z-index: 10;
+.carousel-indicators {
+  bottom: 10px;
 }
 
-.carousel-control-prev-icon,
-.carousel-control-next-icon {
-  width: 2.5rem;
-  height: 2.5rem;
-}
-
-/* Điều hướng dots */
-.slider-navigation {
-  background: rgba(0, 0, 0, 0.6);
-  padding: 12px 0;
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 10;
-  border-radius: 0 0 8px 8px;
-  width: 100%;
-}
-
-.slider-dots {
-  text-align: center;
-}
-
-.dot {
-  display: inline-block;
+.carousel-indicators li {
   width: 12px;
   height: 12px;
-  margin: 0 6px;
-  background-color: rgba(255, 255, 255, 0.5);
   border-radius: 50%;
+  margin: 0 5px;
+  background-color: rgba(255, 255, 255, 0.5);
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
-.dot.active {
+.carousel-indicators li.active {
   background-color: white;
   transform: scale(1.2);
-}
-
-.dot:hover {
-  background-color: rgba(255, 255, 255, 0.8);
 }
 
 @media (max-width: 992px) {
@@ -251,11 +189,11 @@ export default {
   }
   
   .carousel-caption h2 {
-    font-size: 1.75rem;
+    font-size: 1.5rem;
   }
   
   .carousel-caption p {
-    font-size: 1rem;
+    font-size: 0.9rem;
   }
 }
 
@@ -269,7 +207,7 @@ export default {
   }
   
   .carousel-caption h2 {
-    font-size: 1.5rem;
+    font-size: 1.2rem;
   }
 }
 
@@ -278,18 +216,12 @@ export default {
     height: 250px;
   }
   
-  .carousel-caption {
-    padding: 0.75rem;
-    width: 90%;
-  }
-  
   .carousel-caption h2 {
-    font-size: 1.25rem;
-    margin-bottom: 0.25rem;
+    font-size: 1rem;
   }
   
   .carousel-caption p {
-    font-size: 0.875rem;
+    font-size: 0.8rem;
   }
 }
 </style>

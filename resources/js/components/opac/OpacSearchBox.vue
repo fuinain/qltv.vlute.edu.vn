@@ -1,41 +1,43 @@
 <template>
-  <div class="search-box-container">
-    <div class="search-box">
-      <h3 class="search-title">Tra cứu tài liệu</h3>
+  <div class="card card-primary card-outline">
+    <div class="card-header">
+      <h3 class="card-title">
+        <i class="fas fa-search mr-2"></i>Tra cứu tài liệu
+      </h3>
+    </div>
+    <div class="card-body">
       <form @submit.prevent="searchDocuments">
-        <div class="main-search">
-          <div class="input-group mb-3">
-            <input v-model="searchQuery" type="text" class="form-control" placeholder="Nhập từ khóa tìm kiếm...">
+        <div class="input-group mb-3">
+          <input v-model="searchQuery" type="text" class="form-control" placeholder="Nhập từ khóa tìm kiếm...">
+          <div class="input-group-append">
             <button class="btn btn-primary" type="submit">
-              <i class="bi bi-search me-1"></i> Tìm kiếm
+              <i class="fas fa-search mr-1"></i> Tìm kiếm
             </button>
           </div>
         </div>
-        <div class="search-options">
-          <div class="row g-2">
-            <div class="col-md-4">
-              <select v-model="searchType" class="form-select">
+        
+        <div class="search-options p-3 bg-light">
+          <div class="row">
+            <div class="col-md-6 mb-2">
+              <label class="text-muted mb-1">Tìm theo</label>
+              <select v-model="searchType" class="form-control">
                 <option value="all">Tất cả</option>
-                <option value="title">Tựa đề</option>
-                <option value="author">Tác giả</option>
-                <option value="subject">Chủ đề</option>
-                <option value="publisher">Nhà xuất bản</option>
+                <option value="nhan_de">Nhan đề</option>
+                <option value="tac_gia">Tác giả</option>
+                <option value="nam_xuat_ban">Năm xuất bản</option>
+                <option value="nha_xuat_ban">Nhà xuất bản</option>
+                <option value="noi_xuat_ban">Nơi xuất bản</option>
               </select>
             </div>
-            <div class="col-md-4">
-              <select v-model="documentType" class="form-select">
+            <div class="col-md-6 mb-2">
+              <label class="text-muted mb-1">Loại tài liệu</label>
+              <select v-model="documentType" class="form-control">
                 <option value="all">Tất cả tài liệu</option>
                 <option value="book">Sách</option>
                 <option value="thesis">Luận văn</option>
                 <option value="journal">Báo/Tạp chí</option>
                 <option value="ebook">Tài liệu điện tử</option>
               </select>
-            </div>
-            <div class="col-md-4">
-              <div class="form-check form-switch">
-                <input v-model="fullTextOnly" class="form-check-input" type="checkbox" id="fullTextOnly">
-                <label class="form-check-label" for="fullTextOnly">Chỉ hiển thị tài liệu có toàn văn</label>
-              </div>
             </div>
           </div>
         </div>
@@ -102,67 +104,17 @@ export default {
 </script>
 
 <style scoped>
-.search-box-container {
-  margin-bottom: 30px;
-}
-
-.search-box {
-  background-color: #ffffff;
-  border-radius: 8px;
-  padding: 20px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  border: 1px solid #eaeaea;
-}
-
-.search-title {
-  color: #2c3e50;
-  font-size: 1.5rem;
-  font-weight: 600;
-  margin-bottom: 20px;
-  text-align: center;
-  position: relative;
-}
-
-.search-title:after {
-  content: '';
-  display: block;
-  width: 60px;
-  height: 3px;
-  background-color: #3498db;
-  margin: 10px auto 20px;
-  border-radius: 2px;
-}
-
-.main-search .form-control {
-  height: 45px;
-  border-radius: 4px 0 0 4px;
-  font-size: 16px;
-  border: 1px solid #ddd;
-}
-
-.main-search .btn {
-  border-radius: 0 4px 4px 0;
-  padding: 10px 20px;
-  font-weight: 500;
-}
-
 .search-options {
-  background-color: #f9f9f9;
-  border-radius: 6px;
-  padding: 15px;
-  margin-top: 10px;
-  border: 1px solid #eeeeee;
-}
-
-.search-options .form-select {
-  height: 40px;
-  border: 1px solid #ddd;
   border-radius: 4px;
+  margin-top: 5px;
 }
 
-.form-check-input:checked {
-  background-color: #3498db;
-  border-color: #3498db;
+.search-options label {
+  font-size: 0.9rem;
+}
+
+.icheck-primary {
+  margin-bottom: 0;
 }
 
 @media (max-width: 768px) {

@@ -8,6 +8,10 @@ import '@/adminlteJs/select2/js/select2.full.min.js';
 import '@/adminlteJs/select2/css/select2.min.css';
 import '@/adminlteJs/select2-bootstrap4-theme/select2-bootstrap4.min.css';
 
+// Summernote từ adminlteJs
+import '@/adminlteJs/summernote/summernote-bs4.min.js';
+import '@/adminlteJs/summernote/summernote-bs4.min.css';
+
 // SweetAlert2
 import Swal from 'sweetalert2';
 window.Swal = Swal;

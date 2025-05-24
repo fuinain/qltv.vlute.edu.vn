@@ -27,6 +27,8 @@ use App\Http\Controllers\MuonSachController;
 use App\Http\Controllers\DocTaiChoController;
 use App\Http\Controllers\DMBaoCaoController;
 use App\Http\Controllers\XuLyViPhamController;
+use App\Http\Controllers\BaiVietController;
+
 // API chỉ dành cho admin
 Route::middleware(['isLogin:admin'])->group(function () {
 
@@ -323,6 +325,14 @@ Route::middleware(['isLogin:admin'])->group(function () {
             Route::post('/thong-ke-tinh-hinh-phuc-vu-ban-doc', [DMBaoCaoController::class, 'thongKeTinhHinhPhucVuBanDoc']);
             Route::post('/xuat-excel-tinh-hinh-phuc-vu-ban-doc', [DMBaoCaoController::class, 'xuatExcelTinhHinhPhucVuBanDoc']);
         });
+
+        Route::prefix('bai-viet')->group(function () {
+            Route::get('/', [BaiVietController::class, 'index']);
+            Route::post('/', [BaiVietController::class, 'store']);
+            Route::put('/{id}', [BaiVietController::class, 'update']);
+            Route::delete('/{id}', [BaiVietController::class, 'destroy']);
+            Route::get('/chu-de', [BaiVietController::class, 'getChuDeBaiViet']);
+        });
     });
 });
 
@@ -341,6 +351,11 @@ Route::middleware(['isLogin', 'web'])->group(function () {
             'quyen' => $request->session()->get('Quyen'),
         ]);
     });
+});
+
+// API công khai không cần đăng nhập
+Route::prefix('opac')->group(function () {
+    Route::get('/bai-viet/{type}', [BaiVietController::class, 'getBaiVietByNavbar']);
 });
 
 

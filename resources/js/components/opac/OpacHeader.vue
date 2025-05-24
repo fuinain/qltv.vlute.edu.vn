@@ -9,37 +9,46 @@
       </div>
     </div>
 
-    <!-- Menu chính -->
-
-    <div class="container-xl">
-      <nav class="navbar navbar-expand-lg">
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarMain">
-          <ul class="navbar-nav me-auto">
-            <li class="nav-item">
-              <router-link class="nav-link" :class="{ active: isActive('/') }" to="/">TRANG CHỦ</router-link>
-            </li>
-            <li class="nav-item">
-              <router-link class="nav-link" :class="{ active: isActive('/gioi-thieu') }" to="/gioi-thieu">GIỚI
-                THIỆU</router-link>
-            </li>
-            <li class="nav-item">
-              <router-link class="nav-link" :class="{ active: isActive('/huong-dan') }" to="/huong-dan">HƯỚNG
-                DẪN</router-link>
-            </li>
-            <li class="nav-item">
-              <router-link class="nav-link" :class="{ active: isActive('/lien-he') }" to="/lien-he">LIÊN
-                HỆ</router-link>
-            </li>
-          </ul>
-          <div class="d-flex">
-            <router-link to="/login" class="btn btn-sm btn-outline-light m-2">ĐĂNG NHẬP</router-link>
+    <!-- Menu chính - sử dụng các class của AdminLTE3 -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+      <div class="container-xl">
+        <div class="navbar-content">
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarMain"
+            aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarMain">
+            <ul class="navbar-nav mr-auto">
+              <li class="nav-item">
+                <router-link class="nav-link" :class="{ active: isActive('/') }" to="/">
+                  <i class="fas fa-home mr-1"></i> TRANG CHỦ
+                </router-link>
+              </li>
+              <li class="nav-item">
+                <router-link class="nav-link" :class="{ active: isActive('/noi-quy') }" to="/noi-quy">
+                  <i class="fas fa-book mr-1"></i> NỘI QUY
+                </router-link>
+              </li>
+              <li class="nav-item">
+                <router-link class="nav-link" :class="{ active: isActive('/huong-dan') }" to="/huong-dan">
+                  <i class="fas fa-question-circle mr-1"></i> HƯỚNG DẪN
+                </router-link>
+              </li>
+              <li class="nav-item">
+                <router-link class="nav-link" :class="{ active: isActive('/lien-he') }" to="/lien-he">
+                  <i class="fas fa-envelope mr-1"></i> LIÊN HỆ
+                </router-link>
+              </li>
+            </ul>
+            <div class="navbar-nav">
+              <router-link to="/login" class="nav-link">
+                <i class="fas fa-sign-in-alt mr-1"></i> ĐĂNG NHẬP
+              </router-link>
+            </div>
           </div>
         </div>
-      </nav>
-    </div>
+      </div>
+    </nav>
   </div>
 </template>
 
@@ -62,7 +71,9 @@ export default {
 
 <style scoped>
 .banner-container {
-  background-color: #fff;
+  background-color: rgba(255, 255, 255, 0.1);
+  max-width: 1140px;
+  margin: 0 auto;
 }
 
 .banner-image-wrapper {
@@ -83,14 +94,21 @@ export default {
   display: block;
 }
 
-.nav-bg-container {
-  background-color: #0d6efd;
-}
-
 .navbar {
-  background-color: #0d6efd;
   padding: 0;
   border-radius: 0;
+  background-color: #007bff;
+  max-width: 1125px;
+  margin: 0 auto;
+}
+
+.navbar-content {
+  width: 100%;
+}
+
+.navbar .container-xl {
+  padding-left: 0;
+  padding-right: 0;
 }
 
 .navbar-nav .nav-link {
@@ -99,24 +117,20 @@ export default {
   font-size: 14px;
   letter-spacing: 0.5px;
   transition: all 0.3s ease;
-  color: white;
 }
 
 .navbar-nav .nav-link:hover,
 .navbar-nav .nav-link.active {
   background-color: rgba(255, 255, 255, 0.1);
-  color: white;
-}
-
-
-.btn-outline-light:hover {
-  background-color: white;
-  color: #0d6efd;
 }
 
 @media (max-width: 768px) {
   .banner-img {
     max-height: 120px;
+  }
+
+  .navbar {
+    padding: 0 7.5px 0 7.5px;
   }
 }
 </style>

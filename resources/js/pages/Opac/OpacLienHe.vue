@@ -1,79 +1,25 @@
 <template>
   <div class="container-xl mt-4 mb-4">
     <div class="row">
-      <!-- Sidebar -->
-      <div class="col-md-3">
-        <OpacSidebar />
-      </div>
       
       <!-- Main content -->
-      <div class="col-md-9">
+      <div class="col-md-8">
         <div class="card">
           <div class="card-header bg-primary text-white">
-            <h2 class="mb-0">Liên hệ</h2>
+            <h2 class="mb-0">{{ baiViet.ten_bai_viet || 'Liên hệ' }}</h2>
           </div>
           <div class="card-body">
-            <div class="row">
-              <div class="col-md-6">
-                <h4>Thông tin liên hệ</h4>
-                <p><strong>Trung tâm Thông tin - Thư viện</strong></p>
-                <p><strong>Trường Đại học Sư phạm Kỹ thuật Vĩnh Long</strong></p>
-                <p>
-                  <i class="bi bi-geo-alt-fill me-2"></i>Địa chỉ: 73 Nguyễn Huệ, Phường 2, TP. Vĩnh Long, Vĩnh Long
-                </p>
-                <p>
-                  <i class="bi bi-telephone-fill me-2"></i>Điện thoại: (0270) 3830 304
-                </p>
-                <p>
-                  <i class="bi bi-envelope-fill me-2"></i>Email: thuvien@vlute.edu.vn
-                </p>
-                <p>
-                  <i class="bi bi-globe me-2"></i>Website: https://thuvien.vlute.edu.vn
-                </p>
-                
-                <h4 class="mt-4">Giờ phục vụ</h4>
-                <p><i class="bi bi-clock-fill me-2"></i>Thứ 2 - Thứ 6: 7h00 - 17h00</p>
-                <p><i class="bi bi-clock-fill me-2"></i>Thứ 7: 8h00 - 12h00</p>
-                <p><i class="bi bi-clock-fill me-2"></i>Chủ nhật và ngày lễ: Đóng cửa</p>
-                
-                <h4 class="mt-4">Các bộ phận</h4>
-                <p><i class="bi bi-people-fill me-2"></i>Phòng Mượn - Trả: Số điện thoại nội bộ 101</p>
-                <p><i class="bi bi-people-fill me-2"></i>Phòng Đọc: Số điện thoại nội bộ 102</p>
-                <p><i class="bi bi-people-fill me-2"></i>Phòng Tham khảo: Số điện thoại nội bộ 103</p>
-                <p><i class="bi bi-people-fill me-2"></i>Phòng Đa phương tiện: Số điện thoại nội bộ 104</p>
-              </div>
-              <div class="col-md-6">
-                <h4>Gửi thông tin liên hệ</h4>
-                <form @submit.prevent="submitForm">
-                  <div class="mb-3">
-                    <label for="fullName" class="form-label">Họ và tên <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" id="fullName" v-model="contactForm.fullName" required>
-                  </div>
-                  <div class="mb-3">
-                    <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
-                    <input type="email" class="form-control" id="email" v-model="contactForm.email" required>
-                  </div>
-                  <div class="mb-3">
-                    <label for="phone" class="form-label">Số điện thoại</label>
-                    <input type="tel" class="form-control" id="phone" v-model="contactForm.phone">
-                  </div>
-                  <div class="mb-3">
-                    <label for="subject" class="form-label">Tiêu đề <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" id="subject" v-model="contactForm.subject" required>
-                  </div>
-                  <div class="mb-3">
-                    <label for="message" class="form-label">Nội dung <span class="text-danger">*</span></label>
-                    <textarea class="form-control" id="message" rows="5" v-model="contactForm.message" required></textarea>
-                  </div>
-                  <button type="submit" class="btn btn-primary">Gửi thông tin</button>
-                </form>
-                
-                <div v-if="formSubmitted" class="alert alert-success mt-3">
-                  Cảm ơn bạn đã gửi thông tin. Chúng tôi sẽ liên hệ lại với bạn trong thời gian sớm nhất!
-                </div>
+            <div v-if="loading" class="text-center">
+              <div class="spinner-border text-primary" role="status">
               </div>
             </div>
             
+            <div v-else-if="error" class="alert alert-warning">
+              <p>{{ error }}</p>
+              <p>Vui lòng thử lại sau hoặc liên hệ quản trị viên.</p>
+            </div>
+            
+            <div v-else class="mb-4" v-html="baiViet.noi_dung"></div>       
             <div class="mt-4">
               <h4>Bản đồ</h4>
               <div class="map-container">
@@ -91,12 +37,17 @@
           </div>
         </div>
       </div>
+      <!-- Sidebar -->
+      <div class="col-md-4">
+        <OpacSidebar />
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import OpacSidebar from "@/components/opac/OpacSidebar.vue";
+import axios from 'axios';
 
 export default {
   name: "OpacLienHe",
@@ -105,6 +56,9 @@ export default {
   },
   data() {
     return {
+      baiViet: {},
+      loading: true,
+      error: null,
       contactForm: {
         fullName: '',
         email: '',
@@ -115,7 +69,26 @@ export default {
       formSubmitted: false
     }
   },
+  mounted() {
+    this.layBaiViet();
+  },
   methods: {
+    async layBaiViet() {
+      try {
+        this.loading = true;
+        const response = await axios.get('/api/opac/bai-viet/lien-he');
+        if (response.data.status === 200) {
+          this.baiViet = response.data.data;
+        } else {
+          this.error = 'Không thể tải nội dung bài viết';
+        }
+      } catch (error) {
+        console.error('Lỗi khi lấy bài viết:', error);
+        this.error = 'Đã xảy ra lỗi khi tải nội dung';
+      } finally {
+        this.loading = false;
+      }
+    },
     submitForm() {
       // Tạm thời chỉ hiển thị thông báo đã gửi (trong thực tế sẽ gửi dữ liệu về server)
       console.log('Form data:', this.contactForm);

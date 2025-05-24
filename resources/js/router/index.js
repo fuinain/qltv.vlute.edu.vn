@@ -35,9 +35,10 @@ import AdminLayout from "@/components/layouts/AdminLayout.vue";
 import PublicLayout from "@/components/layouts/PublicLayout.vue";
 import OpacLayout from "@/components/layouts/OpacLayout.vue";
 import OpacHome from "@/pages/Opac/OpacHome.vue";
+import pageQuanLyBaiViet from "@/pages/Admin/QuanLyDichVu/ThongTinOpac/pageQuanLyBaiViet.vue";
 
 // Cần tạo các component này sau
-const OpacGioiThieu = () => import('@/pages/Opac/OpacGioiThieu.vue');
+const OpacNoiQuy = () => import('@/pages/Opac/OpacNoiQuy.vue');
 const OpacHuongDan = () => import('@/pages/Opac/OpacHuongDan.vue');
 const OpacLienHe = () => import('@/pages/Opac/OpacLienHe.vue');
 const OpacSearchResult = () => import('@/pages/Opac/OpacSearchResult.vue');
@@ -56,11 +57,11 @@ const routes = [
                 }
             },
             {
-                path: "gioi-thieu",
-                name: "OpacGioiThieu",
-                component: OpacGioiThieu,
+                path: "noi-quy",
+                name: "OpacNoiQuy",
+                component: OpacNoiQuy,
                 meta: {
-                    title: "Giới thiệu"
+                    title: "Nội quy"
                 }
             },
             {
@@ -595,6 +596,25 @@ const routes = [
                                         {name: "Quản lý dịch vụ"},
                                         {name: "Quản lý lưu thông"},
                                         {name: "Xử lý vi phạm"},
+                                    ],
+                                },
+                            },
+                        ],
+                    },
+                    {
+                        path: "thong-tin-opac",
+                        children: [
+                            {
+                                path: "quan-ly-bai-viet",
+                                name: "pageQuanLyBaiViet",
+                                component: pageQuanLyBaiViet,
+                                meta: {
+                                    title: "Quản lý bài viết",
+                                    breadcrumb: [
+                                        {name: "Home", path: "/"},
+                                        {name: "Quản lý dịch vụ"},
+                                        {name: "Thông tin OPAC"},
+                                        {name: "Quản lý bài viết"},
                                     ],
                                 },
                             },
