@@ -10,7 +10,6 @@
           <div class="card-body">
             <div v-if="loading" class="text-center">
               <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">Đang tải...</span>
               </div>
             </div>
             
@@ -19,7 +18,7 @@
               <p>Vui lòng thử lại sau hoặc liên hệ quản trị viên.</p>
             </div>
             
-            <div v-else class="noi-quy-content" v-html="baiViet.noi_dung"></div>
+            <div v-else v-html="baiViet.noi_dung"></div>
           </div>
         </div>
       </div>
@@ -71,67 +70,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-.noi-quy-content {
-  max-width: 800px;
-  margin: 0 auto;
-}
-
-.noi-quy-content :deep(h1),
-.noi-quy-content :deep(h2),
-.noi-quy-content :deep(h3),
-.noi-quy-content :deep(h4) {
-  margin-top: 1.5rem;
-  margin-bottom: 1rem;
-  font-weight: bold;
-  color: #333;
-}
-
-.noi-quy-content :deep(table) {
-  width: 100%;
-  max-width: 100%;
-  margin-bottom: 1rem;
-  border-collapse: collapse;
-}
-
-.noi-quy-content :deep(table th),
-.noi-quy-content :deep(table td) {
-  padding: 0.5rem;
-  border: 1px solid #dee2e6;
-}
-
-.noi-quy-content :deep(table th) {
-  background-color: #f8f9fa;
-  vertical-align: middle;
-}
-
-.noi-quy-content :deep(p) {
-  margin-bottom: 1rem;
-  line-height: 1.6;
-}
-
-.noi-quy-content :deep(ul),
-.noi-quy-content :deep(ol) {
-  margin-bottom: 1rem;
-  padding-left: 1.5rem;
-}
-
-.noi-quy-content :deep(li) {
-  margin-bottom: 0.5rem;
-}
-
-.noi-quy-content :deep(img) {
-  max-width: 100%;
-  height: auto;
-  margin: 1rem 0;
-  border-radius: 4px;
-}
-
-.noi-quy-content :deep(blockquote) {
-  padding: 1rem;
-  margin: 1rem 0;
-  border-left: 4px solid #007bff;
-  background-color: #f8f9fa;
-}
-</style> 

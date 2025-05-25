@@ -169,4 +169,47 @@ class BaiVietController extends Controller
             'message' => 'Lấy bài viết thành công'
         ]);
     }
+
+    public function getBaiVietByTenChuDe($ten_chu_de)
+    {
+        $chuDe = ChuDeBaiVietModel::where('ten_chu_de_bai_viet', $ten_chu_de)->first();
+        
+        if (!$chuDe) {
+            return response()->json([
+                'status' => 404,
+                'message' => 'Không tìm thấy chủ đề bài viết',
+                'data' => []
+            ]);
+        }
+        
+        $baiViet = BaiVietModel::where('id_chu_de_bai_viet', $chuDe->id_chu_de_bai_viet)
+            ->orderBy('ngay_tao', 'desc')
+            ->limit(5)
+            ->get();
+            
+        return response()->json([
+            'status' => 200,
+            'data' => $baiViet,
+            'message' => 'Lấy danh sách bài viết thành công'
+        ]);
+    }
+    
+    public function getChiTietBaiViet($id)
+    {
+        $baiViet = BaiVietModel::find($id);
+        
+        if (!$baiViet) {
+            return response()->json([
+                'status' => 404,
+                'message' => 'Không tìm thấy bài viết',
+                'data' => null
+            ]);
+        }
+        
+        return response()->json([
+            'status' => 200,
+            'data' => $baiViet,
+            'message' => 'Lấy chi tiết bài viết thành công'
+        ]);
+    }
 }

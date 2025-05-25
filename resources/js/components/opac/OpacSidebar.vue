@@ -8,36 +8,18 @@
         </h3>
       </div>
       <div class="card-body p-0">
-        <ul class="nav nav-pills flex-column">
-          <li class="nav-item">
-            <a href="#" class="nav-link">
-              <i class="fas fa-book mr-2"></i>Sách giáo trình
-            </a>
+        <div v-if="loading" class="text-center py-3">
+          <div class="spinner-border spinner-border-sm text-primary" role="status">
+          </div>
+        </div>
+        <ul v-else class="nav nav-pills flex-column">
+          <li v-for="taiLieu in danhSachTaiLieu" :key="taiLieu.id" class="nav-item">
+            <router-link :to="{ name: 'OpacDanhSachSachTheoTaiLieu', params: { id: taiLieu.id_tai_lieu }}" class="nav-link">
+              <i :class="getIconForTaiLieu(taiLieu.ma_tai_lieu)" class="mr-2"></i>{{ taiLieu.ten_tai_lieu }}
+            </router-link>
           </li>
-          <li class="nav-item">
-            <a href="#" class="nav-link">
-              <i class="fas fa-graduation-cap mr-2"></i>Luận văn, luận án
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="#" class="nav-link">
-              <i class="fas fa-newspaper mr-2"></i>Tạp chí
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="#" class="nav-link">
-              <i class="fas fa-file-alt mr-2"></i>Báo cáo khoa học
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="#" class="nav-link">
-              <i class="fas fa-file-pdf mr-2"></i>Tài liệu tham khảo
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="#" class="nav-link">
-              <i class="fas fa-laptop mr-2"></i>Tài liệu điện tử
-            </a>
+          <li v-if="danhSachTaiLieu.length === 0" class="nav-item">
+            <span class="nav-link text-muted">Không có dữ liệu</span>
           </li>
         </ul>
       </div>
@@ -51,18 +33,22 @@
         </h3>
       </div>
       <div class="card-body p-0">
-        <ul class="list-group list-group-flush">
+        <div v-if="loadingThongKe" class="text-center py-3">
+          <div class="spinner-border spinner-border-sm text-primary" role="status">
+          </div>
+        </div>
+        <ul v-else class="list-group list-group-flush">
           <li class="list-group-item d-flex justify-content-between align-items-center">
             <span><i class="fas fa-book mr-2"></i>Tổng số đầu sách</span>
-            <span class="badge badge-primary">9,500</span>
+            <span class="badge badge-primary">{{ thongKe.tongSoSach }}</span>
           </li>
           <li class="list-group-item d-flex justify-content-between align-items-center">
             <span><i class="fas fa-users mr-2"></i>Bạn đọc đã đăng ký</span>
-            <span class="badge badge-primary">12,350</span>
+            <span class="badge badge-primary">{{ thongKe.tongSoBanDoc }}</span>
           </li>
           <li class="list-group-item d-flex justify-content-between align-items-center">
             <span><i class="fas fa-clock mr-2"></i>Lượt truy cập</span>
-            <span class="badge badge-primary">145,678</span>
+            <span class="badge badge-primary">-</span>
           </li>
         </ul>
       </div>
@@ -132,9 +118,75 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
-  name: "OpacSidebar"
-}
+  name: "OpacSidebar",
+  data() {
+    return {
+      loading: true,
+      loadingThongKe: true,
+      danhSachTaiLieu: [],
+      thongKe: {}
+    };
+  },
+  mounted() {
+    this.fetchTaiLieu();
+    this.fetchThongKe();
+  },
+  methods: {
+    async fetchTaiLieu() {
+      try {
+        this.loading = true;
+        const response = await axios.get('/api/opac/danh-sach-tai-lieu');
+        if (response.data.status === 200) {
+          this.danhSachTaiLieu = response.data.data;
+        } else {
+          console.error('Lỗi khi lấy danh sách tài liệu:', response.data);
+        }
+      } catch (error) {
+        console.error('Lỗi khi gọi API danh sách tài liệu:', error);
+      } finally {
+        this.loading = false;
+      }
+    },
+    async fetchThongKe() {
+      try {
+        this.loadingThongKe = true;
+        const response = await axios.get('/api/opac/thong-ke');
+        if (response.data.status === 200) {
+          this.thongKe = response.data.data;
+        } else {
+          console.error('Lỗi khi lấy thống kê:', response.data);
+        }
+      } catch (error) {
+        console.error('Lỗi khi gọi API thống kê:', error);
+      } finally {
+        this.loadingThongKe = false;
+      }
+    },
+    getIconForTaiLieu(ma_tai_lieu) {
+      // Cung cấp icon phù hợp cho từng loại tài liệu
+      const iconMap = {
+        'GT': 'fas fa-book',             // Giáo trình
+        'TK': 'fas fa-file-pdf',         // Tham khảo
+        'LV': 'fas fa-graduation-cap',   // Luận văn
+        'LA': 'fas fa-award',            // Luận án
+        'NC': 'fas fa-flask',            // Nghiên cứu
+        'TC': 'fas fa-newspaper',        // Tạp chí
+        'BCKH': 'fas fa-file-alt',       // Báo cáo khoa học
+        'TLDT': 'fas fa-laptop',         // Tài liệu điện tử
+        'ĐATN': 'fas fa-project-diagram', // Đồ án tốt nghiệp
+        'KLTM': 'fas fa-file-signature', // Khóa luận tốt nghiệp
+        'NV': 'fas fa-scroll',           // Ngoại văn
+        'ĐTTS': 'fas fa-user-graduate',  // Luận án tiến sĩ
+        'STKH': 'fas fa-book-reader'     // Sách tham khảo
+      };
+      
+      return iconMap[ma_tai_lieu] || 'fas fa-book'; // Mặc định là biểu tượng sách
+    }
+  }
+};
 </script>
 
 <style scoped>

@@ -28,6 +28,7 @@ use App\Http\Controllers\DocTaiChoController;
 use App\Http\Controllers\DMBaoCaoController;
 use App\Http\Controllers\XuLyViPhamController;
 use App\Http\Controllers\BaiVietController;
+use App\Http\Controllers\OpacController;
 
 // API chỉ dành cho admin
 Route::middleware(['isLogin:admin'])->group(function () {
@@ -356,6 +357,14 @@ Route::middleware(['isLogin', 'web'])->group(function () {
 // API công khai không cần đăng nhập
 Route::prefix('opac')->group(function () {
     Route::get('/bai-viet/{type}', [BaiVietController::class, 'getBaiVietByNavbar']);
+    Route::get('/danh-sach-tai-lieu', [TaiLieuController::class, 'listTaiLieuSelectOption']);
+    Route::get('/thong-ke', [OpacController::class, 'getThongKe']);
+    Route::get('/danh-sach-bai-viet-theo-chu-de/{ten_chu_de}', [BaiVietController::class, 'getBaiVietByTenChuDe']);
+    Route::get('/chi-tiet-bai-viet/{id}', [BaiVietController::class, 'getChiTietBaiViet']);
+    Route::get('/sach-moi', [OpacController::class, 'getSachMoi']);
+    Route::get('/danh-sach-sach', [OpacController::class, 'getDanhSachSach']);
+    Route::get('/sach-theo-tai-lieu/{id_tai_lieu}', [OpacController::class, 'getSachTheoTaiLieu']);
+    Route::get('/chi-tiet-sach/{id_sach}', [OpacController::class, 'getChiTietSach']);
 });
 
 

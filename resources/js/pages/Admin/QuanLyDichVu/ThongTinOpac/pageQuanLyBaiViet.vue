@@ -245,6 +245,7 @@ export default {
             // Khởi tạo Summernote sau khi modal hiển thị
             this.$nextTick(() => {
                 this.initSummernote();
+                this.setSummernoteContent('');
             });
         },
         suaBaiViet(baiViet) {

@@ -42,6 +42,9 @@ const OpacNoiQuy = () => import('@/pages/Opac/OpacNoiQuy.vue');
 const OpacHuongDan = () => import('@/pages/Opac/OpacHuongDan.vue');
 const OpacLienHe = () => import('@/pages/Opac/OpacLienHe.vue');
 const OpacSearchResult = () => import('@/pages/Opac/OpacSearchResult.vue');
+const OpacCTBaiViet = () => import('@/pages/Opac/OpacCTBaiViet.vue');
+const OpacDanhSachSach = () => import('@/pages/Opac/OpacDanhSachSach.vue');
+const OpacChiTietSach = () => import('@/pages/Opac/OpacChiTietSach.vue');
 
 const routes = [
     {
@@ -86,6 +89,38 @@ const routes = [
                 component: OpacSearchResult,
                 meta: {
                     title: "Kết quả tìm kiếm"
+                }
+            },
+            {
+                path: "bai-viet/:id",
+                name: "OpacCTBaiViet",
+                component: OpacCTBaiViet,
+                meta: {
+                    title: "Chi tiết bài viết"
+                }
+            },
+            {
+                path: "danh-sach-sach",
+                name: "OpacDanhSachSach",
+                component: OpacDanhSachSach,
+                meta: {
+                    title: "Danh sách sách"
+                }
+            },
+            {
+                path: "tai-lieu/:id",
+                name: "OpacDanhSachSachTheoTaiLieu",
+                component: OpacDanhSachSach,
+                meta: {
+                    title: "Danh sách sách theo tài liệu"
+                }
+            },
+            {
+                path: "sach/:id",
+                name: "OpacChiTietSach",
+                component: OpacChiTietSach,
+                meta: {
+                    title: "Chi tiết sách"
                 }
             }
         ]

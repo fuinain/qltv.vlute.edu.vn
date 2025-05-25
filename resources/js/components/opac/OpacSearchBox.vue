@@ -32,11 +32,10 @@
             <div class="col-md-6 mb-2">
               <label class="text-muted mb-1">Loại tài liệu</label>
               <select v-model="documentType" class="form-control">
-                <option value="all">Tất cả tài liệu</option>
-                <option value="book">Sách</option>
-                <option value="thesis">Luận văn</option>
-                <option value="journal">Báo/Tạp chí</option>
-                <option value="ebook">Tài liệu điện tử</option>
+                <option value="">Tất cả tài liệu</option>
+                <option v-for="taiLieu in danhSachTaiLieu" :key="taiLieu.id_tai_lieu" :value="taiLieu.id_tai_lieu">
+                  {{ taiLieu.ten_tai_lieu }}
+                </option>
               </select>
             </div>
           </div>
@@ -47,6 +46,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   name: "OpacSearchBox",
   props: {
@@ -55,7 +56,7 @@ export default {
       default: () => ({
         query: '',
         type: 'all',
-        docType: 'all',
+        docType: '',
         fullTextOnly: false
       })
     }
@@ -64,22 +65,53 @@ export default {
     return {
       searchQuery: this.initialSearchParams.query || '',
       searchType: this.initialSearchParams.type || 'all',
-      documentType: this.initialSearchParams.docType || 'all',
-      fullTextOnly: this.initialSearchParams.fullTextOnly || false
+      documentType: this.initialSearchParams.docType || '',
+      fullTextOnly: this.initialSearchParams.fullTextOnly || false,
+      danhSachTaiLieu: [],
+      loading: false
     }
   },
+  mounted() {
+    this.loadDanhSachTaiLieu();
+  },
   methods: {
+    async loadDanhSachTaiLieu() {
+      try {
+        this.loading = true;
+        const response = await axios.get('/api/opac/danh-sach-tai-lieu');
+        if (response.data.status === 200) {
+          this.danhSachTaiLieu = response.data.data;
+        } else {
+          console.error('Lỗi khi lấy danh sách tài liệu:', response.data);
+        }
+      } catch (error) {
+        console.error('Lỗi khi gọi API danh sách tài liệu:', error);
+      } finally {
+        this.loading = false;
+      }
+    },
     searchDocuments() {
-      // Emit sự kiện search lên parent component
-      this.$emit('search', {
-        query: this.searchQuery,
-        type: this.searchType,
-        docType: this.documentType,
-        fullTextOnly: this.fullTextOnly
-      });
+      // Nếu chọn loại tài liệu cụ thể
+      if (this.documentType) {
+        // Chuyển đến trang danh sách sách theo tài liệu
+        this.$router.push({
+          name: 'OpacDanhSachSachTheoTaiLieu',
+          params: { id: this.documentType },
+          query: { search: this.searchQuery }
+        });
+      } else {
+        // Chuyển đến trang danh sách sách tổng hợp
+        this.$router.push({
+          name: 'OpacDanhSachSach',
+          query: { 
+            search: this.searchQuery,
+            type: this.searchType
+          }
+        });
+      }
       
-      // Log thông tin tìm kiếm (để debug)
-      console.log('Tìm kiếm với thông số:', {
+      // Emit sự kiện search lên parent component (để dùng khi cần)
+      this.$emit('search', {
         query: this.searchQuery,
         type: this.searchType,
         docType: this.documentType,
@@ -93,7 +125,7 @@ export default {
         if (newVal) {
           this.searchQuery = newVal.query || '';
           this.searchType = newVal.type || 'all';
-          this.documentType = newVal.docType || 'all';
+          this.documentType = newVal.docType || '';
           this.fullTextOnly = newVal.fullTextOnly || false;
         }
       },
@@ -115,6 +147,18 @@ export default {
 
 .icheck-primary {
   margin-bottom: 0;
+}
+
+.input-group {
+  width: 100%;
+}
+
+.input-group .form-control {
+  flex: 1;
+}
+
+.input-group-append {
+  margin-left: auto;
 }
 
 @media (max-width: 768px) {

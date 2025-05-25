@@ -1,7 +1,7 @@
 <template>
   <footer>
     <!-- Main Footer -->
-    <div class="main-footer bg-light pt-4">
+    <div class="main-footer bg-light m-0">
       <div class="container-xl">
         <div class="row">
           <!-- Tài liệu nội sinh -->
@@ -69,10 +69,10 @@
             </h5>
             <ul class="list-unstyled">
               <li class="mb-2">
-                <i class="fas fa-clock text-info mr-2"></i>Thứ 2 đến thứ 6: 7h – 17h
+                <i class="fas fa-clock text-info mr-2"></i>Thứ 3 đến thứ 6: 7h – 17h
               </li>
               <li class="mb-2">
-                <i class="fas fa-clock text-info mr-2"></i>Thứ 7: 8h – 12h
+                <i class="fas fa-clock text-info mr-2"></i>Thứ 2 và thứ 7: Giờ hành chính
               </li>
               <li class="mb-2">
                 <i class="fas fa-exclamation-circle text-warning mr-2"></i>Đóng cửa chủ nhật và các ngày lễ
