@@ -339,7 +339,6 @@ Route::middleware(['isLogin:admin'])->group(function () {
 
 // API dành cho đọc giả
 Route::middleware(['isLogin:docgia'])->group(function () {
-
 });
 
 // API chung cho tất cả người dùng đã đăng nhập
@@ -365,6 +364,13 @@ Route::prefix('opac')->group(function () {
     Route::get('/danh-sach-sach', [OpacController::class, 'getDanhSachSach']);
     Route::get('/sach-theo-tai-lieu/{id_tai_lieu}', [OpacController::class, 'getSachTheoTaiLieu']);
     Route::get('/chi-tiet-sach/{id_sach}', [OpacController::class, 'getChiTietSach']);
+    
+    // API cho sinh viên đã đăng nhập
+    Route::middleware(['isLogin:docgia'])->group(function () {
+        Route::get('/thong-tin-sinh-vien/{id_doc_gia}', [OpacController::class, 'getThongTinSinhVien']);
+        Route::get('/lich-su-muon/{id_doc_gia}', [OpacController::class, 'getLichSuMuon']);
+        Route::put('/gia-han-sach/{id_muon_sach}', [OpacController::class, 'giaHanSach']);
+    });
 });
 
 

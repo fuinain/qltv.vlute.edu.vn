@@ -12,8 +12,12 @@ use App\Models\DKCBModel;
 use App\Models\DocTaiChoModel;
 use App\Models\MuonSachModel;
 use App\Models\KhoAnPhamModel;
+use App\Models\LichSuMuonTraModel;
+use App\Models\DoiTuongBanDocModel;
+use App\Models\ChiTietThamSoLuuThongModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class OpacController extends Controller
 {
@@ -244,5 +248,268 @@ class OpacController extends Controller
         }
         
         return !empty($result) ? implode(' - ', $result) : null;
+    }
+    
+    // Phương thức lấy thông tin sinh viên
+    public function getThongTinSinhVien($id_doc_gia)
+    {
+        try {
+            // Kiểm tra xem id_doc_gia có khớp với session không
+            if (session('IdDocGia') != $id_doc_gia) {
+                return response()->json([
+                    'status' => 403,
+                    'message' => 'Bạn không có quyền truy cập thông tin này'
+                ]);
+            }
+
+            // Lấy thông tin sinh viên từ bảng doc_gia và kết hợp với bảng chuyen_nganh
+            $docGia = DB::table('doc_gia')
+                ->leftJoin('chuyen_nganh', 'doc_gia.id_chuyen_nganh', '=', 'chuyen_nganh.id_chuyen_nganh')
+                ->select(
+                    'doc_gia.*',
+                    'chuyen_nganh.ten_chuyen_nganh'
+                )
+                ->where('doc_gia.id_doc_gia', $id_doc_gia)
+                ->first();
+
+            if (!$docGia) {
+                return response()->json([
+                    'status' => 404,
+                    'message' => 'Không tìm thấy thông tin sinh viên'
+                ]);
+            }
+
+            return response()->json([
+                'status' => 200,
+                'data' => $docGia
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 500,
+                'message' => 'Đã xảy ra lỗi: ' . $e->getMessage()
+            ]);
+        }
+    }
+
+    // Phương thức lấy lịch sử mượn sách của sinh viên
+    public function getLichSuMuon($id_doc_gia)
+    {
+        try {
+            // Kiểm tra xem id_doc_gia có khớp với session không
+            if (session('IdDocGia') != $id_doc_gia) {
+                return response()->json([
+                    'status' => 403,
+                    'message' => 'Bạn không có quyền truy cập thông tin này'
+                ]);
+            }
+
+            $lichSuMuon = [];
+
+            // 1. Lấy sách đang mượn từ bảng muon_sach
+            $sachDangMuon = DB::table('muon_sach')
+                ->join('dkcb', 'muon_sach.id_dkcb', '=', 'dkcb.id_dkcb')
+                ->join('sach', 'dkcb.id_sach', '=', 'sach.id_sach')
+                ->select(
+                    'muon_sach.id_muon_sach',
+                    'muon_sach.ngay_muon',
+                    'muon_sach.han_tra',
+                    'muon_sach.gia_han',
+                    DB::raw('NULL as ngay_tra'),
+                    'dkcb.ma_dkcb',
+                    'sach.id_sach',
+                    'sach.nhan_de as ten_sach',
+                    'sach.tac_gia',
+                    DB::raw('CASE 
+                        WHEN muon_sach.qua_han = 1 THEN "Quá hạn"
+                        ELSE "Đang mượn"
+                    END as trang_thai')
+                )
+                ->where('muon_sach.id_ban_doc', $id_doc_gia)
+                ->get();
+            
+            // Thêm sách đang mượn vào kết quả
+            foreach ($sachDangMuon as $sach) {
+                $lichSuMuon[] = $sach;
+            }
+
+            // 2. Lấy sách đọc tại chỗ từ bảng doc_tai_cho
+            $sachDocTaiCho = DB::table('doc_tai_cho')
+                ->join('dkcb', 'doc_tai_cho.id_dkcb', '=', 'dkcb.id_dkcb')
+                ->join('sach', 'dkcb.id_sach', '=', 'sach.id_sach')
+                ->select(
+                    'doc_tai_cho.id_doc_tai_cho as id_muon_sach',
+                    'doc_tai_cho.gio_muon as ngay_muon',
+                    DB::raw('NULL as han_tra'),
+                    DB::raw('0 as gia_han'),
+                    'doc_tai_cho.gio_tra as ngay_tra',
+                    'dkcb.ma_dkcb',
+                    'sach.id_sach',
+                    'sach.nhan_de as ten_sach',
+                    'sach.tac_gia',
+                    DB::raw('CASE 
+                        WHEN doc_tai_cho.qua_han = 1 THEN "Quá hạn"
+                        WHEN doc_tai_cho.gio_tra IS NOT NULL THEN "Đã trả"
+                        ELSE "Đọc tại chỗ"
+                    END as trang_thai')
+                )
+                ->where('doc_tai_cho.id_ban_doc', $id_doc_gia)
+                ->get();
+            
+            // Thêm sách đọc tại chỗ vào kết quả
+            foreach ($sachDocTaiCho as $sach) {
+                $lichSuMuon[] = $sach;
+            }
+
+            // 3. Lấy lịch sử mượn trả từ bảng lich_su_muon_tra
+            $lichSuMuonTra = DB::table('lich_su_muon_tra')
+                ->select(
+                    'lich_su_muon_tra.id_lich_su as id_muon_sach',
+                    'lich_su_muon_tra.ngay_muon',
+                    'lich_su_muon_tra.han_tra',
+                    'lich_su_muon_tra.gia_han',
+                    'lich_su_muon_tra.ngay_tra',
+                    'lich_su_muon_tra.ma_dkcb',
+                    DB::raw('NULL as id_sach'),
+                    'lich_su_muon_tra.ten_sach',
+                    DB::raw('NULL as tac_gia'),
+                    DB::raw('"Đã trả" as trang_thai')
+                )
+                ->where('lich_su_muon_tra.id_ban_doc', $id_doc_gia)
+                ->get();
+            
+            // Thêm lịch sử mượn trả vào kết quả
+            foreach ($lichSuMuonTra as $sach) {
+                $lichSuMuon[] = $sach;
+            }
+
+            // Sắp xếp kết quả theo ngày mượn giảm dần (mới nhất lên đầu)
+            $lichSuMuon = collect($lichSuMuon)->sortByDesc('ngay_muon')->values();
+
+            return response()->json([
+                'status' => 200,
+                'data' => $lichSuMuon
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 500,
+                'message' => 'Đã xảy ra lỗi: ' . $e->getMessage()
+            ]);
+        }
+    }
+
+    // Phương thức gia hạn sách cho sinh viên
+    public function giaHanSach($id_muon_sach)
+    {
+        try {
+            // Tìm phiếu mượn
+            $phieuMuon = MuonSachModel::find($id_muon_sach);
+            
+            if (!$phieuMuon) {
+                return response()->json([
+                    'status' => 404,
+                    'message' => 'Không tìm thấy phiếu mượn'
+                ]);
+            }
+
+            // Kiểm tra quyền truy cập (chỉ sinh viên sở hữu phiếu mới được gia hạn)
+            if (session('IdDocGia') != $phieuMuon->id_ban_doc) {
+                return response()->json([
+                    'status' => 403,
+                    'message' => 'Bạn không có quyền gia hạn phiếu mượn này'
+                ]);
+            }
+
+            // Kiểm tra đã gia hạn chưa
+            if ($phieuMuon->gia_han > 0) {
+                return response()->json([
+                    'status' => 400,
+                    'message' => 'Phiếu mượn đã được gia hạn trước đó'
+                ]);
+            }
+
+            // Kiểm tra điều kiện gia hạn (phải đến ngày hạn trả mới được gia hạn)
+            $today = Carbon::now()->startOfDay();
+            $hanTra = Carbon::parse($phieuMuon->han_tra)->startOfDay();
+            
+            if ($today->lt($hanTra)) {
+                return response()->json([
+                    'status' => 400,
+                    'message' => 'Chưa đến hạn trả, không thể gia hạn. Vui lòng gia hạn vào ngày ' . $hanTra->format('d/m/Y')
+                ]);
+            }
+
+            // Lấy thông tin bạn đọc, đối tượng bạn đọc và kho
+            $banDoc = DocGiaModel::find($phieuMuon->id_ban_doc);
+            $dkcb = DKCBModel::find($phieuMuon->id_dkcb);
+            
+            if (!$banDoc || !$dkcb) {
+                return response()->json([
+                    'status' => 404,
+                    'message' => 'Không tìm thấy thông tin bạn đọc hoặc DKCB'
+                ]);
+            }
+
+            $doiTuongBanDoc = DoiTuongBanDocModel::where('ma_so_quy_uoc', $banDoc->ma_so_quy_uoc)->first();
+            
+            if (!$doiTuongBanDoc) {
+                return response()->json([
+                    'status' => 404,
+                    'message' => 'Không tìm thấy thông tin đối tượng bạn đọc'
+                ]);
+            }
+
+            // Lấy thông tin gia hạn từ cấu hình
+            $diemLuuThongID = 1; // Giả sử id=1 là kho mượn về
+            $thongTinMuon = ChiTietThamSoLuuThongModel::join('kho_an_pham', 'chi_tiet_tham_so_lt.id_kho_an_pham', '=', 'kho_an_pham.id_kho_an_pham')
+                ->where('chi_tiet_tham_so_lt.id_doi_tuong_ban_doc', $doiTuongBanDoc->id_doi_tuong_ban_doc)
+                ->where('chi_tiet_tham_so_lt.id_diem_luu_thong', $diemLuuThongID)
+                ->where('chi_tiet_tham_so_lt.id_kho_an_pham', $dkcb->id_kho_an_pham)
+                ->select('chi_tiet_tham_so_lt.*')
+                ->first();
+
+            if (!$thongTinMuon || $thongTinMuon->gia_han <= 0) {
+                return response()->json([
+                    'status' => 400,
+                    'message' => 'Đối tượng bạn đọc không được phép gia hạn hoặc số ngày gia hạn là 0'
+                ]);
+            }
+
+            // Tính ngày gia hạn
+            $soNgayGiaHan = (int)$thongTinMuon->gia_han;
+            $hanTraMoi = Carbon::parse($phieuMuon->han_tra)->addDays($soNgayGiaHan);
+
+            // Cập nhật phiếu mượn
+            $phieuMuon->han_tra = $hanTraMoi;
+            $phieuMuon->gia_han = 1; // Đánh dấu đã gia hạn
+            $phieuMuon->save();
+
+            // Cập nhật lịch sử mượn trả
+            $lichSu = LichSuMuonTraModel::where('id_ban_doc', $phieuMuon->id_ban_doc)
+                ->where('id_dkcb', $phieuMuon->id_dkcb)
+                ->whereNull('ngay_tra')
+                ->where('tai_cho', 0) // 0 = mượn về
+                ->first();
+                
+            if ($lichSu) {
+                $lichSu->han_tra = $hanTraMoi;
+                $lichSu->gia_han = 1;
+                $lichSu->save();
+            }
+
+            return response()->json([
+                'status' => 200,
+                'message' => 'Gia hạn thành công',
+                'data' => [
+                    'id_muon_sach' => $phieuMuon->id_muon_sach,
+                    'han_tra' => $phieuMuon->han_tra,
+                    'gia_han' => $phieuMuon->gia_han
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 500,
+                'message' => 'Đã xảy ra lỗi: ' . $e->getMessage()
+            ]);
+        }
     }
 }

@@ -45,6 +45,9 @@ const OpacSearchResult = () => import('@/pages/Opac/OpacSearchResult.vue');
 const OpacCTBaiViet = () => import('@/pages/Opac/OpacCTBaiViet.vue');
 const OpacDanhSachSach = () => import('@/pages/Opac/OpacDanhSachSach.vue');
 const OpacChiTietSach = () => import('@/pages/Opac/OpacChiTietSach.vue');
+const SinhVienKhongTonTai = () => import('@/pages/Opac/SinhVienKhongTonTai.vue');
+const ThongTinSinhVien = () => import('@/pages/Opac/ThongTinSinhVien.vue');
+const LichSuMuon = () => import('@/pages/Opac/LichSuMuon.vue');
 
 const routes = [
     {
@@ -121,6 +124,32 @@ const routes = [
                 component: OpacChiTietSach,
                 meta: {
                     title: "Chi tiết sách"
+                }
+            },
+            {
+                path: "sinh-vien-khong-ton-tai",
+                name: "SinhVienKhongTonTai",
+                component: SinhVienKhongTonTai,
+                meta: {
+                    title: "Sinh viên không tồn tại"
+                }
+            },
+            {
+                path: "thong-tin-sinh-vien",
+                name: "ThongTinSinhVien",
+                component: ThongTinSinhVien,
+                meta: {
+                    title: "Thông tin sinh viên",
+                    requiresAuth: true
+                }
+            },
+            {
+                path: "lich-su-muon",
+                name: "LichSuMuon",
+                component: LichSuMuon,
+                meta: {
+                    title: "Lịch sử mượn sách",
+                    requiresAuth: true
                 }
             }
         ]

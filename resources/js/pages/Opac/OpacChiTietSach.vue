@@ -13,7 +13,7 @@
         <div v-else>
           <!-- Thông tin sách -->
           <div class="card mb-4">
-            <div class="card-header bg-primary text-white">
+            <div class="card-header bg-info text-white py-2">
               <h2 class="mb-0">{{ sach.nhan_de }}</h2>
             </div>
             <div class="card-body">
@@ -137,7 +137,7 @@
           
           <!-- Thông tin xếp giá -->
           <div class="card mt-4">
-            <div class="card-header bg-primary text-white">
+            <div class="card-header bg-info text-white py-2">
               <h4 class="mb-0">Thông tin xếp giá</h4>
             </div>
             <div class="card-body">

@@ -40,15 +40,27 @@ class SSOController extends Controller
             
             // Kiểm tra nếu email có đuôi @st.vlute.edu.vn hoặc @student.vlute.edu.vn
             if (preg_match('/@(st\.vlute\.edu\.vn|student\.vlute\.edu\.vn)$/', $email)) {
-                // Gán session
-                $request->session()->put('IsLogin', true);
-                $request->session()->put('Email', $email);
-                $request->session()->put('Username', $tttk->preferred_username);
-                $request->session()->put('Quyen', 'docgia');
-                $request->session()->put('HoTen', $tttk->name ?? 'Sinh viên');
+                // Kiểm tra xem sinh viên đã tồn tại trong bảng doc_gia chưa
+                $docGia = DB::table('doc_gia')
+                    ->where('email', $email)
+                    ->first();
+                
+                if ($docGia) {
+                    // Nếu sinh viên đã tồn tại trong hệ thống
+                    $request->session()->put('IsLogin', true);
+                    $request->session()->put('Email', $email);
+                    $request->session()->put('Username', $tttk->preferred_username);
+                    $request->session()->put('Quyen', 'docgia');
+                    $request->session()->put('HoTen', $docGia->ho_ten ?? $tttk->name ?? 'Sinh viên');
+                    $request->session()->put('MSSV', $docGia->mssv ?? '');
+                    $request->session()->put('IdDocGia', $docGia->id_doc_gia ?? '');
 
-                // Điều hướng đến view sinh viên
-                return redirect()->to('/docgia/');
+                    // Điều hướng về trang chủ OPAC thay vì /docgia/
+                    return redirect()->to('/');
+                } else {
+                    // Nếu sinh viên chưa tồn tại trong hệ thống
+                    return redirect()->to('/sinh-vien-khong-ton-tai');
+                }
             }
 
             // Nếu không phải email có đuôi trên, kiểm tra trong cơ sở dữ liệu

@@ -22,7 +22,9 @@
             isLogin: "{{ session('IsLogin') }}",
             email: "{{ session('Email') }}",
             username: "{{ session('Username') }}",
-            hoTen: "{{ session('HoTen') }}"
+            hoTen: "{{ session('HoTen') }}",
+            mssv: "{{ session('MSSV') }}",
+            idDocGia: "{{ session('IdDocGia') }}"
         }
     };
     </script>

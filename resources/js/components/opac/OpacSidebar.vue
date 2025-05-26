@@ -1,7 +1,7 @@
 <template>
   <div class="opac-sidebar">
     <!-- Danh mục tài liệu -->
-    <div class="card card-primary card-outline mb-4">
+    <div class="card card-info card-outline mb-4">
       <div class="card-header">
         <h3 class="card-title">
           <i class="fas fa-book-open mr-2"></i>Danh mục tài liệu
@@ -55,7 +55,7 @@
     </div>
     
     <!-- Liên kết -->
-    <div class="card card-success card-outline">
+    <div class="card card-info card-outline">
       <div class="card-header">
         <h3 class="card-title">
           <i class="fas fa-link mr-2"></i>Liên kết hữu ích

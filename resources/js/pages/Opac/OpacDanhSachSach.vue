@@ -4,7 +4,7 @@
       <!-- Main content -->
       <div class="col-md-8">
         <div class="card">
-          <div class="card-header bg-primary text-white">
+          <div class="card-header bg-info text-white py-2">
             <div class="d-md-flex justify-content-between align-items-center">
               <h2 class="mb-md-0 mb-3">
                 {{ isTaiLieuMode ? 'Danh sách ' + tenTaiLieu : 'Danh sách sách' }}

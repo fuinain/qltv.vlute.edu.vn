@@ -4,7 +4,7 @@
       <!-- Main content -->
       <div class="col-md-8">
         <div class="card">
-          <div class="card-header bg-primary text-white">
+          <div class="card-header bg-info text-white py-2">
             <h2 class="mb-0">{{ baiViet.ten_bai_viet || 'Nội quy thư viện' }}</h2>
           </div>
           <div class="card-body">
