@@ -367,10 +367,10 @@
                                 <!-- Menu cấp 3 -->
                                 <ul class="nav nav-treeview">
                                     <li class="nav-item">
-                                        <a href="#" class="nav-link">
+                                        <router-link :to="{ name: 'pageThietLapKiemKe' }" class="nav-link">
                                             <i class="fas fa-angle-right nav-icon"></i> <!-- Icon cấp 3 -->
                                             <p>Thiết lập kiểm kê</p>
-                                        </a>
+                                        </router-link>
                                     </li>
                                 </ul>
                             </li>
@@ -384,10 +384,10 @@
                                 </a>
                                 <ul class="nav nav-treeview">
                                     <li class="nav-item">
-                                        <a href="#" class="nav-link">
+                                        <router-link :to="{ name: 'pageThanhLy' }" class="nav-link">
                                             <i class="fas fa-angle-right nav-icon"></i> <!-- Icon cấp 3 -->
                                             <p>Quản lý danh mục thanh lý</p>
-                                        </a>
+                                        </router-link>
                                     </li>
                                 </ul>
                             </li>

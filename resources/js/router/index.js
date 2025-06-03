@@ -1,5 +1,5 @@
 // resources/js/router/index.js
-import {createRouter, createWebHistory} from "vue-router";
+import { createRouter, createWebHistory } from "vue-router";
 import Admin from "@/pages/Admin/pageAdmin.vue";
 import pagePhongKhoa from "@/pages/Admin/DanhMuc/ThongTinChung/PhongKhoa/pagePhongKhoa.vue";
 import pageChucVu from "@/pages/Admin/DanhMuc/ThongTinChung/ChucVu/pageChucVu.vue";
@@ -36,6 +36,8 @@ import PublicLayout from "@/components/layouts/PublicLayout.vue";
 import OpacLayout from "@/components/layouts/OpacLayout.vue";
 import OpacHome from "@/pages/Opac/OpacHome.vue";
 import pageQuanLyBaiViet from "@/pages/Admin/QuanLyDichVu/ThongTinOpac/pageQuanLyBaiViet.vue";
+import pageThietLapKiemKe from "@/pages/Admin/KiemKeThanhLy/pageThietLapKiemKe.vue";
+import pageThanhLy from "@/pages/Admin/KiemKeThanhLy/pageThanhLy.vue";
 
 // Cần tạo các component này sau
 const OpacNoiQuy = () => import('@/pages/Opac/OpacNoiQuy.vue');
@@ -183,10 +185,10 @@ const routes = [
                                 meta: {
                                     title: "Phòng/Khoa",
                                     breadcrumb: [
-                                        {name: "Home", path: "/"},
-                                        {name: "Danh mục"},
-                                        {name: "Thông tin chung"},
-                                        {name: "Phòng/Khoa"},
+                                        { name: "Home", path: "/" },
+                                        { name: "Danh mục" },
+                                        { name: "Thông tin chung" },
+                                        { name: "Phòng/Khoa" },
                                     ],
                                 },
                             },
@@ -197,10 +199,10 @@ const routes = [
                                 meta: {
                                     title: "Chức vụ",
                                     breadcrumb: [
-                                        {name: "Home", path: "/"},
-                                        {name: "Danh mục"},
-                                        {name: "Thông tin chung"},
-                                        {name: "Chức vụ"},
+                                        { name: "Home", path: "/" },
+                                        { name: "Danh mục" },
+                                        { name: "Thông tin chung" },
+                                        { name: "Chức vụ" },
                                     ],
                                 },
                             },
@@ -211,10 +213,10 @@ const routes = [
                                 meta: {
                                     title: "Năm học",
                                     breadcrumb: [
-                                        {name: "Home", path: "/"},
-                                        {name: "Danh mục"},
-                                        {name: "Thông tin chung"},
-                                        {name: "Năm học"},
+                                        { name: "Home", path: "/" },
+                                        { name: "Danh mục" },
+                                        { name: "Thông tin chung" },
+                                        { name: "Năm học" },
                                     ],
                                 },
                             },
@@ -225,10 +227,10 @@ const routes = [
                                 meta: {
                                     title: "Lớp học",
                                     breadcrumb: [
-                                        {name: "Home", path: "/"},
-                                        {name: "Danh mục"},
-                                        {name: "Thông tin chung"},
-                                        {name: "Lớp học"},
+                                        { name: "Home", path: "/" },
+                                        { name: "Danh mục" },
+                                        { name: "Thông tin chung" },
+                                        { name: "Lớp học" },
                                     ],
                                 },
                             },
@@ -239,10 +241,10 @@ const routes = [
                                 meta: {
                                     title: "Năm học",
                                     breadcrumb: [
-                                        {name: "Home", path: "/"},
-                                        {name: "Danh mục"},
-                                        {name: "Thông tin chung"},
-                                        {name: "Chuyên ngành"},
+                                        { name: "Home", path: "/" },
+                                        { name: "Danh mục" },
+                                        { name: "Thông tin chung" },
+                                        { name: "Chuyên ngành" },
                                     ],
                                 },
                             },
@@ -258,10 +260,10 @@ const routes = [
                                 meta: {
                                     title: "Nhà cung cấp",
                                     breadcrumb: [
-                                        {name: "Home", path: "/"},
-                                        {name: "Danh mục"},
-                                        {name: "Nghiệp vụ bổ sung"},
-                                        {name: "Nhà cung cấp"},
+                                        { name: "Home", path: "/" },
+                                        { name: "Danh mục" },
+                                        { name: "Nghiệp vụ bổ sung" },
+                                        { name: "Nhà cung cấp" },
                                     ],
                                 },
                             },
@@ -272,10 +274,10 @@ const routes = [
                                 meta: {
                                     title: "Trạng thái đơn",
                                     breadcrumb: [
-                                        {name: "Home", path: "/"},
-                                        {name: "Danh mục"},
-                                        {name: "Nghiệp vụ bổ sung"},
-                                        {name: "Trạng thái đơn"},
+                                        { name: "Home", path: "/" },
+                                        { name: "Danh mục" },
+                                        { name: "Nghiệp vụ bổ sung" },
+                                        { name: "Trạng thái đơn" },
                                     ],
                                 },
                             },
@@ -286,10 +288,10 @@ const routes = [
                                 meta: {
                                     title: "Nguồn nhận",
                                     breadcrumb: [
-                                        {name: "Home", path: "/"},
-                                        {name: "Danh mục"},
-                                        {name: "Nghiệp vụ bổ sung"},
-                                        {name: "Nguồn nhận"},
+                                        { name: "Home", path: "/" },
+                                        { name: "Danh mục" },
+                                        { name: "Nghiệp vụ bổ sung" },
+                                        { name: "Nguồn nhận" },
                                     ],
                                 },
                             },
@@ -300,10 +302,10 @@ const routes = [
                                 meta: {
                                     title: "Loại nhập",
                                     breadcrumb: [
-                                        {name: "Home", path: "/"},
-                                        {name: "Danh mục"},
-                                        {name: "Nghiệp vụ bổ sung"},
-                                        {name: "Loại nhập"},
+                                        { name: "Home", path: "/" },
+                                        { name: "Danh mục" },
+                                        { name: "Nghiệp vụ bổ sung" },
+                                        { name: "Loại nhập" },
                                     ],
                                 },
                             },
@@ -314,10 +316,10 @@ const routes = [
                                 meta: {
                                     title: "Báo cáo",
                                     breadcrumb: [
-                                        {name: "Home", path: "/"},
-                                        {name: "Danh mục"},
-                                        {name: "Nghiệp vụ bổ sung"},
-                                        {name: "Báo cáo"},
+                                        { name: "Home", path: "/" },
+                                        { name: "Danh mục" },
+                                        { name: "Nghiệp vụ bổ sung" },
+                                        { name: "Báo cáo" },
                                     ],
                                 },
                             },
@@ -333,10 +335,10 @@ const routes = [
                                 meta: {
                                     title: "Cấu hình thư mục tài liệu",
                                     breadcrumb: [
-                                        {name: "Home", path: "/"},
-                                        {name: "Danh mục", path: "/admin"},
-                                        {name: "Nghiệp vụ biên mục"},
-                                        {name: "Tài liệu & Thư mục"},
+                                        { name: "Home", path: "/" },
+                                        { name: "Danh mục", path: "/admin" },
+                                        { name: "Nghiệp vụ biên mục" },
+                                        { name: "Tài liệu & Thư mục" },
                                     ],
                                 },
                             },
@@ -352,10 +354,10 @@ const routes = [
                                 meta: {
                                     title: "Đối tượng bạn đọc",
                                     breadcrumb: [
-                                        {name: "Home", path: "/"},
-                                        {name: "Danh mục"},
-                                        {name: "Nghiệp vụ lưu thông"},
-                                        {name: "Đối tượng bạn đọc"},
+                                        { name: "Home", path: "/" },
+                                        { name: "Danh mục" },
+                                        { name: "Nghiệp vụ lưu thông" },
+                                        { name: "Đối tượng bạn đọc" },
                                     ],
                                 },
                             },
@@ -366,10 +368,10 @@ const routes = [
                                 meta: {
                                     title: "Khai báo điểm lưu thông",
                                     breadcrumb: [
-                                        {name: "Home", path: "/"},
-                                        {name: "Danh mục"},
-                                        {name: "Nghiệp vụ lưu thông"},
-                                        {name: "Điểm lưu thông"},
+                                        { name: "Home", path: "/" },
+                                        { name: "Danh mục" },
+                                        { name: "Nghiệp vụ lưu thông" },
+                                        { name: "Điểm lưu thông" },
                                     ],
                                 },
                             },
@@ -380,10 +382,10 @@ const routes = [
                                 meta: {
                                     title: "Thiết lập tham số lưu thông",
                                     breadcrumb: [
-                                        {name: "Home", path: "/"},
-                                        {name: "Danh mục"},
-                                        {name: "Nghiệp vụ lưu thông"},
-                                        {name: "Thiết lập tham số lưu thông"},
+                                        { name: "Home", path: "/" },
+                                        { name: "Danh mục" },
+                                        { name: "Nghiệp vụ lưu thông" },
+                                        { name: "Thiết lập tham số lưu thông" },
                                     ],
                                 },
                             },
@@ -394,14 +396,14 @@ const routes = [
                                 meta: {
                                     title: "Chi tiết tham số lưu thông",
                                     breadcrumb: [
-                                        {name: "Home", path: "/"},
-                                        {name: "Danh mục"},
-                                        {name: "Nghiệp vụ lưu thông"},
+                                        { name: "Home", path: "/" },
+                                        { name: "Danh mục" },
+                                        { name: "Nghiệp vụ lưu thông" },
                                         {
                                             name: "Thiết lập tham số lưu thông",
                                             path: "/admin/danh-muc/nghiep-vu-luu-thong/tham-so-luu-thong",
                                         },
-                                        {name: "CT tham số lưu thông"},
+                                        { name: "CT tham số lưu thông" },
                                     ],
                                 },
                             },
@@ -412,10 +414,10 @@ const routes = [
                                 meta: {
                                     title: "Phạt bạn đọc",
                                     breadcrumb: [
-                                        {name: "Home", path: "/"},
-                                        {name: "Danh mục"},
-                                        {name: "Nghiệp vụ lưu thông"},
-                                        {name: "Phạt bạn đọc"},
+                                        { name: "Home", path: "/" },
+                                        { name: "Danh mục" },
+                                        { name: "Nghiệp vụ lưu thông" },
+                                        { name: "Phạt bạn đọc" },
                                     ],
                                 },
                             },
@@ -436,10 +438,10 @@ const routes = [
                                 meta: {
                                     title: "Danh mục kho ấn phẩm",
                                     breadcrumb: [
-                                        {name: "Home", path: "/"},
-                                        {name: "Quản lý ấn phẩm"},
-                                        {name: "Kho ấn phẩm"},
-                                        {name: "Danh mục kho"},
+                                        { name: "Home", path: "/" },
+                                        { name: "Quản lý ấn phẩm" },
+                                        { name: "Kho ấn phẩm" },
+                                        { name: "Danh mục kho" },
                                     ],
                                 },
                             },
@@ -455,10 +457,10 @@ const routes = [
                                 meta: {
                                     title: "Đơn nhận",
                                     breadcrumb: [
-                                        {name: "Home", path: "/"},
-                                        {name: "Quản lý ấn phẩm"},
-                                        {name: "Quản lý nhận sách"},
-                                        {name: "Đơn nhận"},
+                                        { name: "Home", path: "/" },
+                                        { name: "Quản lý ấn phẩm" },
+                                        { name: "Quản lý nhận sách" },
+                                        { name: "Đơn nhận" },
                                     ],
                                 },
                             },
@@ -469,14 +471,14 @@ const routes = [
                                 meta: {
                                     title: "Chi tiết đơn nhận",
                                     breadcrumb: [
-                                        {name: "Home", path: "/"},
-                                        {name: "Quản lý ấn phẩm"},
-                                        {name: "Quản lý nhận sách"},
+                                        { name: "Home", path: "/" },
+                                        { name: "Quản lý ấn phẩm" },
+                                        { name: "Quản lý nhận sách" },
                                         {
                                             name: "Đơn nhận",
                                             path: "/admin/quan-ly-an-pham/quan-ly-nhan-sach/don-nhan"
                                         },
-                                        {name: "Chi tiết đơn nhận"},
+                                        { name: "Chi tiết đơn nhận" },
                                     ],
                                 },
                             },
@@ -487,9 +489,9 @@ const routes = [
                                 meta: {
                                     title: "Biên mục / Biểu ghi",
                                     breadcrumb: [
-                                        {name: "Home", path: "/"},
-                                        {name: "Quản lý ấn phẩm"},
-                                        {name: "Quản lý nhận sách"},
+                                        { name: "Home", path: "/" },
+                                        { name: "Quản lý ấn phẩm" },
+                                        { name: "Quản lý nhận sách" },
                                         {
                                             name: "Đơn nhận",
                                             path: "/admin/quan-ly-an-pham/quan-ly-nhan-sach/don-nhan",
@@ -499,7 +501,7 @@ const routes = [
                                             path: route =>
                                                 `/admin/quan-ly-an-pham/quan-ly-nhan-sach/don-nhan/chi-tiet-don-nhan/${route.params.id_don_nhan}`,
                                         },
-                                        {name: "Biên mục"},
+                                        { name: "Biên mục" },
                                     ],
                                 },
                             },
@@ -513,10 +515,10 @@ const routes = [
                                         meta: {
                                             title: "In nhãn DKCB",
                                             breadcrumb: [
-                                                {name: "Home", path: "/"},
-                                                {name: "Quản lý ấn phẩm"},
-                                                {name: "In nhãn"},
-                                                {name: "DKCB"},
+                                                { name: "Home", path: "/" },
+                                                { name: "Quản lý ấn phẩm" },
+                                                { name: "In nhãn" },
+                                                { name: "DKCB" },
                                             ],
                                         },
                                     },
@@ -527,10 +529,10 @@ const routes = [
                                         meta: {
                                             title: "In nhãn phân loại",
                                             breadcrumb: [
-                                                {name: "Home", path: "/"},
-                                                {name: "Quản lý ấn phẩm"},
-                                                {name: "In nhãn"},
-                                                {name: "Phân loại"},
+                                                { name: "Home", path: "/" },
+                                                { name: "Quản lý ấn phẩm" },
+                                                { name: "In nhãn" },
+                                                { name: "Phân loại" },
                                             ],
                                         },
                                     },
@@ -543,10 +545,10 @@ const routes = [
                                 meta: {
                                     title: "Báo cáo nhận sách phân kho",
                                     breadcrumb: [
-                                        {name: "Home", path: "/"},
-                                        {name: "Quản lý ấn phẩm"},
-                                        {name: "Quản lý nhận sách"},
-                                        {name: "Báo cáo nhận sách phân kho"},
+                                        { name: "Home", path: "/" },
+                                        { name: "Quản lý ấn phẩm" },
+                                        { name: "Quản lý nhận sách" },
+                                        { name: "Báo cáo nhận sách phân kho" },
                                     ],
                                 },
                             },
@@ -565,9 +567,9 @@ const routes = [
                         meta: {
                             title: "Quản lý bạn đọc",
                             breadcrumb: [
-                                {name: "Home", path: "/"},
-                                {name: "Quản lý bạn đọc"},
-                                {name: "Danh sách bạn đọc"},
+                                { name: "Home", path: "/" },
+                                { name: "Quản lý bạn đọc" },
+                                { name: "Danh sách bạn đọc" },
                             ],
                         },
                     },
@@ -578,9 +580,9 @@ const routes = [
                         meta: {
                             title: "Thống kê bạn đọc theo đối tượng",
                             breadcrumb: [
-                                {name: "Home", path: "/"},
-                                {name: "Quản lý bạn đọc"},
-                                {name: "Thống kê theo đối tượng"},
+                                { name: "Home", path: "/" },
+                                { name: "Quản lý bạn đọc" },
+                                { name: "Thống kê theo đối tượng" },
                             ],
                         },
                     },
@@ -591,10 +593,10 @@ const routes = [
                         meta: {
                             title: "Chi tiết bạn đọc theo đối tượng",
                             breadcrumb: [
-                                {name: "Home", path: "/"},
-                                {name: "Quản lý bạn đọc"},
-                                {name: "Thống kê theo đối tượng", path: "/admin/quan-ly-ban-doc/thong-ke-theo-doi-tuong"},
-                                {name: "Chi tiết bạn đọc"},
+                                { name: "Home", path: "/" },
+                                { name: "Quản lý bạn đọc" },
+                                { name: "Thống kê theo đối tượng", path: "/admin/quan-ly-ban-doc/thong-ke-theo-doi-tuong" },
+                                { name: "Chi tiết bạn đọc" },
                             ],
                         },
                     },
@@ -614,10 +616,10 @@ const routes = [
                                 meta: {
                                     title: "Mượn tài liệu",
                                     breadcrumb: [
-                                        {name: "Home", path: "/"},
-                                        {name: "Quản lý dịch vụ"},
-                                        {name: "Quản lý lưu thông"},
-                                        {name: "Mượn tài liệu"},
+                                        { name: "Home", path: "/" },
+                                        { name: "Quản lý dịch vụ" },
+                                        { name: "Quản lý lưu thông" },
+                                        { name: "Mượn tài liệu" },
                                     ],
                                 },
                             },
@@ -628,10 +630,10 @@ const routes = [
                                 meta: {
                                     title: "Đọc tại chỗ",
                                     breadcrumb: [
-                                        {name: "Home", path: "/"},
-                                        {name: "Quản lý dịch vụ"},
-                                        {name: "Quản lý lưu thông"},
-                                        {name: "Đọc tại chỗ"},
+                                        { name: "Home", path: "/" },
+                                        { name: "Quản lý dịch vụ" },
+                                        { name: "Quản lý lưu thông" },
+                                        { name: "Đọc tại chỗ" },
                                     ],
                                 },
                             },
@@ -642,10 +644,10 @@ const routes = [
                                 meta: {
                                     title: "Báo cáo hoạt động thư viện",
                                     breadcrumb: [
-                                        {name: "Home", path: "/"},
-                                        {name: "Quản lý dịch vụ"},
-                                        {name: "Quản lý lưu thông"},
-                                        {name: "Báo cáo hoạt động thư viện"},
+                                        { name: "Home", path: "/" },
+                                        { name: "Quản lý dịch vụ" },
+                                        { name: "Quản lý lưu thông" },
+                                        { name: "Báo cáo hoạt động thư viện" },
                                     ],
                                 },
                             },
@@ -656,10 +658,10 @@ const routes = [
                                 meta: {
                                     title: "Xử lý vi phạm",
                                     breadcrumb: [
-                                        {name: "Home", path: "/"},
-                                        {name: "Quản lý dịch vụ"},
-                                        {name: "Quản lý lưu thông"},
-                                        {name: "Xử lý vi phạm"},
+                                        { name: "Home", path: "/" },
+                                        { name: "Quản lý dịch vụ" },
+                                        { name: "Quản lý lưu thông" },
+                                        { name: "Xử lý vi phạm" },
                                     ],
                                 },
                             },
@@ -675,14 +677,45 @@ const routes = [
                                 meta: {
                                     title: "Quản lý bài viết",
                                     breadcrumb: [
-                                        {name: "Home", path: "/"},
-                                        {name: "Quản lý dịch vụ"},
-                                        {name: "Thông tin OPAC"},
-                                        {name: "Quản lý bài viết"},
+                                        { name: "Home", path: "/" },
+                                        { name: "Quản lý dịch vụ" },
+                                        { name: "Thông tin OPAC" },
+                                        { name: "Quản lý bài viết" },
                                     ],
                                 },
                             },
                         ],
+                    },
+                ],
+            },
+            {
+                path: "kiem-ke-thanh-ly",
+                children: [
+                    {
+                        path: "thiet-lap-kiem-ke",
+                        name: "pageThietLapKiemKe",
+                        component: pageThietLapKiemKe,
+                        meta: {
+                            title: "Thiết lập kiểm kê",
+                            breadcrumb: [
+                                { name: "Home", path: "/" },
+                                { name: "Thanh lý kiểm kê" },
+                                { name: "Thiết lập kiểm kê" },
+                            ],
+                        },
+                    },
+                    {
+                        path: "thanh-ly",
+                        name: "pageThanhLy",
+                        component: pageThanhLy,
+                        meta: {
+                            title: "Thanh lý",
+                            breadcrumb: [
+                                { name: "Home", path: "/" },
+                                { name: "Thanh lý kiểm kê" },
+                                { name: "Thanh lý" },
+                            ],
+                        },
                     },
                 ],
             },
