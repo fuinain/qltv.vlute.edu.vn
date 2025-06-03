@@ -7,6 +7,7 @@ use App\Models\BienMucTruongChaModel;
 use App\Models\BienMucTruongConModel;
 use App\Models\DonNhanModel;
 use App\Models\SachModel;
+use App\Models\DKCBModel;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
@@ -27,7 +28,22 @@ class SachController extends Controller
     public function index(int $id_don_nhan, Request $request)
     {
         $perPage = $request->get('per_page', 10);
-        $data = SachModel::getListByDonNhan($id_don_nhan, $perPage);
+        $search = $request->get('search', '');
+        
+        $query = SachModel::where('id_don_nhan', $id_don_nhan);
+        
+        // Thêm điều kiện tìm kiếm nếu có
+        if (!empty($search)) {
+            $query->where(function($q) use ($search) {
+                $q->where('nhan_de', 'like', '%' . $search . '%')
+                  ->orWhere('tac_gia', 'like', '%' . $search . '%')
+                  ->orWhere('nha_xuat_ban', 'like', '%' . $search . '%')
+                  ->orWhere('noi_xuat_ban', 'like', '%' . $search . '%')
+                  ->orWhere('nam_xuat_ban', 'like', '%' . $search . '%');
+            });
+        }
+        
+        $data = $query->orderBy('ngay_tao', 'desc')->paginate($perPage);
 
         return response()->json(['status' => 200, 'data' => $data]);
     }
@@ -818,6 +834,47 @@ class SachController extends Controller
         }
     }
 
+    /**
+     * Xóa mã DKCB khỏi sách
+     * 
+     * @param  int  $id_dkcb
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function xoaDKCB($id_dkcb)
+    {
+        try {
+            // Tìm DKCB theo ID
+            $dkcb = \App\Models\DKCBModel::find($id_dkcb);
+            
+            if (!$dkcb) {
+                return response()->json([
+                    'status' => 404,
+                    'message' => 'Không tìm thấy mã DKCB'
+                ], 404);
+            }
+            
+            // Lưu lại thông tin mã DKCB để trả về
+            $maDKCB = $dkcb->ma_dkcb;
+            
+            // Xóa liên kết với sách (không xóa mã DKCB khỏi hệ thống)
+            $dkcb->id_sach = null;
+            $dkcb->save();
+            
+            return response()->json([
+                'status' => 200,
+                'message' => 'Đã xóa mã DKCB ' . $maDKCB . ' khỏi sách',
+                'data' => $dkcb
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Lỗi khi xóa DKCB: ' . $e->getMessage());
+            
+            return response()->json([
+                'status' => 500,
+                'message' => 'Đã xảy ra lỗi khi xóa mã DKCB'
+            ], 500);
+        }
+    }
+
     public function danhSachSachTheoDonNhan(Request $request)
     {
         try {
@@ -988,4 +1045,526 @@ class SachController extends Controller
         }
     }
 
+    /**
+     * Import sách từ file Excel
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function importExcel(Request $request)
+    {
+        // Validate request
+        $request->validate([
+            'excel_file' => 'required|file|mimes:xlsx,xls',
+            'id_don_nhan' => 'required|integer|exists:don_nhan,id_don_nhan',
+        ], [
+            'excel_file.required' => 'Vui lòng chọn file Excel để import',
+            'excel_file.file' => 'File không hợp lệ',
+            'excel_file.mimes' => 'File phải có định dạng Excel (.xlsx, .xls)',
+            'id_don_nhan.required' => 'Thiếu thông tin đơn nhận',
+            'id_don_nhan.exists' => 'Đơn nhận không tồn tại',
+        ]);
+
+        try {
+            // Lấy file từ request
+            $file = $request->file('excel_file');
+            $id_don_nhan = $request->id_don_nhan;
+
+            // Đọc file Excel
+            $spreadsheet = IOFactory::load($file->getPathname());
+            $worksheet = $spreadsheet->getActiveSheet();
+            $rows = $worksheet->toArray();
+
+            // Bỏ qua dòng tiêu đề
+            $dataRows = array_slice($rows, 1);
+
+            // Biến đếm số sách đã import thành công
+            $successCount = 0;
+            $errorCount = 0;
+            $errors = [];
+
+            // Lấy thông tin người tạo từ đơn nhận
+            $donNhan = DonNhanModel::find($id_don_nhan);
+            $nguoiTao = $donNhan->nguoi_tao ?? '';
+
+            // Xử lý từng dòng dữ liệu
+            $rowIndex = 0;
+            while ($rowIndex < count($dataRows)) {
+                $row = $dataRows[$rowIndex];
+                
+                // Bỏ qua dòng trống
+                if (empty($row[1])) {
+                    $rowIndex++;
+                    continue;
+                }
+
+                try {
+                    DB::beginTransaction();
+
+                    // Xử lý thông tin xuất bản (cột D)
+                    $xuatBanInfo = $row[3] ?? '';
+                    $noiXuatBan = '';
+                    $nhaXuatBan = '';
+                    $namXuatBan = '';
+
+                    if (!empty($xuatBanInfo)) {
+                        // Tách theo dấu ":"
+                        $parts = explode(':', $xuatBanInfo);
+                        if (count($parts) > 1) {
+                            $noiXuatBan = trim($parts[0]);
+                            
+                            // Tách phần còn lại theo dấu ","
+                            $remainingParts = explode(',', $parts[1]);
+                            if (count($remainingParts) > 1) {
+                                $nhaXuatBan = trim($remainingParts[0]);
+                                $namXuatBan = trim($remainingParts[1]);
+                            } else {
+                                $nhaXuatBan = trim($parts[1]);
+                            }
+                        } else {
+                            // Nếu không có dấu ":" thì thử tách theo dấu ","
+                            $commaParts = explode(',', $xuatBanInfo);
+                            if (count($commaParts) > 1) {
+                                $nhaXuatBan = trim($commaParts[0]);
+                                $namXuatBan = trim($commaParts[1]);
+                            } else {
+                                $nhaXuatBan = $xuatBanInfo;
+                            }
+                        }
+                    }
+
+                    // Xử lý phân loại (cột E)
+                    $phanLoaiInfo = $row[4] ?? '';
+                    $phanLoai1 = '';
+                    $phanLoai2 = '';
+
+                    if (!empty($phanLoaiInfo)) {
+                        $phanLoaiParts = explode('/', $phanLoaiInfo);
+                        $phanLoai1 = trim($phanLoaiParts[0] ?? '');
+                        
+                        if (count($phanLoaiParts) > 1) {
+                            // Nếu có nhiều hơn 2 phần (trường hợp 2: "660.6/ Ch125/ T.3")
+                            if (count($phanLoaiParts) > 2) {
+                                // Lấy phần đầu tiên cho 082 a
+                                // Ghép các phần còn lại cho 082 b
+                                $phanLoai2 = trim(implode('/ ', array_slice($phanLoaiParts, 1)));
+                            } else {
+                                // Trường hợp 1: "621.4/ Ph500"
+                                $phanLoai2 = trim($phanLoaiParts[1]);
+                            }
+                        }
+                    }
+
+                    // Xử lý giá và số lượng
+                    $gia = !empty($row[5]) ? floatval($row[5]) : 0;
+                    $soLuong = !empty($row[6]) ? intval($row[6]) : 0;
+                    $thanhTien = $gia * $soLuong;
+
+                    // Kiểm tra xem đầu sách đã tồn tại chưa (dựa trên nhan đề và tác giả)
+                    $sachDaTonTai = SachModel::where('id_don_nhan', $id_don_nhan)
+                        ->where('nhan_de', $row[1])
+                        ->where('tac_gia', $row[2])
+                        ->first();
+
+                    if ($sachDaTonTai) {
+                        // Cập nhật thông tin sách đã tồn tại
+                        $sachDaTonTai->nam_xuat_ban = $namXuatBan;
+                        $sachDaTonTai->nha_xuat_ban = $nhaXuatBan;
+                        $sachDaTonTai->noi_xuat_ban = $noiXuatBan;
+                        $sachDaTonTai->gia = $gia;
+                        $sachDaTonTai->so_luong = $soLuong;
+                        $sachDaTonTai->thanh_tien = $thanhTien;
+                        $sachDaTonTai->save();
+
+                        // Sử dụng sách đã tồn tại
+                        $sach = $sachDaTonTai;
+
+                        // Cập nhật biểu ghi biên mục nếu có
+                        $bmg = BienMucBieuGhiModel::where('id_sach', $sach->id_sach)->first();
+                        if ($bmg) {
+                            // Cập nhật các trường cha và con
+                            $truong082 = BienMucTruongChaModel::where('id_bien_muc_bieu_ghi', $bmg->id_bien_muc_bieu_ghi)
+                                ->where('ma_truong', '082')
+                                ->first();
+                            
+                            if ($truong082 && !empty($phanLoai1)) {
+                                BienMucTruongConModel::where('id_bien_muc_truong_cha', $truong082->id_bien_muc_truong_cha)
+                                    ->where('ma_truong_con', 'a')
+                                    ->update(['noi_dung' => $phanLoai1]);
+                            }
+                            
+                            if ($truong082 && !empty($phanLoai2)) {
+                                BienMucTruongConModel::where('id_bien_muc_truong_cha', $truong082->id_bien_muc_truong_cha)
+                                    ->where('ma_truong_con', 'b')
+                                    ->update(['noi_dung' => $phanLoai2]);
+                            }
+                            
+                            // Cập nhật thông tin xuất bản
+                            $truong260 = BienMucTruongChaModel::where('id_bien_muc_bieu_ghi', $bmg->id_bien_muc_bieu_ghi)
+                                ->where('ma_truong', '260')
+                                ->first();
+                                
+                            if ($truong260) {
+                                if (!empty($noiXuatBan)) {
+                                    BienMucTruongConModel::where('id_bien_muc_truong_cha', $truong260->id_bien_muc_truong_cha)
+                                        ->where('ma_truong_con', 'a')
+                                        ->update(['noi_dung' => $noiXuatBan]);
+                                }
+                                
+                                if (!empty($nhaXuatBan)) {
+                                    BienMucTruongConModel::where('id_bien_muc_truong_cha', $truong260->id_bien_muc_truong_cha)
+                                        ->where('ma_truong_con', 'b')
+                                        ->update(['noi_dung' => $nhaXuatBan]);
+                                }
+                                
+                                if (!empty($namXuatBan)) {
+                                    BienMucTruongConModel::where('id_bien_muc_truong_cha', $truong260->id_bien_muc_truong_cha)
+                                        ->where('ma_truong_con', 'c')
+                                        ->update(['noi_dung' => $namXuatBan]);
+                                }
+                            }
+                        } else {
+                            // Nếu không có biểu ghi biên mục, tạo mới
+                            $bmg = BienMucBieuGhiModel::create([
+                                'id_sach' => $sach->id_sach,
+                            ]);
+
+                            // Tạo các trường cha và con mặc định
+                            $allParents = [
+                                // Các trường dựa trên dữ liệu nhập
+                                [
+                                    'ma_truong' => '245', 'ct1' => '0', 'ct2' => '#',
+                                    'children' => [
+                                        ['ma_truong_con' => 'a', 'noi_dung' => $row[1] ?? ''], // nhan_de
+                                        ['ma_truong_con' => 'c', 'noi_dung' => $row[2] ?? ''], // tac_gia
+                                        ['ma_truong_con' => 'b', 'noi_dung' => ''],
+                                        ['ma_truong_con' => 'n', 'noi_dung' => ''],
+                                        ['ma_truong_con' => 'p', 'noi_dung' => ''],
+                                    ],
+                                ],
+                                [
+                                    'ma_truong' => '260', 'ct1' => '#', 'ct2' => '#',
+                                    'children' => [
+                                        ['ma_truong_con' => 'a', 'noi_dung' => $noiXuatBan],
+                                        ['ma_truong_con' => 'b', 'noi_dung' => $nhaXuatBan],
+                                        ['ma_truong_con' => 'c', 'noi_dung' => $namXuatBan],
+                                    ],
+                                ],
+                                [
+                                    'ma_truong' => '082', 'ct1' => '1', 'ct2' => '4',
+                                    'children' => [
+                                        ['ma_truong_con' => '2', 'noi_dung' => ''],
+                                        ['ma_truong_con' => 'a', 'noi_dung' => $phanLoai1],
+                                        ['ma_truong_con' => 'b', 'noi_dung' => $phanLoai2],
+                                    ],
+                                ],
+                                [
+                                    'ma_truong' => '904', 'ct1' => '#', 'ct2' => '#',
+                                    'children' => [
+                                        ['ma_truong_con' => 'i', 'noi_dung' => $nguoiTao],
+                                    ],
+                                ],
+                                [
+                                    'ma_truong' => '100', 'ct1' => '1', 'ct2' => '#',
+                                    'children' => [
+                                        ['ma_truong_con' => 'a', 'noi_dung' => $row[2] ?? ''], // tac_gia
+                                        ['ma_truong_con' => 'b', 'noi_dung' => ''],
+                                    ],
+                                ],
+
+                                // Các trường mặc định thêm vào (noi_dung rỗng)
+                                [
+                                    'ma_truong' => '020', 'ct1' => '#', 'ct2' => '#',
+                                    'children' => [
+                                        ['ma_truong_con' => 'a', 'noi_dung' => ''],
+                                        ['ma_truong_con' => 'c', 'noi_dung' => ''],
+                                    ],
+                                ],
+                                [
+                                    'ma_truong' => '041', 'ct1' => '#', 'ct2' => '#',
+                                    'children' => [
+                                        ['ma_truong_con' => 'a', 'noi_dung' => ''],
+                                    ],
+                                ],
+                                [
+                                    'ma_truong' => '300', 'ct1' => '#', 'ct2' => '#',
+                                    'children' => [
+                                        ['ma_truong_con' => 'a', 'noi_dung' => ''],
+                                        ['ma_truong_con' => 'c', 'noi_dung' => ''],
+                                        ['ma_truong_con' => 'e', 'noi_dung' => ''],
+                                    ],
+                                ],
+                                [
+                                    'ma_truong' => '520', 'ct1' => '#', 'ct2' => '#',
+                                    'children' => [
+                                        ['ma_truong_con' => 'a', 'noi_dung' => ''],
+                                    ],
+                                ],
+                                [
+                                    'ma_truong' => '530', 'ct1' => '#', 'ct2' => '#',
+                                    'children' => [
+                                        ['ma_truong_con' => 'a', 'noi_dung' => ''],
+                                    ],
+                                ],
+                                [
+                                    'ma_truong' => '650', 'ct1' => '#', 'ct2' => '#',
+                                    'children' => [
+                                        ['ma_truong_con' => 'a', 'noi_dung' => ''],
+                                    ],
+                                ],
+                                [
+                                    'ma_truong' => '653', 'ct1' => '#', 'ct2' => '#',
+                                    'children' => [
+                                        ['ma_truong_con' => 'a', 'noi_dung' => ''],
+                                    ],
+                                ],
+                                [
+                                    'ma_truong' => '700', 'ct1' => '0', 'ct2' => '#',
+                                    'children' => [
+                                        ['ma_truong_con' => 'a', 'noi_dung' => ''],
+                                    ],
+                                ],
+                            ];
+
+                            foreach ($allParents as $p) {
+                                $cha = BienMucTruongChaModel::create([
+                                    'id_bien_muc_bieu_ghi' => $bmg->id_bien_muc_bieu_ghi,
+                                    'ma_truong' => $p['ma_truong'],
+                                    'ct1' => $p['ct1'],
+                                    'ct2' => $p['ct2'],
+                                ]);
+
+                                foreach ($p['children'] as $c) {
+                                    BienMucTruongConModel::create([
+                                        'id_bien_muc_truong_cha' => $cha->id_bien_muc_truong_cha,
+                                        'ma_truong_con' => $c['ma_truong_con'],
+                                        'noi_dung' => $c['noi_dung'],
+                                    ]);
+                                }
+                            }
+                        }
+                        
+                        // Xóa các mã DKCB cũ đã gán cho sách này
+                        DKCBModel::where('id_sach', $sach->id_sach)
+                            ->update(['id_sach' => null]);
+                    } else {
+                        // Tạo bản ghi sách mới
+                        $sach = SachModel::create([
+                            'id_don_nhan' => $id_don_nhan,
+                            'nhan_de' => $row[1] ?? '',
+                            'tac_gia' => $row[2] ?? '',
+                            'nam_xuat_ban' => $namXuatBan,
+                            'nha_xuat_ban' => $nhaXuatBan,
+                            'noi_xuat_ban' => $noiXuatBan,
+                            'gia' => $gia,
+                            'so_luong' => $soLuong,
+                            'thanh_tien' => $thanhTien,
+                        ]);
+
+                        // Tạo biểu ghi biên mục
+                        $bmg = BienMucBieuGhiModel::create([
+                            'id_sach' => $sach->id_sach,
+                        ]);
+
+                        // Tạo các trường cha và con mặc định
+                        $allParents = [
+                            // Các trường dựa trên dữ liệu nhập
+                            [
+                                'ma_truong' => '245', 'ct1' => '0', 'ct2' => '#',
+                                'children' => [
+                                    ['ma_truong_con' => 'a', 'noi_dung' => $row[1] ?? ''], // nhan_de
+                                    ['ma_truong_con' => 'c', 'noi_dung' => $row[2] ?? ''], // tac_gia
+                                    ['ma_truong_con' => 'b', 'noi_dung' => ''],
+                                    ['ma_truong_con' => 'n', 'noi_dung' => ''],
+                                    ['ma_truong_con' => 'p', 'noi_dung' => ''],
+                                ],
+                            ],
+                            [
+                                'ma_truong' => '260', 'ct1' => '#', 'ct2' => '#',
+                                'children' => [
+                                    ['ma_truong_con' => 'a', 'noi_dung' => $noiXuatBan],
+                                    ['ma_truong_con' => 'b', 'noi_dung' => $nhaXuatBan],
+                                    ['ma_truong_con' => 'c', 'noi_dung' => $namXuatBan],
+                                ],
+                            ],
+                            [
+                                'ma_truong' => '082', 'ct1' => '1', 'ct2' => '4',
+                                'children' => [
+                                    ['ma_truong_con' => '2', 'noi_dung' => ''],
+                                    ['ma_truong_con' => 'a', 'noi_dung' => $phanLoai1],
+                                    ['ma_truong_con' => 'b', 'noi_dung' => $phanLoai2],
+                                ],
+                            ],
+                            [
+                                'ma_truong' => '904', 'ct1' => '#', 'ct2' => '#',
+                                'children' => [
+                                    ['ma_truong_con' => 'i', 'noi_dung' => $nguoiTao],
+                                ],
+                            ],
+                            [
+                                'ma_truong' => '100', 'ct1' => '1', 'ct2' => '#',
+                                'children' => [
+                                    ['ma_truong_con' => 'a', 'noi_dung' => $row[2] ?? ''], // tac_gia
+                                    ['ma_truong_con' => 'b', 'noi_dung' => ''],
+                                ],
+                            ],
+
+                            // Các trường mặc định thêm vào (noi_dung rỗng)
+                            [
+                                'ma_truong' => '020', 'ct1' => '#', 'ct2' => '#',
+                                'children' => [
+                                    ['ma_truong_con' => 'a', 'noi_dung' => ''],
+                                    ['ma_truong_con' => 'c', 'noi_dung' => ''],
+                                ],
+                            ],
+                            [
+                                'ma_truong' => '041', 'ct1' => '#', 'ct2' => '#',
+                                'children' => [
+                                    ['ma_truong_con' => 'a', 'noi_dung' => ''],
+                                ],
+                            ],
+                            [
+                                'ma_truong' => '300', 'ct1' => '#', 'ct2' => '#',
+                                'children' => [
+                                    ['ma_truong_con' => 'a', 'noi_dung' => ''],
+                                    ['ma_truong_con' => 'c', 'noi_dung' => ''],
+                                    ['ma_truong_con' => 'e', 'noi_dung' => ''],
+                                ],
+                            ],
+                            [
+                                'ma_truong' => '520', 'ct1' => '#', 'ct2' => '#',
+                                'children' => [
+                                    ['ma_truong_con' => 'a', 'noi_dung' => ''],
+                                ],
+                            ],
+                            [
+                                'ma_truong' => '530', 'ct1' => '#', 'ct2' => '#',
+                                'children' => [
+                                    ['ma_truong_con' => 'a', 'noi_dung' => ''],
+                                ],
+                            ],
+                            [
+                                'ma_truong' => '650', 'ct1' => '#', 'ct2' => '#',
+                                'children' => [
+                                    ['ma_truong_con' => 'a', 'noi_dung' => ''],
+                                ],
+                            ],
+                            [
+                                'ma_truong' => '653', 'ct1' => '#', 'ct2' => '#',
+                                'children' => [
+                                    ['ma_truong_con' => 'a', 'noi_dung' => ''],
+                                ],
+                            ],
+                            [
+                                'ma_truong' => '700', 'ct1' => '0', 'ct2' => '#',
+                                'children' => [
+                                    ['ma_truong_con' => 'a', 'noi_dung' => ''],
+                                ],
+                            ],
+                        ];
+
+                        foreach ($allParents as $p) {
+                            $cha = BienMucTruongChaModel::create([
+                                'id_bien_muc_bieu_ghi' => $bmg->id_bien_muc_bieu_ghi,
+                                'ma_truong' => $p['ma_truong'],
+                                'ct1' => $p['ct1'],
+                                'ct2' => $p['ct2'],
+                            ]);
+
+                            foreach ($p['children'] as $c) {
+                                BienMucTruongConModel::create([
+                                    'id_bien_muc_truong_cha' => $cha->id_bien_muc_truong_cha,
+                                    'ma_truong_con' => $c['ma_truong_con'],
+                                    'noi_dung' => $c['noi_dung'],
+                                ]);
+                            }
+                        }
+                    }
+
+                    // Xử lý DKCB (cột H)
+                    $dkcbList = [];
+                    
+                    // Thêm mã DKCB từ dòng hiện tại
+                    if (!empty($row[7])) {
+                        $dkcbList[] = trim($row[7]);
+                    }
+                    
+                    // Nếu số lượng > 1, tìm các mã DKCB từ các dòng tiếp theo
+                    if ($soLuong > 1) {
+                        $nextRowIndex = $rowIndex + 1;
+                        $dkcbCount = 1; // Đã có 1 mã từ dòng hiện tại
+                        
+                        // Kiểm tra các dòng tiếp theo để lấy các mã DKCB
+                        while ($dkcbCount < $soLuong && $nextRowIndex < count($dataRows)) {
+                            $nextRow = $dataRows[$nextRowIndex];
+                            
+                            // Nếu dòng tiếp theo có các cột thông tin sách trống
+                            // nhưng có mã DKCB, thì đó là mã DKCB của sách hiện tại
+                            if (empty($nextRow[1]) && empty($nextRow[2]) && empty($nextRow[3]) && 
+                                empty($nextRow[4]) && empty($nextRow[5]) && empty($nextRow[6]) && 
+                                !empty($nextRow[7])) {
+                                
+                                $dkcbList[] = trim($nextRow[7]);
+                                $dkcbCount++;
+                                $nextRowIndex++;
+                            } else {
+                                // Nếu dòng tiếp theo có thông tin sách, 
+                                // thì đó là một sách mới, không phải mã DKCB của sách hiện tại
+                                break;
+                            }
+                        }
+                        
+                        // Cập nhật rowIndex để bỏ qua các dòng đã xử lý
+                        $rowIndex = $nextRowIndex - 1;
+                    }
+                    
+                    // Gán các mã DKCB cho sách
+                    foreach ($dkcbList as $maDKCB) {
+                        if (empty($maDKCB)) continue;
+                        
+                        $dkcb = DKCBModel::where('ma_dkcb', $maDKCB)->first();
+                        
+                        if ($dkcb) {
+                            // Gán DKCB cho sách (luôn ghi đè)
+                            $dkcb->id_sach = $sach->id_sach;
+                            $dkcb->save();
+                        } else {
+                            Log::warning("Không tìm thấy mã DKCB {$maDKCB} trong hệ thống");
+                        }
+                    }
+
+                    DB::commit();
+                    $successCount++;
+                } catch (\Exception $e) {
+                    DB::rollBack();
+                    $errorCount++;
+                    $errors[] = "Lỗi ở dòng " . ($rowIndex + 2) . ": " . $e->getMessage();
+                    Log::error("Lỗi import Excel dòng " . ($rowIndex + 2) . ": " . $e->getMessage());
+                }
+                
+                $rowIndex++;
+            }
+
+            // Tạo thông báo kết quả
+            $message = "Import thành công {$successCount} sách";
+            if ($errorCount > 0) {
+                $message .= ", {$errorCount} sách bị lỗi";
+            }
+
+            return response()->json([
+                'status' => 200,
+                'message' => $message,
+                'success_count' => $successCount,
+                'error_count' => $errorCount,
+                'errors' => $errors
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error("Lỗi import Excel: " . $e->getMessage());
+            return response()->json([
+                'status' => 500,
+                'message' => 'Có lỗi xảy ra khi import: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 }

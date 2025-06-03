@@ -28,10 +28,10 @@ Route::middleware(['isLogin:docgia'])->group(function () {
     });
 });
 
-// Route dành cho sinh viên - chỉ sinh viên có thể truy cập
-Route::prefix('docgia')->middleware(['isLogin:docgia'])->group(function () {
-    Route::view("/{any?}", "app")->where("any", ".*");
-});
+// // Route dành cho sinh viên - chỉ sinh viên có thể truy cập
+// Route::prefix('docgia')->middleware(['isLogin:docgia'])->group(function () {
+//     Route::view("/{any?}", "app")->where("any", ".*");
+// });
 
 // Route cho sinh viên không tồn tại
 Route::get('/sinh-vien-khong-ton-tai', function () {

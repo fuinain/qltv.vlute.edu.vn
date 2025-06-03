@@ -96,12 +96,21 @@
                                     <tr class="bg-light">
                                         <th width="10%" class="text-center">STT</th>
                                         <th>Mã DKCB</th>
+                                        <th width="15%" class="text-center">Thao tác</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr v-for="(dkcb, index) in danhSachDKCBDaGan" :key="index">
                                         <td class="text-center">{{ index + 1 }}</td>
                                         <td>{{ dkcb.ma_dkcb }}</td>
+                                        <td class="text-center">
+                                            <button class="btn btn-sm btn-danger" @click="xoaDKCB(dkcb)" :disabled="isLoadingDKCB">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr v-if="danhSachDKCBDaGan.length === 0">
+                                        <td colspan="3" class="text-center">Chưa có mã DKCB nào được gán cho sách này</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -190,6 +199,7 @@
 </template>
 
 <script>
+import Swal from 'sweetalert2';
 
 export default {
     name: "pageBienMucBieuGhiBienMuc",
@@ -614,6 +624,52 @@ export default {
             } catch (e) {
                 console.error(e);
                 toastr.error("Lỗi khi tải danh sách DKCB đã gán");
+            }
+        },
+
+        async xoaDKCB(dkcb) {
+            try {
+                // Hiển thị xác nhận trước khi xóa
+                const result = await Swal.fire({
+                    title: 'Bạn có chắc chắn?',
+                    text: `Bạn có muốn xóa mã DKCB ${dkcb.ma_dkcb} khỏi sách này không?`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Có, xóa nó!',
+                    cancelButtonText: 'Hủy bỏ'
+                });
+                
+                if (!result.isConfirmed) {
+                    return;
+                }
+                
+                this.isLoadingDKCB = true;
+                const idSach = this.$route.params.id_sach;
+                const res = await axios.delete(`/api/quan-ly-an-pham/nhan-sach/don-nhan/chi-tiet-don-nhan/sach/dkcb/${dkcb.id_dkcb}`);
+
+                if (res.data.status === 200) {
+                    Swal.fire(
+                        'Đã xóa!',
+                        res.data.message,
+                        'success'
+                    );
+                    await this.getDanhSachDKCBDaGan();
+                } else {
+                    Swal.fire(
+                        'Lỗi!',
+                        res.data.message || "Lỗi khi xóa DKCB",
+                        'error'
+                    );
+                }
+                this.isLoadingDKCB = false;
+            } catch (e) {
+                console.error(e);
+                Swal.fire(
+                    'Lỗi!',
+                    'Đã xảy ra lỗi khi xóa mã DKCB',
+                    'error'
+                );
+                this.isLoadingDKCB = false;
             }
         },
     },

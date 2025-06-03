@@ -33,6 +33,9 @@ use App\Http\Controllers\OpacController;
 // API chỉ dành cho admin
 Route::middleware(['isLogin:admin'])->group(function () {
 
+    // Thêm API thống kê tổng quan
+    Route::get('/thong-ke-tong-quan', [App\Http\Controllers\AdminController::class, 'getThongKeTongQuan']);
+
     //API Danh mục
     Route::group(['prefix' => 'danh-muc'], function () {
 
@@ -206,12 +209,14 @@ Route::middleware(['isLogin:admin'])->group(function () {
                     Route::delete('/{id}', [SachController::class, 'destroy']);
                     Route::get('/export-don-nhan/{id_don_nhan}', [SachController::class, 'exportExcelDonNhan']);
                     Route::get('/export-thong-ke-tai-lieu/{id_don_nhan}', [SachController::class, 'exportExcelThongKeTaiLieu']);
+                    Route::post('/import-excel', [SachController::class, 'importExcel']);
 
                     // Routes cho chức năng gán DKCB
                     Route::get('/sach/{id}', [SachController::class, 'show']);
                     Route::get('/tim-dkcb', [SachController::class, 'timDKCB']);
                     Route::post('/gan-dkcb', [SachController::class, 'ganDKCB']);
                     Route::get('/sach/dkcb/{id_sach}', [SachController::class, 'getDKCBBySach']);
+                    Route::delete('/sach/dkcb/{id_dkcb}', [SachController::class, 'xoaDKCB']);
 
                     //API Biên mục biểu ghi
                     Route::prefix('bien-muc-bieu-ghi')->group(function () {

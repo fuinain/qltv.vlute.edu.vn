@@ -130,7 +130,17 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-6">
+                <SelectOption 
+                    v-model="banDoc.rut_han" 
+                    :options="dsRutHan"
+                    label="Trạng thái thẻ" 
+                    placeholder="Chọn trạng thái thẻ..."
+                    note="(*)" 
+                    required 
+                />
+            </div>
+            <div class="col-md-6">
                 <Input v-model="banDoc.ho_khau" label="Hộ khẩu" placeholder="Nhập hộ khẩu..." type="text" />
             </div>
         </div>
@@ -231,6 +241,10 @@ export default {
             dsChuyenNganhOptions: [],
             dsNienKhoa: [],
             dsChucVu: [],
+            dsRutHan: [
+                { value: 1, text: 'Mở khoá' },
+                { value: 0, text: 'Rút hạn' }
+            ],
             syncData: {
                 nam: new Date().getFullYear(),
                 ma_so_quy_uoc: "",

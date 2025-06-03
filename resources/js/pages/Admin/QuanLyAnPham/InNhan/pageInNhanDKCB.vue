@@ -34,10 +34,10 @@
                                                 <label class="col-sm-4 col-form-label">Số lượng:</label>
                                                 <div class="col-sm-8">
                                                     <input type="number" class="form-control"
-                                                        v-model.number="formTaoNhan.so_luong" min="1" max="100" />
+                                                        v-model.number="formTaoNhan.so_luong" min="1" max="10000" />
                                                     <small v-if="errors.so_luong_tao" class="text-danger">{{
                                                         errors.so_luong_tao }}</small>
-                                                    <small class="text-muted">Tối đa 100 nhãn mỗi lần</small>
+                                                    <small class="text-muted">Tối đa 10000 nhãn mỗi lần</small>
                                                 </div>
                                             </div>
                                             <div class="text-right">
@@ -133,22 +133,26 @@
                         <p>Không có nhãn DKCB nào</p>
                     </div>
                     <div v-else>
-                        
-                        <Table :columns="headersChiTietNhan" :data="dsChiTietNhanLoc">
-                            <!-- Slot cho cột tên sách -->
-                            <template v-slot:column-ten_sach="{ row }">
-                                <span v-if="row.ten_sach">{{ row.ten_sach }}</span>
-                                <span v-else class="text-muted font-italic">Chưa gán</span>
-                            </template>
-                            <!-- Slot cho cột hành động -->
-                            <template v-slot:column-actions="{ row }">
-                                <button type="button"
-                                        class="btn p-1 btn-primary border-0 bg-transparent text-primary shadow-none"
-                                        @click="inNhanDon(row)" title="In nhãn">
-                                    <i class="fas fa-print"></i>&nbsp;
-                                </button>
-                            </template>
-                        </Table>
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Tìm kiếm nhãn..." v-model="timKiemNhan" />
+                        </div>
+                        <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                            <Table :columns="headersChiTietNhan" :data="dsChiTietNhanLoc" :hideSearch="true">
+                                <!-- Slot cho cột tên sách -->
+                                <template v-slot:column-ten_sach="{ row }">
+                                    <span v-if="row.ten_sach" class="text-truncate d-inline-block" style="max-width: 250px;" :title="row.ten_sach">{{ row.ten_sach }}</span>
+                                    <span v-else class="text-muted font-italic">Chưa gán</span>
+                                </template>
+                                <!-- Slot cho cột hành động -->
+                                <template v-slot:column-actions="{ row }">
+                                    <button type="button"
+                                            class="btn p-1 btn-primary border-0 bg-transparent text-primary shadow-none"
+                                            @click="inNhanDon(row)" title="In nhãn">
+                                        <i class="fas fa-print"></i>&nbsp;
+                                    </button>
+                                </template>
+                            </Table>
+                        </div>
                     </div>
                 </template>
             </Modal>
@@ -248,8 +252,8 @@ export default {
                 isValid = false;
             }
 
-            if (!this.formTaoNhan.so_luong || this.formTaoNhan.so_luong < 1 || this.formTaoNhan.so_luong > 100) {
-                this.errors.so_luong_tao = 'Số lượng phải từ 1 đến 100';
+            if (!this.formTaoNhan.so_luong || this.formTaoNhan.so_luong < 1 || this.formTaoNhan.so_luong > 10000) {
+                this.errors.so_luong_tao = 'Số lượng phải từ 1 đến 10000';
                 isValid = false;
             }
 
@@ -479,5 +483,11 @@ export default {
 /* Style cho component */
 .form-control.is-invalid {
     border-color: #dc3545;
+}
+
+.text-truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 </style>

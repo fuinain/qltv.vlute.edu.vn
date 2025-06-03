@@ -58,7 +58,7 @@ class DKCBController extends Controller
         $validator = Validator::make($request->all(), [
             'id_kho_an_pham' => 'required|exists:kho_an_pham,id_kho_an_pham',
             'so_bat_dau' => 'required|integer|min:1',
-            'so_luong' => 'required|integer|min:1|max:100',
+            'so_luong' => 'required|integer|min:1|max:10000',
         ], [
             'id_kho_an_pham.required' => 'Vui lòng chọn kho ấn phẩm',
             'id_kho_an_pham.exists' => 'Kho ấn phẩm không tồn tại',
@@ -68,7 +68,7 @@ class DKCBController extends Controller
             'so_luong.required' => 'Vui lòng nhập số lượng',
             'so_luong.integer' => 'Số lượng phải là số nguyên',
             'so_luong.min' => 'Số lượng phải lớn hơn 0',
-            'so_luong.max' => 'Số lượng tối đa là 100 nhãn mỗi lần',
+            'so_luong.max' => 'Số lượng tối đa là 1000 nhãn mỗi lần',
         ]);
         
         if ($validator->fails()) {
