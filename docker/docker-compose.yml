@@ -1,0 +1,44 @@
+networks:
+    qltv_network:
+        driver: bridge
+
+services:
+    qltv_nginx:
+        image: nginx:alpine
+        container_name: qltv_nginx
+        restart: unless-stopped
+        tty: true
+        ports:
+            - "3005:80"
+        volumes:
+            - ../:/var/www/app/
+            - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+        depends_on:
+            - qltv_vite
+            - qltv_php
+        networks:
+            - qltv_network
+
+    qltv_php:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: qltv_php
+        restart: unless-stopped
+        tty: true
+        working_dir: /var/www/app
+        command: php artisan queue:work --verbose --tries=3 --timeout=60
+        volumes:
+            - ../:/var/www/app
+        networks:
+            - qltv_network
+
+    qltv_vite:
+        image: node:18
+        container_name: qltv_vite
+        working_dir: /var/www/app
+        volumes:
+            - ../:/var/www/app
+        command: sh -c "npm install && npm run build"
+        networks:
+            - qltv_network
