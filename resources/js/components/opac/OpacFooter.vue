@@ -5,7 +5,7 @@
       <div class="container-xl">
         <div class="row">
           <!-- Tài liệu nội sinh -->
-          <div class="col-md-4 mb-4">
+          <div class="col-md-4">
             <h5 class="text-primary mb-3">
               <i class="fas fa-book-reader mr-2"></i>Tài liệu nội sinh
             </h5>
@@ -32,16 +32,16 @@
               </li>
             </ul>
           </div>
-          
+
           <!-- Thư viện và Bạn đọc -->
-          <div class="col-md-4 mb-4">
+          <div class="col-md-4">
             <h5 class="text-primary mb-3">
               <i class="fas fa-users mr-2"></i>Thư viện và Bạn đọc
             </h5>
             <ul class="list-unstyled">
               <li class="mb-2">
                 <a href="#" class="text-secondary">
-                  <i class="fas fa-angle-right mr-2"></i>Cấu lạc bộ bạn đọc
+                  <i class="fas fa-angle-right mr-2"></i>Câu lạc bộ bạn đọc
                 </a>
               </li>
               <li class="mb-2">
@@ -61,16 +61,13 @@
               </li>
             </ul>
           </div>
-          
+
           <!-- Lịch phục vụ -->
-          <div class="col-md-4 mb-4">
+          <div class="col-md-4">
             <h5 class="text-primary mb-3">
               <i class="fas fa-calendar-alt mr-2"></i>Lịch phục vụ
             </h5>
             <ul class="list-unstyled">
-              <li class="mb-2">
-                <i class="fas fa-clock text-info mr-2"></i>Thứ 3 đến thứ 6: 7h – 17h
-              </li>
               <li class="mb-2">
                 <i class="fas fa-clock text-info mr-2"></i>Thứ 2 và thứ 7: Giờ hành chính
               </li>
@@ -82,29 +79,29 @@
         </div>
       </div>
     </div>
-    
+
     <!-- Footer Info -->
     <div class="footer-copyright bg-dark text-white py-3">
       <div class="container-xl">
         <div class="row">
-          <div class="col-md-8">
+          <div class="col-md-7">
             <p class="mb-1">
               <strong>Trung tâm Thông tin - Thư viện Trường Đại học Sư phạm Kỹ thuật Vĩnh Long</strong>
             </p>
             <p class="mb-0 small">
-              <i class="fas fa-map-marker-alt mr-2"></i>73 Nguyễn Huệ, Phường 2, TP. Vĩnh Long, Vĩnh Long
+              <i class="fas fa-map-marker-alt mr-2"></i>73 Nguyễn Huệ, Phường Long Châu, TP. Vĩnh Long, Vĩnh Long
               <span class="mx-2">|</span>
               <i class="fas fa-envelope mr-2"></i>Email: thuvien@vlute.edu.vn
             </p>
           </div>
-          <div class="col-md-4 text-md-right">
+          <div class="col-md-5 text-md-right">
             <p class="mb-1 small">
               <span class="badge badge-light">
                 <i class="fas fa-chart-line mr-1"></i>Số lượt truy cập: 108095
               </span>
             </p>
             <p class="mb-0 small">
-              Copyright © {{ currentYear }} Khoa Công nghệ thông tin - Đại học Sư phạm Kỹ thuật Vĩnh Long
+                Khoa Công nghệ thông tin - Trường Đại học Sư phạm Kỹ thuật Vĩnh Long
             </p>
           </div>
         </div>
@@ -166,4 +163,4 @@ footer {
     margin-top: 15px;
   }
 }
-</style> 
+</style>

@@ -33,18 +33,18 @@ class SSOController extends Controller
             ->user();
         $token = $user->token;
         $tttk = $this->decodeJWTPayloadOnly($token);
-        
+
         if (isset($tttk->email)) {
             // Lấy email từ payload
             $email = $tttk->email;
-            
+
             // Kiểm tra nếu email có đuôi @st.vlute.edu.vn hoặc @student.vlute.edu.vn
             if (preg_match('/@(st\.vlute\.edu\.vn|student\.vlute\.edu\.vn)$/', $email)) {
                 // Kiểm tra xem sinh viên đã tồn tại trong bảng doc_gia chưa
                 $docGia = DB::table('doc_gia')
                     ->where('email', $email)
                     ->first();
-                
+
                 if ($docGia) {
                     // Nếu sinh viên đã tồn tại trong hệ thống
                     $request->session()->put('IsLogin', true);
@@ -88,7 +88,7 @@ class SSOController extends Controller
                 return redirect('/')->with('error', 'Email không tồn tại trong hệ thống.');
             }
         }
-        
+
         return redirect('/')->with('error', 'Không thể lấy email từ thông tin đăng nhập.');
     } catch (\Exception $e) {
         return redirect('/')->with('error', 'Đã xảy ra lỗi: ' . $e->getMessage());
