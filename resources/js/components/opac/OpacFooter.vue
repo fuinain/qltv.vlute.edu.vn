@@ -69,7 +69,7 @@
             </h5>
             <ul class="list-unstyled">
               <li class="mb-2">
-                <i class="fas fa-clock text-info mr-2"></i>Thứ 2 và thứ 7: Giờ hành chính
+                <i class="fas fa-clock text-info mr-2"></i>Từ thứ 2 đến thứ 7: Giờ hành chính
               </li>
               <li class="mb-2">
                 <i class="fas fa-exclamation-circle text-warning mr-2"></i>Đóng cửa chủ nhật và các ngày lễ
