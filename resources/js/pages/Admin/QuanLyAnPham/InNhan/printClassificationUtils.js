@@ -20,30 +20,63 @@ export function createClassificationLabelWindow(danhSachNhan) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <style type="text/css"> 
+
+    <style type="text/css">
+
+
     p.breakhere {page-break-after: always}
     .style3 {font-size: 10px;}
-    .pl {font-size:22px; text-align:center;}
-    .ct {font-size:18px; text-align:center;}
+    /*.pl {font-size:22px; text-align:center;}*/
+    /*.ct {font-size:18px; text-align:center;}*/
 
     .mv{font-size:12px; font-style:normal; font-family:"3 of 9 Barcode";text-align:center;}
-    body {
-        margin-left: 10px;
-        margin-right: 10px;
-        margin-top: 2px;
-    }
-    
+    /*body {*/
+    /*    margin-left: 10px;*/
+    /*    margin-right: 10px;*/
+    /*    margin-top: 2px;*/
+    /*}*/
+
     /* Thêm các style cần thiết cho việc in ấn */
-    @page {
-        size: A4;
-        margin: 10mm;
-    }
+    /*@page {*/
+    /*    size: A4;*/
+    /*    margin: 10mm;*/
+    /*}*/
     @media print {
         .no-print {
             display: none;
         }
     }
-    
+
+    table.nhan-table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+    margin: 0;
+    padding: 0;
+}
+td.nhan-cell {
+    width: 20%; /* 100% / 5 nhãn */
+    height: 17mm;
+    padding: 0;
+    margin: 0;
+    text-align: center;
+    vertical-align: middle;
+}
+td.pl {
+    font-size: 22px;
+    line-height: 1.2;
+}
+td.ct {
+    font-size: 18px;
+}
+body {
+    margin: 0;
+}
+@page {
+    size: A4;
+    margin: 10mm;
+}
+
     /* Style cho nút in */
     .print-controls {
         padding: 10px;
@@ -61,7 +94,7 @@ export function createClassificationLabelWindow(danhSachNhan) {
         font-weight: bold;
     }
     </style>
-    
+
     <script>
         window.onload = function() {
             // Xử lý sự kiện nút in
@@ -84,46 +117,36 @@ export function createClassificationLabelWindow(danhSachNhan) {
     // Xử lý danh sách nhãn và tạo bảng
     const labelsPerRow = 5; // 5 nhãn mỗi hàng
     const rows = Math.ceil(danhSachNhan.length / labelsPerRow);
-    
     // Xử lý cho từng hàng nhãn
     for (let row = 0; row < rows; row++) {
         const startIndex = row * labelsPerRow;
         const endIndex = Math.min(startIndex + labelsPerRow, danhSachNhan.length);
         const rowLabels = danhSachNhan.slice(startIndex, endIndex);
-        
+
         // Tạo một hàng nhãn
         htmlContent += `
-<table width="100%" border="0" cellpadding="0" cellspacing="0" style="padding:0px; margin-top:0px;">
-  <tr valign="middle">`;
-
-        // Tạo 5 ô nhãn cho hàng hiện tại
+<table class="nhan-table">
+  <tr>`;
         for (let col = 0; col < labelsPerRow; col++) {
-            const labelIndex = col;
-            if (labelIndex < rowLabels.length) {
-                const nhan = rowLabels[labelIndex];
+            if (col < rowLabels.length) {
+                const nhan = rowLabels[col];
                 const phanLoai1 = nhan.phan_loai_1 || '';
                 const phanLoai2 = nhan.phan_loai_2 || '';
-                
                 htmlContent += `
-    <td style="width:16%;" height="64" align="center" valign="top" nowrap>
-      <div align="center" style="text-align:center;"><b class="pl">${phanLoai1}</b><br><span style='font-size:22px;'>${phanLoai2}</span></div>
-    </td>`;
+                    <td class="nhan-cell">
+                        <b class="pl">${phanLoai1}</b><br>
+                        <span class="ct">${phanLoai2}</span>
+                    </td>`;
             } else {
-                // Ô trống nếu không đủ nhãn
-                htmlContent += `
-    <td style="width:16%;" align="center" valign="top" nowrap>
-      <div align="center" style="text-align:center;"><b class="pl"></b><br><span style='font-size:22px;'></span></div>
-    </td>`;
+                htmlContent += `<td class="nhan-cell"></td>`;
             }
         }
-        
-        // Đóng hàng và bảng
         htmlContent += `
   </tr>
 </table>`;
-        
+
         // Thêm ngắt trang sau mỗi 15 hàng (75 nhãn)
-        if ((row + 1) % 15 === 0 && row < rows - 1) {
+        if ((row + 1) % 16 === 0 && row < rows - 1) {
             htmlContent += `<p class='breakhere'></p>`;
         }
     }
@@ -139,4 +162,4 @@ export function createClassificationLabelWindow(danhSachNhan) {
     printWindow.document.close();
 
     return true;
-} 
+}

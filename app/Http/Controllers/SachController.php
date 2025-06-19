@@ -29,9 +29,10 @@ class SachController extends Controller
     {
         $perPage = $request->get('per_page', 10);
         $search = $request->get('search', '');
-        
-        $query = SachModel::where('id_don_nhan', $id_don_nhan);
-        
+
+        $query = DB::table('sach')->where('id_don_nhan', $id_don_nhan)
+            ->leftJoin('dkcb', 'dkcb.id_sach', '=', 'sach.id_sach');
+
         // Thêm điều kiện tìm kiếm nếu có
         if (!empty($search)) {
             $query->where(function($q) use ($search) {
@@ -39,11 +40,13 @@ class SachController extends Controller
                   ->orWhere('tac_gia', 'like', '%' . $search . '%')
                   ->orWhere('nha_xuat_ban', 'like', '%' . $search . '%')
                   ->orWhere('noi_xuat_ban', 'like', '%' . $search . '%')
-                  ->orWhere('nam_xuat_ban', 'like', '%' . $search . '%');
+                  ->orWhere('nam_xuat_ban', 'like', '%' . $search . '%')
+                  ->orWhere('ma_dkcb', 'like', '%' . $search . '%');
             });
         }
-        
-        $data = $query->orderBy('ngay_tao', 'desc')->paginate($perPage);
+
+        $data = $query->groupBy('sach.id_sach')->orderBy('ngay_tao', 'desc')->select('sach.*')
+            ->paginate($perPage);
 
         return response()->json(['status' => 200, 'data' => $data]);
     }
@@ -636,7 +639,7 @@ class SachController extends Controller
 
     /**
      * Lấy thông tin chi tiết sách
-     * 
+     *
      * @param  int  $id
      * @return \Illuminate\Http\JsonResponse
      */
@@ -644,7 +647,7 @@ class SachController extends Controller
     {
         try {
             $sach = SachModel::findOrFail($id);
-            
+
             return response()->json([
                 'status' => 200,
                 'data' => $sach
@@ -656,7 +659,7 @@ class SachController extends Controller
             ], 404);
         } catch (\Exception $e) {
             Log::error('Lỗi khi lấy chi tiết sách: ' . $e->getMessage());
-            
+
             return response()->json([
                 'status' => 500,
                 'message' => 'Đã xảy ra lỗi khi lấy chi tiết sách'
@@ -666,7 +669,7 @@ class SachController extends Controller
 
     /**
      * Tìm số DKCB khả dụng
-     * 
+     *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
      */
@@ -687,7 +690,7 @@ class SachController extends Controller
             'so_luong.min' => 'Số lượng phải lớn hơn 0',
             'so_luong.max' => 'Số lượng tối đa là 100 nhãn mỗi lần',
         ]);
-        
+
         if ($validator->fails()) {
             return response()->json([
                 'status' => 422,
@@ -695,22 +698,22 @@ class SachController extends Controller
                 'errors' => $validator->errors()
             ], 422);
         }
-        
+
         try {
             $id_kho_an_pham = $request->id_kho_an_pham;
             $so_bat_dau = $request->so_bat_dau;
             $so_luong = $request->so_luong;
-            
+
             // Sử dụng phương thức timDKCBKhaDung từ DKCBModel
             $dkcbList = \App\Models\DKCBModel::timDKCBKhaDung($id_kho_an_pham, $so_bat_dau, $so_luong);
-            
+
             if ($dkcbList->isEmpty()) {
                 return response()->json([
                     'status' => 404,
                     'message' => 'Không tìm thấy số DKCB khả dụng. Vui lòng thử lại với kho hoặc số bắt đầu khác.'
                 ]);
             }
-            
+
             return response()->json([
                 'status' => 200,
                 'data' => $dkcbList,
@@ -718,17 +721,17 @@ class SachController extends Controller
             ]);
         } catch (\Exception $e) {
             Log::error('Lỗi khi tìm DKCB: ' . $e->getMessage());
-            
+
             return response()->json([
                 'status' => 500,
                 'message' => 'Đã xảy ra lỗi khi tìm số DKCB'
             ], 500);
         }
     }
-    
+
     /**
      * Gán số DKCB cho sách
-     * 
+     *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
      */
@@ -748,7 +751,7 @@ class SachController extends Controller
             'so_luong.min' => 'Số lượng phải lớn hơn 0',
             'so_luong.max' => 'Số lượng tối đa là 100 nhãn mỗi lần',
         ]);
-        
+
         if ($validator->fails()) {
             return response()->json([
                 'status' => 422,
@@ -756,13 +759,13 @@ class SachController extends Controller
                 'errors' => $validator->errors()
             ], 422);
         }
-        
+
         try {
             $id_sach = $request->id_sach;
             $ma_dkcb = $request->ma_dkcb;
             $so_luong = $request->so_luong;
             $auto_assign = $request->auto_assign ?? true;
-            
+
             // Kiểm tra sách có tồn tại không
             $sach = SachModel::find($id_sach);
             if (!$sach) {
@@ -771,11 +774,11 @@ class SachController extends Controller
                     'message' => 'Không tìm thấy sách'
                 ], 404);
             }
-            
+
             // Lấy số lượng DKCB đã gán
             $daGan = \App\Models\DKCBModel::where('id_sach', $id_sach)->count();
             $conLai = $sach->so_luong - $daGan;
-            
+
             // Kiểm tra số lượng DKCB cần gán có phù hợp với số lượng sách còn lại không
             if ($so_luong > $conLai) {
                 return response()->json([
@@ -783,7 +786,7 @@ class SachController extends Controller
                     'message' => 'Số lượng DKCB cần gán (' . $so_luong . ') vượt quá số lượng còn lại (' . $conLai . ')'
                 ], 400);
             }
-            
+
             if ($auto_assign) {
                 // Sử dụng phương thức ganDKCBChoSachTheoMa từ DKCBModel để gán tự động
                 $result = \App\Models\DKCBModel::ganDKCBChoSachTheoMa($id_sach, $ma_dkcb, $so_luong);
@@ -791,11 +794,11 @@ class SachController extends Controller
                 // Gán một mã DKCB duy nhất (không liên tiếp)
                 $result = \App\Models\DKCBModel::ganMotDKCBChoSach($id_sach, $ma_dkcb);
             }
-            
+
             return response()->json($result, $result['status'] == 200 ? 200 : 400);
         } catch (\Exception $e) {
             Log::error('Lỗi khi gán DKCB: ' . $e->getMessage());
-            
+
             return response()->json([
                 'status' => 500,
                 'message' => 'Đã xảy ra lỗi khi gán số DKCB: ' . $e->getMessage()
@@ -814,19 +817,19 @@ class SachController extends Controller
                     'message' => 'Không tìm thấy sách'
                 ], 404);
             }
-            
+
             // Lấy danh sách DKCB đã gán cho sách
             $danhSachDKCB = \App\Models\DKCBModel::where('id_sach', $id_sach)
                 ->orderBy('ma_dkcb', 'asc')
                 ->get();
-            
+
             return response()->json([
                 'status' => 200,
                 'data' => $danhSachDKCB
             ]);
         } catch (\Exception $e) {
             Log::error('Lỗi khi lấy danh sách DKCB của sách: ' . $e->getMessage());
-            
+
             return response()->json([
                 'status' => 500,
                 'message' => 'Đã xảy ra lỗi khi lấy danh sách DKCB'
@@ -836,7 +839,7 @@ class SachController extends Controller
 
     /**
      * Xóa mã DKCB khỏi sách
-     * 
+     *
      * @param  int  $id_dkcb
      * @return \Illuminate\Http\JsonResponse
      */
@@ -845,21 +848,21 @@ class SachController extends Controller
         try {
             // Tìm DKCB theo ID
             $dkcb = \App\Models\DKCBModel::find($id_dkcb);
-            
+
             if (!$dkcb) {
                 return response()->json([
                     'status' => 404,
                     'message' => 'Không tìm thấy mã DKCB'
                 ], 404);
             }
-            
+
             // Lưu lại thông tin mã DKCB để trả về
             $maDKCB = $dkcb->ma_dkcb;
-            
+
             // Xóa liên kết với sách (không xóa mã DKCB khỏi hệ thống)
             $dkcb->id_sach = null;
             $dkcb->save();
-            
+
             return response()->json([
                 'status' => 200,
                 'message' => 'Đã xóa mã DKCB ' . $maDKCB . ' khỏi sách',
@@ -867,7 +870,7 @@ class SachController extends Controller
             ]);
         } catch (\Exception $e) {
             Log::error('Lỗi khi xóa DKCB: ' . $e->getMessage());
-            
+
             return response()->json([
                 'status' => 500,
                 'message' => 'Đã xảy ra lỗi khi xóa mã DKCB'
@@ -898,10 +901,10 @@ class SachController extends Controller
 
             // Lấy danh sách đơn nhận trong khoảng
             $donNhanIds = range($validated['don_nhan_bat_dau'], $validated['don_nhan_ket_thuc']);
-            
+
             // Kiểm tra xem các đơn nhận có tồn tại không
             $cacDonNhanTonTai = DonNhanModel::whereIn('id_don_nhan', $donNhanIds)->pluck('id_don_nhan')->toArray();
-            
+
             if (empty($cacDonNhanTonTai)) {
                 return response()->json([
                     'status' => 404,
@@ -1091,7 +1094,7 @@ class SachController extends Controller
             $rowIndex = 0;
             while ($rowIndex < count($dataRows)) {
                 $row = $dataRows[$rowIndex];
-                
+
                 // Bỏ qua dòng trống
                 if (empty($row[1])) {
                     $rowIndex++;
@@ -1112,7 +1115,7 @@ class SachController extends Controller
                         $parts = explode(':', $xuatBanInfo);
                         if (count($parts) > 1) {
                             $noiXuatBan = trim($parts[0]);
-                            
+
                             // Tách phần còn lại theo dấu ","
                             $remainingParts = explode(',', $parts[1]);
                             if (count($remainingParts) > 1) {
@@ -1141,7 +1144,7 @@ class SachController extends Controller
                     if (!empty($phanLoaiInfo)) {
                         $phanLoaiParts = explode('/', $phanLoaiInfo);
                         $phanLoai1 = trim($phanLoaiParts[0] ?? '');
-                        
+
                         if (count($phanLoaiParts) > 1) {
                             // Nếu có nhiều hơn 2 phần (trường hợp 2: "660.6/ Ch125/ T.3")
                             if (count($phanLoaiParts) > 2) {
@@ -1186,37 +1189,37 @@ class SachController extends Controller
                             $truong082 = BienMucTruongChaModel::where('id_bien_muc_bieu_ghi', $bmg->id_bien_muc_bieu_ghi)
                                 ->where('ma_truong', '082')
                                 ->first();
-                            
+
                             if ($truong082 && !empty($phanLoai1)) {
                                 BienMucTruongConModel::where('id_bien_muc_truong_cha', $truong082->id_bien_muc_truong_cha)
                                     ->where('ma_truong_con', 'a')
                                     ->update(['noi_dung' => $phanLoai1]);
                             }
-                            
+
                             if ($truong082 && !empty($phanLoai2)) {
                                 BienMucTruongConModel::where('id_bien_muc_truong_cha', $truong082->id_bien_muc_truong_cha)
                                     ->where('ma_truong_con', 'b')
                                     ->update(['noi_dung' => $phanLoai2]);
                             }
-                            
+
                             // Cập nhật thông tin xuất bản
                             $truong260 = BienMucTruongChaModel::where('id_bien_muc_bieu_ghi', $bmg->id_bien_muc_bieu_ghi)
                                 ->where('ma_truong', '260')
                                 ->first();
-                                
+
                             if ($truong260) {
                                 if (!empty($noiXuatBan)) {
                                     BienMucTruongConModel::where('id_bien_muc_truong_cha', $truong260->id_bien_muc_truong_cha)
                                         ->where('ma_truong_con', 'a')
                                         ->update(['noi_dung' => $noiXuatBan]);
                                 }
-                                
+
                                 if (!empty($nhaXuatBan)) {
                                     BienMucTruongConModel::where('id_bien_muc_truong_cha', $truong260->id_bien_muc_truong_cha)
                                         ->where('ma_truong_con', 'b')
                                         ->update(['noi_dung' => $nhaXuatBan]);
                                 }
-                                
+
                                 if (!empty($namXuatBan)) {
                                     BienMucTruongConModel::where('id_bien_muc_truong_cha', $truong260->id_bien_muc_truong_cha)
                                         ->where('ma_truong_con', 'c')
@@ -1343,7 +1346,7 @@ class SachController extends Controller
                                 }
                             }
                         }
-                        
+
                         // Xóa các mã DKCB cũ đã gán cho sách này
                         DKCBModel::where('id_sach', $sach->id_sach)
                             ->update(['id_sach' => null]);
@@ -1483,47 +1486,47 @@ class SachController extends Controller
 
                     // Xử lý DKCB (cột H)
                     $dkcbList = [];
-                    
+
                     // Thêm mã DKCB từ dòng hiện tại
                     if (!empty($row[7])) {
                         $dkcbList[] = trim($row[7]);
                     }
-                    
+
                     // Nếu số lượng > 1, tìm các mã DKCB từ các dòng tiếp theo
                     if ($soLuong > 1) {
                         $nextRowIndex = $rowIndex + 1;
                         $dkcbCount = 1; // Đã có 1 mã từ dòng hiện tại
-                        
+
                         // Kiểm tra các dòng tiếp theo để lấy các mã DKCB
                         while ($dkcbCount < $soLuong && $nextRowIndex < count($dataRows)) {
                             $nextRow = $dataRows[$nextRowIndex];
-                            
+
                             // Nếu dòng tiếp theo có các cột thông tin sách trống
                             // nhưng có mã DKCB, thì đó là mã DKCB của sách hiện tại
-                            if (empty($nextRow[1]) && empty($nextRow[2]) && empty($nextRow[3]) && 
-                                empty($nextRow[4]) && empty($nextRow[5]) && empty($nextRow[6]) && 
+                            if (empty($nextRow[1]) && empty($nextRow[2]) && empty($nextRow[3]) &&
+                                empty($nextRow[4]) && empty($nextRow[5]) && empty($nextRow[6]) &&
                                 !empty($nextRow[7])) {
-                                
+
                                 $dkcbList[] = trim($nextRow[7]);
                                 $dkcbCount++;
                                 $nextRowIndex++;
                             } else {
-                                // Nếu dòng tiếp theo có thông tin sách, 
+                                // Nếu dòng tiếp theo có thông tin sách,
                                 // thì đó là một sách mới, không phải mã DKCB của sách hiện tại
                                 break;
                             }
                         }
-                        
+
                         // Cập nhật rowIndex để bỏ qua các dòng đã xử lý
                         $rowIndex = $nextRowIndex - 1;
                     }
-                    
+
                     // Gán các mã DKCB cho sách
                     foreach ($dkcbList as $maDKCB) {
                         if (empty($maDKCB)) continue;
-                        
+
                         $dkcb = DKCBModel::where('ma_dkcb', $maDKCB)->first();
-                        
+
                         if ($dkcb) {
                             // Gán DKCB cho sách (luôn ghi đè)
                             $dkcb->id_sach = $sach->id_sach;
@@ -1541,7 +1544,7 @@ class SachController extends Controller
                     $errors[] = "Lỗi ở dòng " . ($rowIndex + 2) . ": " . $e->getMessage();
                     Log::error("Lỗi import Excel dòng " . ($rowIndex + 2) . ": " . $e->getMessage());
                 }
-                
+
                 $rowIndex++;
             }
 
