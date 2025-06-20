@@ -7,7 +7,9 @@ use App\Models\DoiTuongBanDocModel;
 use App\Models\ChuyenNganhModel;
 use App\Models\DocGiaModel;
 use App\Models\DonViModel;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
@@ -31,17 +33,17 @@ class DocGiaController extends Controller
             'data' => $query
         ]);
     }
-    
+
     public function index(Request $request)
     {
         $search = $request->input('search', '');
         $perPage = $request->input('perPage', 10);
-        
+
         $query = DocGiaModel::query()
             ->select('doc_gia.*', 'chuyen_nganh.id_don_vi', 'don_vi.ten_don_vi')
             ->leftJoin('chuyen_nganh', 'doc_gia.id_chuyen_nganh', '=', 'chuyen_nganh.id_chuyen_nganh')
             ->leftJoin('don_vi', 'chuyen_nganh.id_don_vi', '=', 'don_vi.id_don_vi');
-        
+
         if (!empty($search)) {
             $query->where(function ($q) use ($search) {
                 $q->where('ho_ten', 'like', '%' . $search . '%')
@@ -49,13 +51,13 @@ class DocGiaController extends Controller
                   ->orWhere('ten_lop', 'like', '%' . $search . '%');
             });
         }
-        
+
         return response()->json([
             'status' => 200,
             'data' => $query->paginate($perPage)
         ]);
     }
-    
+
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -71,14 +73,14 @@ class DocGiaController extends Controller
             'ma_so_quy_uoc' => 'required',
             'id_chuyen_nganh' => 'required'
         ]);
-        
+
         if ($validator->fails()) {
             return response()->json([
                 'status' => 422,
                 'errors' => $validator->errors()
             ], 422);
         }
-        
+
         $docGia = DocGiaModel::create([
             'ho_ten' => $request->ho_ten,
             'mssv' => $request->mssv,
@@ -98,14 +100,14 @@ class DocGiaController extends Controller
             'id_chuyen_nganh' => $request->id_chuyen_nganh,
             'email' => $request->email ?? $request->mssv . '@st.vlute.edu.vn',
         ]);
-        
+
         return response()->json([
             'status' => 200,
             'message' => 'Thêm bạn đọc thành công',
             'data' => $docGia
         ]);
     }
-    
+
     public function show($id)
     {
         $docGia = DocGiaModel::findOrFail($id);
@@ -114,7 +116,7 @@ class DocGiaController extends Controller
             'data' => $docGia
         ]);
     }
-    
+
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
@@ -130,14 +132,14 @@ class DocGiaController extends Controller
             'ma_so_quy_uoc' => 'required',
             'id_chuyen_nganh' => 'required'
         ]);
-        
+
         if ($validator->fails()) {
             return response()->json([
                 'status' => 422,
                 'errors' => $validator->errors()
             ], 422);
         }
-        
+
         $docGia = DocGiaModel::findOrFail($id);
         $docGia->update([
             'ho_ten' => $request->ho_ten,
@@ -158,25 +160,25 @@ class DocGiaController extends Controller
             'id_chuyen_nganh' => $request->id_chuyen_nganh,
             'email' => $request->email ?? $request->mssv . '@st.vlute.edu.vn',
         ]);
-        
+
         return response()->json([
             'status' => 200,
             'message' => 'Cập nhật bạn đọc thành công',
             'data' => $docGia
         ]);
     }
-    
+
     public function destroy($id)
     {
         $docGia = DocGiaModel::findOrFail($id);
         $docGia->delete();
-        
+
         return response()->json([
             'status' => 200,
             'message' => 'Xóa bạn đọc thành công'
         ]);
     }
-    
+
     public function syncBanDoc(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -184,32 +186,32 @@ class DocGiaController extends Controller
             'ma_so_quy_uoc' => 'required|numeric',
             'id_chuyen_nganh' => 'required|numeric',
         ]);
-        
+
         if ($validator->fails()) {
             return response()->json([
                 'status' => 422,
                 'errors' => $validator->errors()
             ], 422);
         }
-        
+
         // Thiết lập timeout để tránh ngắt kết nối
         set_time_limit(0);
-        
+
         $nam = $request->nam;
         $maQuyUoc = $request->ma_so_quy_uoc;
         $idChuyenNganh = $request->id_chuyen_nganh;
-        
+
         // Lấy 2 số cuối của năm
         $namFormat = substr($nam, -2);
-        
+
         // Format id chuyên ngành thành 2 chữ số
         $idChuyenNganhFormat = str_pad($idChuyenNganh, 2, '0', STR_PAD_LEFT);
-        
+
         $successCount = 0;
         $errorCount = 0;
         $totalProcessed = 0;
         $existingCount = 0;
-        
+
         // Khởi tạo Guzzle HTTP Client một lần (tái sử dụng connection)
         $client = new Client([
             'base_uri' => 'http://cgtdt-dsa.vlute.edu.vn/api/',
@@ -221,16 +223,17 @@ class DocGiaController extends Controller
             'connect_timeout' => 10, // Timeout kết nối
             'timeout' => 30, // Timeout tổng
         ]);
-        
+
         // Duyệt qua các MSSV từ 001 đến 999, dừng sớm nếu gặp 20 MSSV liên tiếp không tồn tại
         $maxEmpty = 20;
         $emptyCount = 0;
         for ($i = 1; $i <= 999; $i++) {
             $stt = str_pad($i, 3, '0', STR_PAD_LEFT);
-            $mssv = $namFormat . $maQuyUoc . $idChuyenNganhFormat . $stt;
+            $mssv = $namFormat . $maQuyUoc . $idChuyenNganhFormat . $stt;//2500
             $totalProcessed++;
             try {
                 $response = $client->request('GET', "sinhvien/{$mssv}");
+
                 $statusCode = $response->getStatusCode();
                 if ($statusCode === 200) {
                     $responseBody = json_decode($response->getBody()->getContents(), true);
@@ -252,24 +255,27 @@ class DocGiaController extends Controller
                                     $ngaySinh = $ngaySinhParts[2] . '-' . $ngaySinhParts[1] . '-' . $ngaySinhParts[0];
                                 }
                             }
-                            DocGiaModel::create([
-                                'ho_ten' => $svData['hoten'] ?? '',
-                                'mssv' => $mssv,
-                                'ma_lop' => $svData['malop'] ?? '',
-                                'ten_lop' => $svData['tenlop'] ?? '',
-                                'so_the' => $mssv,
-                                'ngay_sinh' => $ngaySinh,
-                                'ngay_cap_the' => $ngayCapThe,
-                                'han_the' => $hanThe,
-                                'lan_cap_the' => 1,
-                                'ho_khau' => $svData['diachinha'] ?? '',
-                                'ghi_chu' => '',
-                                'rut_han' => 1,
-                                'nien_khoa' => $namVao && $namRa ? $namVao . '-' . $namRa : '',
-                                'ma_so_quy_uoc' => $maQuyUoc,
-                                'id_chuyen_nganh' => $idChuyenNganh,
-                                'email' => $mssv . '@st.vlute.edu.vn',
-                            ]);
+                            DB::table('doc_gia')->updateOrInsert(
+                                ['mssv' => $mssv], // điều kiện xác định bản ghi
+                                [
+                                    'ho_ten' => $svData['hoten'] ?? '',
+                                    'ma_lop' => $svData['malop'] ?? '',
+                                    'ten_lop' => $svData['tenlop'] ?? '',
+                                    'so_the' => $mssv,
+                                    'ngay_sinh' => $ngaySinh,
+                                    'ngay_cap_the' => $ngayCapThe,
+                                    'han_the' => $hanThe,
+                                    'lan_cap_the' => 1,
+                                    'ho_khau' => $svData['diachinha'] ?? '',
+                                    'ghi_chu' => '',
+                                    'rut_han' => 1,
+                                    'nien_khoa' => $namVao && $namRa ? "$namVao-$namRa" : '',
+                                    'ma_so_quy_uoc' => $maQuyUoc,
+                                    'id_chuyen_nganh' => $idChuyenNganh,
+                                    'email' => "$mssv@st.vlute.edu.vn",
+                                ]
+                            );
+
                             $successCount++;
                         } else {
                             $existingCount++;
@@ -294,7 +300,7 @@ class DocGiaController extends Controller
             }
             usleep(100000); // 100ms
         }
-        
+
         // Trả về kết quả tổng hợp
         return response()->json([
             'status' => 200,

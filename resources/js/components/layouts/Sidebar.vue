@@ -42,6 +42,12 @@
                                         </router-link>
                                     </li>
                                     <li class="nav-item">
+                                        <router-link :to="{ name: 'pageGiangVien' }" class="nav-link">
+                                            <i class="fas fa-angle-right nav-icon"></i>
+                                            <p>Danh mục Giảng viên</p>
+                                        </router-link>
+                                    </li>
+                                    <li class="nav-item">
                                         <router-link :to="{ name: 'pageChucVu' }" class="nav-link">
                                             <i class="fas fa-angle-right nav-icon"></i>
                                             <p>Danh mục chức vụ</p>

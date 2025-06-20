@@ -2,6 +2,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Admin from "@/pages/Admin/pageAdmin.vue";
 import pagePhongKhoa from "@/pages/Admin/DanhMuc/ThongTinChung/PhongKhoa/pagePhongKhoa.vue";
+import pageGiangVien from "@/pages/Admin/DanhMuc/ThongTinChung/pageGiangVien.vue";
 import pageChucVu from "@/pages/Admin/DanhMuc/ThongTinChung/ChucVu/pageChucVu.vue";
 import pageNamHoc from "@/pages/Admin/DanhMuc/ThongTinChung/NamHoc/pageNamHoc.vue";
 import pageLopHoc from "@/pages/Admin/DanhMuc/ThongTinChung/LopHoc/pageLopHoc.vue";
@@ -189,6 +190,20 @@ const routes = [
                                         { name: "Danh mục" },
                                         { name: "Thông tin chung" },
                                         { name: "Phòng/Khoa" },
+                                    ],
+                                },
+                            },
+                            {
+                                path: "giang-vien",
+                                name: "pageGiangVien",
+                                component: pageGiangVien,
+                                meta: {
+                                    title: "Giảng viên",
+                                    breadcrumb: [
+                                        { name: "Home", path: "/" },
+                                        { name: "Danh mục" },
+                                        { name: "Thông tin chung" },
+                                        { name: "Giảng viên" },
                                     ],
                                 },
                             },

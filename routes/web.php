@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 
 // Trang chủ OPAC
 
-
 // Các route xác thực
 Route::get('/login', [SSOController::class, 'dangNhap'])->name('login');
 Route::get('/login/callback', [SSOController::class, 'callback'])->name('callback');
