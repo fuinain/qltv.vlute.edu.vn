@@ -23,59 +23,50 @@ export function createClassificationLabelWindow(danhSachNhan) {
 
     <style type="text/css">
 
+    @page {
+      size: A4;
+      margin: 0; /* tận dụng hết khổ giấy */
+    }
 
-    p.breakhere {page-break-after: always}
-    .style3 {font-size: 10px;}
-    /*.pl {font-size:22px; text-align:center;}*/
-    /*.ct {font-size:18px; text-align:center;}*/
-
-    .mv{font-size:12px; font-style:normal; font-family:"3 of 9 Barcode";text-align:center;}
-    /*body {*/
-    /*    margin-left: 10px;*/
-    /*    margin-right: 10px;*/
-    /*    margin-top: 2px;*/
-    /*}*/
-
-    /* Thêm các style cần thiết cho việc in ấn */
-    /*@page {*/
-    /*    size: A4;*/
-    /*    margin: 10mm;*/
-    /*}*/
     @media print {
-        .no-print {
-            display: none;
-        }
+      .no-print { display: none; }
+    }
+
+    body {
+      margin: 5mm; /* hoặc điều chỉnh theo margin máy in */
     }
 
     table.nhan-table {
-    width: 100%;
-    table-layout: fixed;
-    border-collapse: collapse;
-    margin: 0;
-    padding: 0;
-}
-td.nhan-cell {
-    width: 20%; /* 100% / 5 nhãn */
-    height: 17mm;
-    padding: 0;
-    margin: 0;
-    text-align: center;
-    vertical-align: middle;
-}
-td.pl {
-    font-size: 22px;
-    line-height: 1.2;
-}
-td.ct {
-    font-size: 18px;
-}
-body {
-    margin: 0;
-}
-@page {
-    size: A4;
-    margin: 10mm;
-}
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    td.nhan-cell {
+      width: calc((210mm - 2 * 5mm) / 5); /* = 40mm mỗi ô ngang (khoảng lề) */
+      height: calc((297mm - 2 * 5mm) / 16); /* ~17.9375mm mỗi ô dọc */
+      padding: 0;
+      margin: 0;
+      text-align: center;
+      vertical-align: middle;
+      box-sizing: border-box;
+    }
+
+    td.pl {
+      font-size: 12px;
+      line-height: 1.1;
+    }
+
+    td.ct {
+      font-size: 10px;
+    }
+
+    p.breakhere {
+      page-break-after: always;
+    }
+
+    .style3 {font-size: 10px;}
+
+    .mv{font-size:12px; font-style:normal; font-family:"3 of 9 Barcode";text-align:center;}
 
     /* Style cho nút in */
     .print-controls {

@@ -486,9 +486,6 @@
         mounted() {
             this.loadDMBaoCao();
             this.thongKeBanDocDenThuVien();
-            this.formBaoCao.tu_ngay = "2025-06-01";
-            this.formBaoCao.den_ngay = "2025-06-30";
-            this.formBaoCao.id_dm_bao_cao = 6;
         },
         methods: {
             async loadDMBaoCao() {
