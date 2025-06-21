@@ -385,7 +385,7 @@ export default {
                 id_chuyen_nganh: "",
                 chuc_vu: "",
                 email: "",
-                id_don_vi: 0,
+                id_don_vi: '',
             };
 
             // Mở modal
