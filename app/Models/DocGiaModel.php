@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class DocGiaModel extends Model
 {
-    
+
     protected $table = 'doc_gia';
     protected $primaryKey = 'id_doc_gia';
     public $timestamps = false;
@@ -29,5 +29,6 @@ class DocGiaModel extends Model
         'id_chuyen_nganh',
         'email',
         'chuc_vu',
+        'id_don_vi',
     ];
 }

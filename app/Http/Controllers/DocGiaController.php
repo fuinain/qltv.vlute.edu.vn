@@ -40,7 +40,7 @@ class DocGiaController extends Controller
         $perPage = $request->input('perPage', 10);
 
         $query = DocGiaModel::query()
-            ->select('doc_gia.*', 'chuyen_nganh.id_don_vi', 'don_vi.ten_don_vi')
+            ->select('doc_gia.*', 'chuyen_nganh.id_chuyen_nganh', 'don_vi.ten_don_vi')
             ->leftJoin('chuyen_nganh', 'doc_gia.id_chuyen_nganh', '=', 'chuyen_nganh.id_chuyen_nganh')
             ->leftJoin('don_vi', 'chuyen_nganh.id_don_vi', '=', 'don_vi.id_don_vi');
 
@@ -60,26 +60,26 @@ class DocGiaController extends Controller
 
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'ho_ten' => 'required',
-            'mssv' => 'nullable|unique:doc_gia',
-            'ma_lop' => 'nullable',
-            'ten_lop' => 'nullable',
-            'chuc_vu' => 'nullable',
-            'so_the' => 'required|unique:doc_gia,so_the',
-            'ngay_sinh' => 'nullable|date',
-            'ngay_cap_the' => 'nullable|date',
-            'han_the' => 'required|date',
-            'ma_so_quy_uoc' => 'required',
-            'id_chuyen_nganh' => 'required'
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => 422,
-                'errors' => $validator->errors()
-            ], 422);
-        }
+//        $validator = Validator::make($request->all(), [
+//            'ho_ten' => 'required',
+//            'mssv' => 'nullable|unique:doc_gia',
+//            'ma_lop' => 'nullable',
+//            'ten_lop' => 'nullable',
+//            'chuc_vu' => 'nullable',
+//            'so_the' => 'required|unique:doc_gia,so_the',
+//            'ngay_sinh' => 'nullable|date',
+//            'ngay_cap_the' => 'nullable|date',
+//            'han_the' => 'required|date',
+//            'ma_so_quy_uoc' => 'required',
+//            'id_chuyen_nganh' => 'required'
+//        ]);
+//
+//        if ($validator->fails()) {
+//            return response()->json([
+//                'status' => 422,
+//                'errors' => $validator->errors()
+//            ], 422);
+//        }
 
         $docGia = DocGiaModel::create([
             'ho_ten' => $request->ho_ten,
@@ -98,6 +98,7 @@ class DocGiaController extends Controller
             'nien_khoa' => $request->nien_khoa,
             'ma_so_quy_uoc' => $request->ma_so_quy_uoc,
             'id_chuyen_nganh' => $request->id_chuyen_nganh,
+            'id_don_vi' => $request->id_don_vi,
             'email' => $request->email ?? $request->mssv . '@st.vlute.edu.vn',
         ]);
 
@@ -119,29 +120,28 @@ class DocGiaController extends Controller
 
     public function update(Request $request, $id)
     {
-        $validator = Validator::make($request->all(), [
-            'ho_ten' => 'required',
-            'mssv' => 'nullable|unique:doc_gia,mssv,' . $id . ',id_doc_gia',
-            'ma_lop' => 'nullable',
-            'ten_lop' => 'nullable',
-            'chuc_vu' => 'nullable',
-            'so_the' => 'required|unique:doc_gia,so_the,' . $id . ',id_doc_gia',
-            'ngay_sinh' => 'nullable|date',
-            'ngay_cap_the' => 'nullable|date',
-            'han_the' => 'required|date',
-            'ma_so_quy_uoc' => 'required',
-            'id_chuyen_nganh' => 'required'
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => 422,
-                'errors' => $validator->errors()
-            ], 422);
-        }
-
+//        $validator = Validator::make($request->all(), [
+//            'ho_ten' => 'required',
+//            'mssv' => 'nullable|unique:doc_gia,mssv,' . $id . ',id_doc_gia',
+//            'ma_lop' => 'nullable',
+//            'ten_lop' => 'nullable',
+//            'chuc_vu' => 'nullable',
+//            'so_the' => 'required|unique:doc_gia,so_the,' . $id . ',id_doc_gia',
+//            'ngay_sinh' => 'nullable|date',
+//            'ngay_cap_the' => 'nullable|date',
+//            'han_the' => 'required|date',
+//            'ma_so_quy_uoc' => 'required',
+//            'id_chuyen_nganh' => 'required'
+//        ]);
+//
+//        if ($validator->fails()) {
+//            return response()->json([
+//                'status' => 422,
+//                'errors' => $validator->errors()
+//            ], 422);
+//        }
         $docGia = DocGiaModel::findOrFail($id);
-        $docGia->update([
+        $count = $docGia->update([
             'ho_ten' => $request->ho_ten,
             'mssv' => $request->mssv,
             'ma_lop' => $request->ma_lop,
@@ -158,14 +158,23 @@ class DocGiaController extends Controller
             'nien_khoa' => $request->nien_khoa,
             'ma_so_quy_uoc' => $request->ma_so_quy_uoc,
             'id_chuyen_nganh' => $request->id_chuyen_nganh,
+            'id_don_vi' => (int) $request->id_don_vi,
             'email' => $request->email ?? $request->mssv . '@st.vlute.edu.vn',
         ]);
 
+        if($count)
+            return response()->json([
+                'status' => 200,
+                'message' => 'Cập nhật bạn đọc thành công',
+                'data' => $docGia
+            ]);
+
         return response()->json([
-            'status' => 200,
-            'message' => 'Cập nhật bạn đọc thành công',
+            'status' => 400,
+            'message' => 'Cập nhật bạn đọc thất bại',
             'data' => $docGia
         ]);
+
     }
 
     public function destroy($id)

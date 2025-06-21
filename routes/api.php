@@ -340,6 +340,8 @@ Route::middleware(['isLogin:admin'])->group(function () {
             Route::post('/xuat-excel-ban-doc-den-thu-vien', [DMBaoCaoController::class, 'xuatExcelBanDocDenThuVien']);
             Route::post('/thong-ke-tinh-hinh-phuc-vu-ban-doc', [DMBaoCaoController::class, 'thongKeTinhHinhPhucVuBanDoc']);
             Route::post('/xuat-excel-tinh-hinh-phuc-vu-ban-doc', [DMBaoCaoController::class, 'xuatExcelTinhHinhPhucVuBanDoc']);
+            Route::post('/thong-ke-phat-ban-doc', [DMBaoCaoController::class, 'thongKePhatBanDoc']);
+            Route::post('/xuat-excel-phat-ban-doc', [DMBaoCaoController::class, 'xuatExcelPhatBanDoc']);
         });
 
         Route::prefix('bai-viet')->group(function () {

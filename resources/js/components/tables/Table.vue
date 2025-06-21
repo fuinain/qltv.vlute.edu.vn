@@ -33,7 +33,7 @@
                                         {{ formatValue(row[column.key], column.format) }}
                                     </template>
                                     <template v-else>
-                                        <em class="text-muted">Không có dữ liệu</em>
+                                        <span v-html="row[column.key]"></span>
                                     </template>
                                 </slot>
 
