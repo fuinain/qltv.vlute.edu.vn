@@ -12,7 +12,7 @@
                                         <i class="fas fa-spinner fa-spin" v-else></i>&nbsp;
                                         Báo cáo
                                     </button>
-                                </div>                              
+                                </div>
                             </div>
                         </template>
                         <template #ContentCardBody>
@@ -28,10 +28,10 @@
                                                     <Input v-model="formBaoCao.den_ngay" label="Đến ngày" note="(*)" placeholder="Nhập đến ngày..." type="date" required />
                                                 </div>
                                                 <div class="col-md-4">
-                                                    <SelectOption 
-                                                    v-model="formBaoCao.id_dm_bao_cao" 
-                                                    :options="dsBaoCaoOptions" 
-                                                    label="Báo cáo" note="(*)" 
+                                                    <SelectOption
+                                                    v-model="formBaoCao.id_dm_bao_cao"
+                                                    :options="dsBaoCaoOptions"
+                                                    label="Báo cáo" note="(*)"
                                                     placeholder="Chọn báo cáo..." required />
                                                 </div>
                                             </div>
@@ -39,7 +39,7 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <!-- Hiển thị kết quả thống kê sách đang mượn -->
                             <div class="row mt-4" v-if="ketQuaThongKe.length > 0 && formBaoCao.id_dm_bao_cao == 2">
                                 <div class="col-12">
@@ -58,7 +58,7 @@
                                                 <template v-slot:column-index="{ row, rowIndex }">
                                                     {{ rowIndex + 1 }}
                                                 </template>
-                                                
+
                                                 <!-- Slot cho thông tin ấn phẩm -->
                                                 <template v-slot:column-thong_tin_an_pham="{ row }">
                                                     <div>
@@ -89,7 +89,7 @@
                                     </Card>
                                 </div>
                             </div>
-                            
+
                             <!-- Hiển thị kết quả thống kê sách đã trả -->
                             <div class="row mt-4" v-if="ketQuaThongKe.length > 0 && formBaoCao.id_dm_bao_cao == 3">
                                 <div class="col-12">
@@ -108,7 +108,7 @@
                                                 <template v-slot:column-index="{ row, rowIndex }">
                                                     {{ rowIndex + 1 }}
                                                 </template>
-                                                
+
                                                 <!-- Slot cho thông tin ấn phẩm -->
                                                 <template v-slot:column-thong_tin_an_pham="{ row }">
                                                     <div>
@@ -159,7 +159,7 @@
                                                 <template v-slot:column-index="{ row, rowIndex }">
                                                     {{ rowIndex + 1 }}
                                                 </template>
-                                                
+
                                                 <!-- Slot cho thông tin ấn phẩm -->
                                                 <template v-slot:column-thong_tin_an_pham="{ row }">
                                                     <div>
@@ -209,7 +209,7 @@
                                                 <template v-slot:column-index="{ row, rowIndex }">
                                                     {{ rowIndex + 1 }}
                                                 </template>
-                                                
+
                                                 <!-- Slot cho thông tin độc giả -->
                                                 <template v-slot:column-thong_tin_doc_gia="{ row }">
                                                     <div>
@@ -218,7 +218,7 @@
                                                         <strong>Đơn vị:</strong> {{ row.don_vi_quan_ly || 'Chưa có' }}
                                                     </div>
                                                 </template>
-                                                
+
                                                 <!-- Slot cho thông tin hoạt động -->
                                                 <template v-slot:column-thong_tin_hoat_dong="{ row }">
                                                     <div>
@@ -226,6 +226,38 @@
                                                         <strong>Số lượng mượn:</strong> {{ row.so_luong_muon }}<br>
                                                         <strong>Số lượng trả:</strong> {{ row.so_luong_tra }}
                                                     </div>
+                                                </template>
+                                            </Table>
+                                        </template>
+                                    </Card>
+                                </div>
+                            </div>
+
+                            <!-- Hiển thị kết quả thống kê bạn đọc đến thư viện -->
+                            <div class="row mt-4" v-if="ketQuaThongKe.length > 0 && formBaoCao.id_dm_bao_cao == 6">
+                                <div class="col-12">
+                                    <Card title="Thống kê phạt bạn đọc">
+                                        <template #ContentCardHeader>
+                                            <div class="d-flex align-items-center">
+                                                <button type="button" class="btn btn-success btn-sm" @click="xuatExcelPhatBanDoc" :disabled="isLoading">
+                                                    <i class="fas fa-file-excel"></i>&nbsp;
+                                                    Xuất Excel
+                                                </button>
+                                            </div>
+                                        </template>
+                                        <template #ContentCardBody>
+                                            <Table :columns="headersPhatBanDoc" :data="ketQuaThongKe" :hideSearch="true">
+                                                <!-- Slot cho cột STT -->
+                                                <template v-slot:column-index="{ row, rowIndex }">
+                                                    {{ rowIndex + 1 }}
+                                                </template>
+
+                                                <template v-slot:column-ngay_phat="{ row, rowIndex }">
+                                                    {{ formatDateTime(row.ngay_phat) }}
+                                                </template>
+
+                                                <template v-slot:column-ngay_het_han_phat="{ row, rowIndex }">
+                                                    {{ formatDateTime(row.ngay_het_han_phat) }}
                                                 </template>
                                             </Table>
                                         </template>
@@ -321,7 +353,7 @@
                                                                 <td class="text-center">{{ row.cap_the_3_cbgv }}</td>
                                                             </tr>
                                                         </template>
-                                                        
+
                                                         <!-- Dòng tổng cộng -->
                                                         <tr class="bg-light font-weight-bold">
                                                             <td class="text-center">TC</td>
@@ -347,7 +379,7 @@
                                                             <td class="text-center">{{ tongCongThongKe?.cap_the_3_sv || 0 }}</td>
                                                             <td class="text-center">{{ tongCongThongKe?.cap_the_3_cbgv || 0 }}</td>
                                                         </tr>
-                                                        
+
                                                         <!-- Dòng tổng số -->
                                                         <tr class="bg-info text-white font-weight-bold">
                                                             <td colspan="2" class="text-center">Tổng cộng</td>
@@ -416,6 +448,19 @@
                     { key: 'thong_tin_doc_gia', label: 'Thông tin bạn đọc', sortable: false, width: '45%' },
                     { key: 'thong_tin_hoat_dong', label: 'Thông tin hoạt động', sortable: false, width: '50%' },
                 ],
+                headersPhatBanDoc: [
+                    { key: 'index', label: 'STT', sortable: false, width: '5%' },
+                    { key: 'so_the', label: 'Số thẻ', sortable: false, width: '' },
+                    { key: 'ho_ten', label: 'Tên bạn đọc', sortable: false, width: '' },
+                    { key: 'ten_lop', label: 'Lớp', sortable: false, width: '' },
+                    { key: 'ten_loai_phat', label: 'Lý do phạt', sortable: false, width: '' },
+                    { key: 'ma_dkcb', label: 'ĐKCB', sortable: false, width: '' },
+                    { key: 'hinh_thuc_phat', label: 'Hình thức phạt', sortable: false, width: '' },
+                    { key: 'so_tien', label: 'Giá trị phạt', sortable: false, width: '' },
+                    { key: 'ngay_phat', label: 'Ngày phạt', sortable: false, width: '' },
+                    { key: 'ngay_het_han_phat', label: 'Hạn phạt', sortable: false, width: '' },
+
+                ],
                 headersTinhHinhPhucVuBanDoc: [
                     { key: 'index', label: 'STT', sortable: false, width: '5%' },
                     { key: 'chi_tieu', label: 'Chỉ tiêu', sortable: false, width: '35%' },
@@ -437,7 +482,7 @@
                 // Reset kết quả thống kê khi loại báo cáo thay đổi
                 this.ketQuaThongKe = [];
             }
-        },                       
+        },
         mounted() {
             this.loadDMBaoCao();
             this.thongKeBanDocDenThuVien();
@@ -458,49 +503,49 @@
                     toastr.error("Đã xảy ra lỗi khi tải danh sách báo cáo!");
                 }
             },
-            
+
             validateForm() {
                 if (!this.formBaoCao.tu_ngay) {
                     toastr.error("Vui lòng chọn ngày bắt đầu!");
                     return false;
                 }
-                
+
                 if (!this.formBaoCao.den_ngay) {
                     toastr.error("Vui lòng chọn ngày kết thúc!");
                     return false;
                 }
-                
+
                 if (!this.formBaoCao.id_dm_bao_cao) {
                     toastr.error("Vui lòng chọn loại báo cáo!");
                     return false;
                 }
-                
+
                 const tuNgay = new Date(this.formBaoCao.tu_ngay);
                 const denNgay = new Date(this.formBaoCao.den_ngay);
-                
+
                 if (tuNgay > denNgay) {
                     toastr.error("Ngày bắt đầu phải nhỏ hơn hoặc bằng ngày kết thúc!");
                     return false;
                 }
-                
+
                 return true;
             },
-            
+
             async baoCao() {
                 if (!this.validateForm()) {
                     return;
                 }
-                
+
                 this.isLoading = true;
                 this.ketQuaThongKe = [];
-                
+
                 try {
                     if (this.formBaoCao.id_dm_bao_cao == 2) { // Thống kê sách đang mượn
                         const response = await axios.post('/api/quan-ly-dich-vu/bao-cao/thong-ke-sach-dang-muon', {
                             tu_ngay: this.formBaoCao.tu_ngay,
                             den_ngay: this.formBaoCao.den_ngay
                         });
-                        
+
                         if (response.data.status === 200) {
                             this.ketQuaThongKe = response.data.data;
                             this.tongCongThongKe = response.data.tongCongThongKe;
@@ -513,7 +558,7 @@
                             tu_ngay: this.formBaoCao.tu_ngay,
                             den_ngay: this.formBaoCao.den_ngay
                         });
-                        
+
                         if (response.data.status === 200) {
                             this.ketQuaThongKe = response.data.data;
                             this.tongCongThongKe = response.data.tongCongThongKe;
@@ -526,7 +571,7 @@
                             tu_ngay: this.formBaoCao.tu_ngay,
                             den_ngay: this.formBaoCao.den_ngay
                         });
-                        
+
                         if (response.data.status === 200) {
                             this.ketQuaThongKe = response.data.data;
                             this.tongCongThongKe = response.data.tongCongThongKe;
@@ -539,7 +584,7 @@
                             tu_ngay: this.formBaoCao.tu_ngay,
                             den_ngay: this.formBaoCao.den_ngay
                         });
-                        
+
                         if (response.data.status === 200) {
                             this.ketQuaThongKe = response.data.data;
                             this.tongCongThongKe = response.data.tongCongThongKe;
@@ -552,7 +597,7 @@
                             tu_ngay: this.formBaoCao.tu_ngay,
                             den_ngay: this.formBaoCao.den_ngay
                         });
-                        
+
                         if (response.data.status === 200) {
                             this.ketQuaThongKe = response.data.data;
                             this.tongCongThongKe = response.data.tongCongThongKe;
@@ -560,7 +605,22 @@
                         } else {
                             toastr.error(response.data.message || "Đã xảy ra lỗi khi tạo báo cáo!");
                         }
-                    } else {
+                    } else if (this.formBaoCao.id_dm_bao_cao == 6) { // Báo cáo phạt bạn đọc
+                        const response = await axios.post('/api/quan-ly-dich-vu/bao-cao/thong-ke-phat-ban-doc', {
+                            tu_ngay: this.formBaoCao.tu_ngay,
+                            den_ngay: this.formBaoCao.den_ngay
+                        });
+
+                        if (response.data.status === 200) {
+                            this.ketQuaThongKe = response.data.data;
+                            console.log(this.ketQuaThongKe)
+                            this.tongCongThongKe = response.data.tongCongThongKe;
+                            toastr.success(`Đã tạo báo cáo tình hình phục vụ bạn đọc thành công`);
+                        } else {
+                            toastr.error(response.data.message || "Đã xảy ra lỗi khi tạo báo cáo!");
+                        }
+                    }
+                    else {
                         toastr.warning("Loại báo cáo này chưa được hỗ trợ!");
                     }
                 } catch (error) {
@@ -570,33 +630,33 @@
                     this.isLoading = false;
                 }
             },
-            
+
             xuatExcelSachDangMuon() {
                 if (!this.ketQuaThongKe.length) {
                     toastr.error("Không có dữ liệu để xuất báo cáo!");
                     return;
                 }
-                
+
                 // Tạo form để submit POST request và tải xuống file Excel
                 const form = document.createElement('form');
                 form.method = 'POST';
                 form.action = '/api/quan-ly-dich-vu/bao-cao/xuat-excel-sach-dang-muon';
                 form.target = '_blank';
-                
+
                 // Thêm input cho từ ngày
                 const tuNgayInput = document.createElement('input');
                 tuNgayInput.type = 'hidden';
                 tuNgayInput.name = 'tu_ngay';
                 tuNgayInput.value = this.formBaoCao.tu_ngay;
                 form.appendChild(tuNgayInput);
-                
+
                 // Thêm input cho đến ngày
                 const denNgayInput = document.createElement('input');
                 denNgayInput.type = 'hidden';
                 denNgayInput.name = 'den_ngay';
                 denNgayInput.value = this.formBaoCao.den_ngay;
                 form.appendChild(denNgayInput);
-                
+
                 // Thêm CSRF token nếu cần
                 const tokenElement = document.head.querySelector('meta[name="csrf-token"]');
                 if (tokenElement) {
@@ -606,39 +666,39 @@
                     csrfInput.value = tokenElement.content;
                     form.appendChild(csrfInput);
                 }
-                
+
                 // Thêm form vào body, submit và sau đó xóa form
                 document.body.appendChild(form);
                 form.submit();
                 document.body.removeChild(form);
             },
-            
+
             xuatExcelSachDaTra() {
                 if (!this.ketQuaThongKe.length) {
                     toastr.error("Không có dữ liệu để xuất báo cáo!");
                     return;
                 }
-                
+
                 // Tạo form để submit POST request và tải xuống file Excel
                 const form = document.createElement('form');
                 form.method = 'POST';
                 form.action = '/api/quan-ly-dich-vu/bao-cao/xuat-excel-sach-da-tra';
                 form.target = '_blank';
-                
+
                 // Thêm input cho từ ngày
                 const tuNgayInput = document.createElement('input');
                 tuNgayInput.type = 'hidden';
                 tuNgayInput.name = 'tu_ngay';
                 tuNgayInput.value = this.formBaoCao.tu_ngay;
                 form.appendChild(tuNgayInput);
-                
+
                 // Thêm input cho đến ngày
                 const denNgayInput = document.createElement('input');
                 denNgayInput.type = 'hidden';
                 denNgayInput.name = 'den_ngay';
                 denNgayInput.value = this.formBaoCao.den_ngay;
                 form.appendChild(denNgayInput);
-                
+
                 // Thêm CSRF token nếu cần
                 const tokenElement = document.head.querySelector('meta[name="csrf-token"]');
                 if (tokenElement) {
@@ -648,39 +708,39 @@
                     csrfInput.value = tokenElement.content;
                     form.appendChild(csrfInput);
                 }
-                
+
                 // Thêm form vào body, submit và sau đó xóa form
                 document.body.appendChild(form);
                 form.submit();
                 document.body.removeChild(form);
             },
-            
+
             xuatExcelBanDocDenThuVien() {
                 if (!this.ketQuaThongKe.length) {
                     toastr.error("Không có dữ liệu để xuất báo cáo!");
                     return;
                 }
-                
+
                 // Tạo form để submit POST request và tải xuống file Excel
                 const form = document.createElement('form');
                 form.method = 'POST';
                 form.action = '/api/quan-ly-dich-vu/bao-cao/xuat-excel-ban-doc-den-thu-vien';
                 form.target = '_blank';
-                
+
                 // Thêm input cho từ ngày
                 const tuNgayInput = document.createElement('input');
                 tuNgayInput.type = 'hidden';
                 tuNgayInput.name = 'tu_ngay';
                 tuNgayInput.value = this.formBaoCao.tu_ngay;
                 form.appendChild(tuNgayInput);
-                
+
                 // Thêm input cho đến ngày
                 const denNgayInput = document.createElement('input');
                 denNgayInput.type = 'hidden';
                 denNgayInput.name = 'den_ngay';
                 denNgayInput.value = this.formBaoCao.den_ngay;
                 form.appendChild(denNgayInput);
-                
+
                 // Thêm CSRF token nếu cần
                 const tokenElement = document.head.querySelector('meta[name="csrf-token"]');
                 if (tokenElement) {
@@ -690,39 +750,81 @@
                     csrfInput.value = tokenElement.content;
                     form.appendChild(csrfInput);
                 }
-                
+
                 // Thêm form vào body, submit và sau đó xóa form
                 document.body.appendChild(form);
                 form.submit();
                 document.body.removeChild(form);
             },
-            
+
+            xuatExcelPhatBanDoc() {
+                if (!this.ketQuaThongKe.length) {
+                    toastr.error("Không có dữ liệu để xuất báo cáo!");
+                    return;
+                }
+
+                // Tạo form để submit POST request và tải xuống file Excel
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '/api/quan-ly-dich-vu/bao-cao/xuat-excel-phat-ban-doc';
+                form.target = '_blank';
+
+                // Thêm input cho từ ngày
+                const tuNgayInput = document.createElement('input');
+                tuNgayInput.type = 'hidden';
+                tuNgayInput.name = 'tu_ngay';
+                tuNgayInput.value = this.formBaoCao.tu_ngay;
+                form.appendChild(tuNgayInput);
+
+                // Thêm input cho đến ngày
+                const denNgayInput = document.createElement('input');
+                denNgayInput.type = 'hidden';
+                denNgayInput.name = 'den_ngay';
+                denNgayInput.value = this.formBaoCao.den_ngay;
+                form.appendChild(denNgayInput);
+
+                // Thêm CSRF token nếu cần
+                const tokenElement = document.head.querySelector('meta[name="csrf-token"]');
+                if (tokenElement) {
+                    const csrfInput = document.createElement('input');
+                    csrfInput.type = 'hidden';
+                    csrfInput.name = '_token';
+                    csrfInput.value = tokenElement.content;
+                    form.appendChild(csrfInput);
+                }
+
+                // Thêm form vào body, submit và sau đó xóa form
+                document.body.appendChild(form);
+                form.submit();
+                document.body.removeChild(form);
+            },
+
             xuatExcelSachQuaHan() {
                 if (!this.ketQuaThongKe.length) {
                     toastr.error("Không có dữ liệu để xuất báo cáo!");
                     return;
                 }
-                
+
                 // Tạo form để submit POST request và tải xuống file Excel
                 const form = document.createElement('form');
                 form.method = 'POST';
                 form.action = '/api/quan-ly-dich-vu/bao-cao/xuat-excel-sach-qua-han';
                 form.target = '_blank';
-                
+
                 // Thêm input cho từ ngày
                 const tuNgayInput = document.createElement('input');
                 tuNgayInput.type = 'hidden';
                 tuNgayInput.name = 'tu_ngay';
                 tuNgayInput.value = this.formBaoCao.tu_ngay;
                 form.appendChild(tuNgayInput);
-                
+
                 // Thêm input cho đến ngày
                 const denNgayInput = document.createElement('input');
                 denNgayInput.type = 'hidden';
                 denNgayInput.name = 'den_ngay';
                 denNgayInput.value = this.formBaoCao.den_ngay;
                 form.appendChild(denNgayInput);
-                
+
                 // Thêm CSRF token nếu cần
                 const tokenElement = document.head.querySelector('meta[name="csrf-token"]');
                 if (tokenElement) {
@@ -732,39 +834,39 @@
                     csrfInput.value = tokenElement.content;
                     form.appendChild(csrfInput);
                 }
-                
+
                 // Thêm form vào body, submit và sau đó xóa form
                 document.body.appendChild(form);
                 form.submit();
                 document.body.removeChild(form);
             },
-            
+
             xuatExcelTinhHinhPhucVuBanDoc() {
                 if (!this.ketQuaThongKe.length) {
                     toastr.error("Không có dữ liệu để xuất báo cáo!");
                     return;
                 }
-                
+
                 // Tạo form để submit POST request và tải xuống file Excel
                 const form = document.createElement('form');
                 form.method = 'POST';
                 form.action = '/api/quan-ly-dich-vu/bao-cao/xuat-excel-tinh-hinh-phuc-vu-ban-doc';
                 form.target = '_blank';
-                
+
                 // Thêm input cho từ ngày
                 const tuNgayInput = document.createElement('input');
                 tuNgayInput.type = 'hidden';
                 tuNgayInput.name = 'tu_ngay';
                 tuNgayInput.value = this.formBaoCao.tu_ngay;
                 form.appendChild(tuNgayInput);
-                
+
                 // Thêm input cho đến ngày
                 const denNgayInput = document.createElement('input');
                 denNgayInput.type = 'hidden';
                 denNgayInput.name = 'den_ngay';
                 denNgayInput.value = this.formBaoCao.den_ngay;
                 form.appendChild(denNgayInput);
-                
+
                 // Thêm CSRF token nếu cần
                 const tokenElement = document.head.querySelector('meta[name="csrf-token"]');
                 if (tokenElement) {
@@ -774,19 +876,19 @@
                     csrfInput.value = tokenElement.content;
                     form.appendChild(csrfInput);
                 }
-                
+
                 // Thêm form vào body, submit và sau đó xóa form
                 document.body.appendChild(form);
                 form.submit();
                 document.body.removeChild(form);
             },
-            
+
             formatDateTime(dateTimeStr) {
                 if (!dateTimeStr) return '';
-                
+
                 const date = new Date(dateTimeStr);
                 if (isNaN(date.getTime())) return dateTimeStr;
-                
+
                 return date.toLocaleDateString('vi-VN', {
                     year: 'numeric',
                     month: '2-digit',
@@ -839,7 +941,7 @@
 }
 
 /* CSS cho bảng báo cáo tình hình phục vụ bạn đọc */
-.table-bordered th, 
+.table-bordered th,
 .table-bordered td {
     border: 1px solid #dee2e6;
     padding: 8px;

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DKCBModel;
 use Illuminate\Http\Request;
 use App\Models\DocGiaModel;
 use App\Models\XuLyViPhamModel;
@@ -64,7 +65,8 @@ class XuLyViPhamController extends Controller
                 'so_tien' => 'required|numeric',
                 'lan_phat' => 'required|integer',
                 'hinh_thuc_phat' => 'required|string',
-                'ghi_chu' => 'nullable|string'
+                'ghi_chu' => 'nullable|string',
+                'ma_dkcb' => 'required|string'
             ]);
 
             // Kiểm tra bạn đọc có tồn tại không
@@ -76,6 +78,16 @@ class XuLyViPhamController extends Controller
                 ]);
             }
 
+            // Kiểm tra mã dkcb có đúng không
+            $dkcb = DKCBModel::where('ma_dkcb', $request->ma_dkcb)->first();
+            if (!$dkcb) {
+                return response()->json([
+                    'status' => 404,
+                    'message' => 'Không tìm thấy thông tin sách'
+                ]);
+            }
+
+
             // Thêm vi phạm mới
             $viPham = XuLyViPhamModel::create([
                 'id_ban_doc' => $request->id_ban_doc,
@@ -85,6 +97,7 @@ class XuLyViPhamController extends Controller
                 'so_tien' => $request->so_tien,
                 'hinh_thuc_phat' => $request->hinh_thuc_phat,
                 'lan_phat' => $request->lan_phat,
+                'id_dkcb' => $dkcb->id_dkcb,
                 'ghi_chu' => $request->ghi_chu
             ]);
 
@@ -117,6 +130,13 @@ class XuLyViPhamController extends Controller
             }
 
             $danhSachViPham = XuLyViPhamModel::where('id_ban_doc', $banDoc->id_doc_gia)
+                ->leftJoin('dkcb','dkcb.id_dkcb','xu_ly_vi_pham.id_dkcb')
+                ->leftJoin('phat_ban_doc','phat_ban_doc.id_phat_ban_doc','xu_ly_vi_pham.id_phat_ban_doc')
+                ->select(
+                    'xu_ly_vi_pham.*',
+                    'dkcb.ma_dkcb',
+                    'phat_ban_doc.ten_loai_phat'
+                )
                 ->orderBy('ngay_phat', 'desc')
                 ->get();
 

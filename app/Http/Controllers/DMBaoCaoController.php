@@ -6,6 +6,7 @@ use App\Models\DMBaoCaoModel;
 use App\Models\MuonSachModel;
 use App\Models\DocTaiChoModel;
 use App\Models\DKCBModel;
+use App\Models\PhatBanDocModel;
 use App\Models\SachModel;
 use App\Models\DocGiaModel;
 use App\Models\ChuyenNganhModel;
@@ -73,7 +74,7 @@ class DMBaoCaoController extends Controller
             ]);
 
             $baoCao = DMBaoCaoModel::find($id);
-            
+
             if (!$baoCao) {
                 return response()->json([
                     'status' => 404,
@@ -103,7 +104,7 @@ class DMBaoCaoController extends Controller
     {
         try {
             $baoCao = DMBaoCaoModel::find($id);
-            
+
             if (!$baoCao) {
                 return response()->json([
                     'status' => 404,
@@ -423,7 +424,7 @@ class DMBaoCaoController extends Controller
                 ],
             ];
 
-            // Điền dữ liệu sách 
+            // Điền dữ liệu sách
             $startRow = 8;
             $stt = 1;
             $currentRow = $startRow;
@@ -439,7 +440,7 @@ class DMBaoCaoController extends Controller
                 $sheet->setCellValue('G' . $currentRow, Carbon::parse($item['ngay_muon'])->format('d/m/Y'));
                 $sheet->setCellValue('H' . $currentRow, $item['han_tra'] ? Carbon::parse($item['han_tra'])->format('d/m/Y') : '');
                 $sheet->setCellValue('I' . $currentRow, $item['tai_cho'] ? 'X' : '');
-                
+
                 // Căn giữa cột STT và cột Tại chỗ
                 $sheet->getStyle('A' . $currentRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
                 $sheet->getStyle('I' . $currentRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
@@ -447,49 +448,49 @@ class DMBaoCaoController extends Controller
                 // Style cho hàng
                 $sheet->getStyle('A' . $currentRow . ':I' . $currentRow)->applyFromArray($borderStyle);
                 $sheet->getStyle('A' . $currentRow . ':I' . $currentRow)->applyFromArray($defaultFont);
-                
+
                 // Tăng số thứ tự và chuyển sang hàng tiếp theo
                 $stt++;
                 $currentRow++;
             }
-            
+
             // Thêm dòng tổng cộng
             $tongSoSach = count($ketQua);
             $sheet->setCellValue('A' . $currentRow, 'TC');
             $sheet->setCellValue('B' . $currentRow, $tongSoSach);
-            
+
             // Định dạng dòng tổng cộng
             $sheet->getStyle('A' . $currentRow)->getFont()->setBold(true);
             $sheet->getStyle('B' . $currentRow)->getFont()->setBold(true);
             $sheet->getStyle('A' . $currentRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
-            
+
             // Style cho hàng tổng cộng
             $sheet->getStyle('A' . $currentRow . ':I' . $currentRow)->applyFromArray($borderStyle);
             $sheet->getStyle('A' . $currentRow . ':I' . $currentRow)->applyFromArray($defaultFont);
-            
+
             // Thêm thông tin người lập báo cáo ở cuối
             $currentRow += 2;
             $sheet->setCellValue('G' . $currentRow, "Vĩnh Long, ngày " . Carbon::now()->day . " tháng " . Carbon::now()->month . " năm " . Carbon::now()->year);
             $sheet->mergeCells('G' . $currentRow . ':I' . $currentRow);
             $sheet->getStyle('G' . $currentRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
             $sheet->getStyle('G' . $currentRow)->applyFromArray($defaultFont);
-            
+
             $currentRow += 1;
             $sheet->setCellValue('G' . $currentRow, "Người lập báo cáo");
             $sheet->mergeCells('G' . $currentRow . ':I' . $currentRow);
             $sheet->getStyle('G' . $currentRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
             $sheet->getStyle('G' . $currentRow)->getFont()->setBold(true);
             $sheet->getStyle('G' . $currentRow)->applyFromArray($defaultFont);
-            
+
             $currentRow += 4;
             $sheet->setCellValue('G' . $currentRow, session('HoTen') ?? '');
             $sheet->mergeCells('G' . $currentRow . ':I' . $currentRow);
             $sheet->getStyle('G' . $currentRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
             $sheet->getStyle('G' . $currentRow)->applyFromArray($defaultFont);
-            
-            // Tên file xuất 
+
+            // Tên file xuất
             $fileName = 'BC_Sach_Dang_Muon_' . Carbon::now()->format('dmY_His') . '.xlsx';
-            
+
             // Trả về file Excel
             $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
             return response()->streamDownload(function () use ($writer) {
@@ -497,11 +498,11 @@ class DMBaoCaoController extends Controller
             }, $fileName, [
                 'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
             ]);
-            
+
         } catch (\Throwable $e) {
             \Illuminate\Support\Facades\Log::error('Lỗi xuất báo cáo sách đang mượn: ' . $e->getMessage());
             return response()->json([
-                'status' => 500, 
+                'status' => 500,
                 'message' => 'Đã xảy ra lỗi khi xuất báo cáo: ' . $e->getMessage()
             ], 500);
         }
@@ -673,7 +674,7 @@ class DMBaoCaoController extends Controller
                 ],
             ];
 
-            // Điền dữ liệu sách 
+            // Điền dữ liệu sách
             $startRow = 8;
             $stt = 1;
             $currentRow = $startRow;
@@ -689,7 +690,7 @@ class DMBaoCaoController extends Controller
                 $sheet->setCellValue('G' . $currentRow, Carbon::parse($item['han_tra'])->format('d/m/Y'));
                 $sheet->setCellValue('H' . $currentRow, Carbon::parse($item['ngay_tra'])->format('d/m/Y'));
                 $sheet->setCellValue('I' . $currentRow, $item['tai_cho'] == 1 ? 'X' : '');
-                
+
                 // Căn giữa cột STT và cột Tại chỗ
                 $sheet->getStyle('A' . $currentRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
                 $sheet->getStyle('I' . $currentRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
@@ -697,49 +698,49 @@ class DMBaoCaoController extends Controller
                 // Style cho hàng
                 $sheet->getStyle('A' . $currentRow . ':I' . $currentRow)->applyFromArray($borderStyle);
                 $sheet->getStyle('A' . $currentRow . ':I' . $currentRow)->applyFromArray($defaultFont);
-                
+
                 // Tăng số thứ tự và chuyển sang hàng tiếp theo
                 $stt++;
                 $currentRow++;
             }
-            
+
             // Thêm dòng tổng cộng
             $tongSoSach = count($ketQua);
             $sheet->setCellValue('A' . $currentRow, 'TC');
             $sheet->setCellValue('B' . $currentRow, $tongSoSach);
-            
+
             // Định dạng dòng tổng cộng
             $sheet->getStyle('A' . $currentRow)->getFont()->setBold(true);
             $sheet->getStyle('B' . $currentRow)->getFont()->setBold(true);
             $sheet->getStyle('A' . $currentRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
-            
+
             // Style cho hàng tổng cộng
             $sheet->getStyle('A' . $currentRow . ':I' . $currentRow)->applyFromArray($borderStyle);
             $sheet->getStyle('A' . $currentRow . ':I' . $currentRow)->applyFromArray($defaultFont);
-            
+
             // Thêm thông tin người lập báo cáo ở cuối
             $currentRow += 2;
             $sheet->setCellValue('F' . $currentRow, "Vĩnh Long, ngày " . Carbon::now()->day . " tháng " . Carbon::now()->month . " năm " . Carbon::now()->year);
             $sheet->mergeCells('F' . $currentRow . ':I' . $currentRow);
             $sheet->getStyle('F' . $currentRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
             $sheet->getStyle('F' . $currentRow)->applyFromArray($defaultFont);
-            
+
             $currentRow += 1;
             $sheet->setCellValue('F' . $currentRow, "Người lập báo cáo");
             $sheet->mergeCells('F' . $currentRow . ':I' . $currentRow);
             $sheet->getStyle('F' . $currentRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
             $sheet->getStyle('F' . $currentRow)->getFont()->setBold(true);
             $sheet->getStyle('F' . $currentRow)->applyFromArray($defaultFont);
-            
+
             $currentRow += 4;
             $sheet->setCellValue('F' . $currentRow, session('HoTen') ?? '');
             $sheet->mergeCells('F' . $currentRow . ':I' . $currentRow);
             $sheet->getStyle('F' . $currentRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
             $sheet->getStyle('F' . $currentRow)->applyFromArray($defaultFont);
-            
-            // Tên file xuất 
+
+            // Tên file xuất
             $fileName = 'BC_Sach_Da_Tra_' . Carbon::now()->format('dmY_His') . '.xlsx';
-            
+
             // Trả về file Excel
             $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
             return response()->streamDownload(function () use ($writer) {
@@ -747,11 +748,11 @@ class DMBaoCaoController extends Controller
             }, $fileName, [
                 'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
             ]);
-            
+
         } catch (\Throwable $e) {
             \Illuminate\Support\Facades\Log::error('Lỗi xuất báo cáo sách đã trả: ' . $e->getMessage());
             return response()->json([
-                'status' => 500, 
+                'status' => 500,
                 'message' => 'Đã xảy ra lỗi khi xuất báo cáo: ' . $e->getMessage()
             ], 500);
         }
@@ -1082,7 +1083,7 @@ class DMBaoCaoController extends Controller
                 ],
             ];
 
-            // Điền dữ liệu sách 
+            // Điền dữ liệu sách
             $startRow = 8;
             $stt = 1;
             $currentRow = $startRow;
@@ -1098,7 +1099,7 @@ class DMBaoCaoController extends Controller
                 $sheet->setCellValue('G' . $currentRow, Carbon::parse($item['ngay_muon'])->format('d/m/Y'));
                 $sheet->setCellValue('H' . $currentRow, Carbon::parse($item['han_tra'])->format('d/m/Y'));
                 $sheet->setCellValue('I' . $currentRow, value: $item['so_ngay_tre']);
-                
+
                 // Căn giữa cột STT và cột số ngày trễ
                 $sheet->getStyle('A' . $currentRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
                 $sheet->getStyle('I' . $currentRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
@@ -1106,49 +1107,49 @@ class DMBaoCaoController extends Controller
                 // Style cho hàng
                 $sheet->getStyle('A' . $currentRow . ':I' . $currentRow)->applyFromArray($borderStyle);
                 $sheet->getStyle('A' . $currentRow . ':I' . $currentRow)->applyFromArray($defaultFont);
-                
+
                 // Tăng số thứ tự và chuyển sang hàng tiếp theo
                 $stt++;
                 $currentRow++;
             }
-            
+
             // Thêm dòng tổng cộng
             $tongSoSach = count($ketQua);
             $sheet->setCellValue('A' . $currentRow, 'TC');
             $sheet->setCellValue('B' . $currentRow, $tongSoSach);
-            
+
             // Định dạng dòng tổng cộng
             $sheet->getStyle('A' . $currentRow)->getFont()->setBold(true);
             $sheet->getStyle('B' . $currentRow)->getFont()->setBold(true);
             $sheet->getStyle('A' . $currentRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
-            
+
             // Style cho hàng tổng cộng
             $sheet->getStyle('A' . $currentRow . ':I' . $currentRow)->applyFromArray($borderStyle);
             $sheet->getStyle('A' . $currentRow . ':I' . $currentRow)->applyFromArray($defaultFont);
-            
+
             // Thêm thông tin người lập báo cáo ở cuối
             $currentRow += 2;
             $sheet->setCellValue('G' . $currentRow, "Vĩnh Long, ngày " . Carbon::now()->day . " tháng " . Carbon::now()->month . " năm " . Carbon::now()->year);
             $sheet->mergeCells('G' . $currentRow . ':I' . $currentRow);
             $sheet->getStyle('G' . $currentRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
             $sheet->getStyle('G' . $currentRow)->applyFromArray($defaultFont);
-            
+
             $currentRow += 1;
             $sheet->setCellValue('G' . $currentRow, "Người lập báo cáo");
             $sheet->mergeCells('G' . $currentRow . ':I' . $currentRow);
             $sheet->getStyle('G' . $currentRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
             $sheet->getStyle('G' . $currentRow)->getFont()->setBold(true);
             $sheet->getStyle('G' . $currentRow)->applyFromArray($defaultFont);
-            
+
             $currentRow += 4;
             $sheet->setCellValue('G' . $currentRow, session('HoTen') ?? '');
             $sheet->mergeCells('G' . $currentRow . ':I' . $currentRow);
             $sheet->getStyle('G' . $currentRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
             $sheet->getStyle('G' . $currentRow)->applyFromArray($defaultFont);
-            
-            // Tên file xuất 
+
+            // Tên file xuất
             $fileName = 'BC_Sach_Qua_Han_' . Carbon::now()->format('dmY_His') . '.xlsx';
-            
+
             // Trả về file Excel
             $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
             return response()->streamDownload(function () use ($writer) {
@@ -1156,11 +1157,11 @@ class DMBaoCaoController extends Controller
             }, $fileName, [
                 'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
             ]);
-            
+
         } catch (\Throwable $e) {
             \Illuminate\Support\Facades\Log::error('Lỗi xuất báo cáo sách quá hạn: ' . $e->getMessage());
             return response()->json([
-                'status' => 500, 
+                'status' => 500,
                 'message' => 'Đã xảy ra lỗi khi xuất báo cáo: ' . $e->getMessage()
             ], 500);
         }
@@ -1363,7 +1364,7 @@ class DMBaoCaoController extends Controller
                 $sheet->setCellValue('E' . $currentRow, Carbon::parse($item['thoi_gian_den'])->format('d/m/Y'));
                 $sheet->setCellValue('F' . $currentRow, $item['so_luong_muon']);
                 $sheet->setCellValue('G' . $currentRow, $item['so_luong_tra']);
-                
+
                 // Căn giữa các cột số
                 $sheet->getStyle('A' . $currentRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
                 $sheet->getStyle('F' . $currentRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
@@ -1372,49 +1373,49 @@ class DMBaoCaoController extends Controller
                 // Style cho hàng
                 $sheet->getStyle('A' . $currentRow . ':G' . $currentRow)->applyFromArray($borderStyle);
                 $sheet->getStyle('A' . $currentRow . ':G' . $currentRow)->applyFromArray($defaultFont);
-                
+
                 // Tăng số thứ tự và chuyển sang hàng tiếp theo
                 $stt++;
                 $currentRow++;
             }
-            
+
             // Thêm dòng tổng cộng
             $tongSoBanDoc = count($ketQua);
             $sheet->setCellValue('A' . $currentRow, 'TC');
             $sheet->setCellValue('B' . $currentRow, $tongSoBanDoc);
-            
+
             // Định dạng dòng tổng cộng
             $sheet->getStyle('A' . $currentRow)->getFont()->setBold(true);
             $sheet->getStyle('B' . $currentRow)->getFont()->setBold(true);
             $sheet->getStyle('A' . $currentRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
-            
+
             // Style cho hàng tổng cộng
             $sheet->getStyle('A' . $currentRow . ':G' . $currentRow)->applyFromArray($borderStyle);
             $sheet->getStyle('A' . $currentRow . ':G' . $currentRow)->applyFromArray($defaultFont);
-            
+
             // Thêm thông tin người lập báo cáo ở cuối
             $currentRow += 2;
             $sheet->setCellValue('E' . $currentRow, "Vĩnh Long, ngày " . Carbon::now()->day . " tháng " . Carbon::now()->month . " năm " . Carbon::now()->year);
             $sheet->mergeCells('E' . $currentRow . ':G' . $currentRow);
             $sheet->getStyle('E' . $currentRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
             $sheet->getStyle('E' . $currentRow)->applyFromArray($defaultFont);
-            
+
             $currentRow += 1;
             $sheet->setCellValue('E' . $currentRow, "Người lập báo cáo");
             $sheet->mergeCells('E' . $currentRow . ':G' . $currentRow);
             $sheet->getStyle('E' . $currentRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
             $sheet->getStyle('E' . $currentRow)->getFont()->setBold(true);
             $sheet->getStyle('E' . $currentRow)->applyFromArray($defaultFont);
-            
+
             $currentRow += 4;
             $sheet->setCellValue('E' . $currentRow, session('HoTen') ?? '');
             $sheet->mergeCells('E' . $currentRow . ':G' . $currentRow);
             $sheet->getStyle('E' . $currentRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
             $sheet->getStyle('E' . $currentRow)->applyFromArray($defaultFont);
-            
-            // Tên file xuất 
+
+            // Tên file xuất
             $fileName = 'BC_Ban_Doc_Den_Thu_Vien_' . Carbon::now()->format('dmY_His') . '.xlsx';
-            
+
             // Trả về file Excel
             $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
             return response()->streamDownload(function () use ($writer) {
@@ -1422,11 +1423,11 @@ class DMBaoCaoController extends Controller
             }, $fileName, [
                 'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
             ]);
-            
+
         } catch (\Throwable $e) {
             \Illuminate\Support\Facades\Log::error('Lỗi xuất báo cáo bạn đọc đến thư viện: ' . $e->getMessage());
             return response()->json([
-                'status' => 500, 
+                'status' => 500,
                 'message' => 'Đã xảy ra lỗi khi xuất báo cáo: ' . $e->getMessage()
             ], 500);
         }
@@ -1567,14 +1568,14 @@ class DMBaoCaoController extends Controller
                 // 5. Sách quá hạn
                 $sachQuaHanSV = MuonSachModel::where('qua_han', 1)
                     ->whereIn('id_ban_doc', $banDocSV)
-                    ->count() + 
+                    ->count() +
                     DocTaiChoModel::where('qua_han', 1)
                     ->whereIn('id_ban_doc', $banDocSV)
                     ->count();
 
                 $sachQuaHanCBGV = MuonSachModel::where('qua_han', 1)
                     ->whereIn('id_ban_doc', $banDocCBGV)
-                    ->count() + 
+                    ->count() +
                     DocTaiChoModel::where('qua_han', 1)
                     ->whereIn('id_ban_doc', $banDocCBGV)
                     ->count();
@@ -1716,7 +1717,7 @@ class DMBaoCaoController extends Controller
             ]);
         }
     }
-    
+
     public function xuatExcelTinhHinhPhucVuBanDoc(Request $request)
     {
         try {
@@ -1724,21 +1725,21 @@ class DMBaoCaoController extends Controller
                 'tu_ngay' => 'required|date',
                 'den_ngay' => 'required|date|after_or_equal:tu_ngay',
             ]);
-            
+
             $tuNgay = Carbon::parse($request->tu_ngay)->startOfDay();
             $denNgay = Carbon::parse($request->den_ngay)->endOfDay();
-            
+
             // Lấy thông tin báo cáo
             $response = $this->thongKeTinhHinhPhucVuBanDoc($request);
             $data = json_decode($response->getContent(), true);
-            
+
             if ($data['status'] !== 200) {
                 return back()->with('error', $data['message']);
             }
-            
+
             $ketQua = $data['data'];
             $tongCong = $data['tong_cong'];
-            
+
             // Xuất Excel dựa trên template
             $templatePath = public_path('template_excel/template_excel_bctk_tinh_hinh_phuc_vu_ban_doc.xlsx');
             if (!file_exists($templatePath)) {
@@ -1751,7 +1752,7 @@ class DMBaoCaoController extends Controller
             // Tạo đối tượng PhpSpreadsheet từ file mẫu
             $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($templatePath);
             $sheet = $spreadsheet->getActiveSheet();
-            
+
             // Thiết lập font chữ Times New Roman và kích thước 13 cho toàn bộ sheet
             $defaultFont = [
                 'font' => [
@@ -1760,7 +1761,7 @@ class DMBaoCaoController extends Controller
                 ]
             ];
             $sheet->getParent()->getDefaultStyle()->applyFromArray($defaultFont);
-            
+
             // Chuẩn bị kiểu border
             $borderStyle = [
                 'borders' => [
@@ -1770,12 +1771,12 @@ class DMBaoCaoController extends Controller
                     ],
                 ],
             ];
-            
+
             // Cài đặt thông tin chung - Từ ngày đến ngày
             $tuNgayFormatted = Carbon::parse($request->tu_ngay)->format('d-m-Y');
             $denNgayFormatted = Carbon::parse($request->den_ngay)->format('d-m-Y');
             $sheet->setCellValue('A5', "Từ ngày: {$tuNgayFormatted} Đến ngày: {$denNgayFormatted}");
-            
+
             // Đổ dữ liệu vào bảng - bắt đầu từ dòng 10 theo yêu cầu
             $startRow = 10;
             $row = $startRow;
@@ -1802,16 +1803,16 @@ class DMBaoCaoController extends Controller
                 $sheet->setCellValue('T' . $row, $item['cap_the_2_cbgv']);
                 $sheet->setCellValue('U' . $row, $item['cap_the_3_sv']);
                 $sheet->setCellValue('V' . $row, $item['cap_the_3_cbgv']);
-                
+
                 // Định dạng dữ liệu
                 $sheet->getStyle('A' . $row . ':V' . $row)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
-                
+
                 // Thêm border cho mỗi dòng dữ liệu
                 $sheet->getStyle('A' . $row . ':V' . $row)->applyFromArray($borderStyle);
-                
+
                 $row++;
             }
-            
+
             // Thêm dòng tổng cộng
             $sheet->setCellValue('A' . $row, 'TC');
             $sheet->setCellValue('B' . $row, count($ketQua));
@@ -1835,13 +1836,13 @@ class DMBaoCaoController extends Controller
             $sheet->setCellValue('T' . $row, $tongCong['cap_the_2_cbgv']);
             $sheet->setCellValue('U' . $row, $tongCong['cap_the_3_sv']);
             $sheet->setCellValue('V' . $row, $tongCong['cap_the_3_cbgv']);
-            
+
             // Định dạng dòng tổng cộng
             $sheet->getStyle('A' . $row . ':V' . $row)->getFont()->setBold(true);
             $sheet->getStyle('A' . $row . ':V' . $row)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
             // Thêm border cho dòng tổng cộng
             $sheet->getStyle('A' . $row . ':V' . $row)->applyFromArray($borderStyle);
-            
+
             // Thêm dòng tổng số
             $row++;
             $sheet->setCellValue('A' . $row, 'Tổng cộng');
@@ -1866,33 +1867,33 @@ class DMBaoCaoController extends Controller
             $sheet->mergeCells('S' . $row . ':T' . $row);
             $sheet->setCellValue('U' . $row, $tongCong['cap_the_3_sv'] + $tongCong['cap_the_3_cbgv']);
             $sheet->mergeCells('U' . $row . ':V' . $row);
-            
+
             // Định dạng dòng tổng số
             $sheet->getStyle('A' . $row . ':V' . $row)->getFont()->setBold(true);
             $sheet->getStyle('A' . $row . ':V' . $row)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
             // Thêm border cho dòng tổng số
             $sheet->getStyle('A' . $row . ':V' . $row)->applyFromArray($borderStyle);
-            
+
             // Thêm thông tin người lập báo cáo ở cuối
             $currentRow = $row + 3;
             $sheet->setCellValue('Q' . $currentRow, "Vĩnh Long, ngày " . Carbon::now()->day . " tháng " . Carbon::now()->month . " năm " . Carbon::now()->year);
             $sheet->mergeCells('Q' . $currentRow . ':V' . $currentRow);
             $sheet->getStyle('Q' . $currentRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
-            
+
             $currentRow += 1;
             $sheet->setCellValue('Q' . $currentRow, "Người lập báo cáo");
             $sheet->mergeCells('Q' . $currentRow . ':V' . $currentRow);
             $sheet->getStyle('Q' . $currentRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
             $sheet->getStyle('Q' . $currentRow)->getFont()->setBold(true);
-            
+
             $currentRow += 4;
             $sheet->setCellValue('Q' . $currentRow, session('HoTen') ?? '');
             $sheet->mergeCells('Q' . $currentRow . ':V' . $currentRow);
             $sheet->getStyle('Q' . $currentRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
-            
-            // Tên file xuất 
+
+            // Tên file xuất
             $fileName = 'BC_Tinh_Hinh_Phuc_Vu_Ban_Doc_' . Carbon::now()->format('dmY_His') . '.xlsx';
-            
+
             // Trả về file Excel
             $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
             return response()->streamDownload(function () use ($writer) {
@@ -1900,11 +1901,228 @@ class DMBaoCaoController extends Controller
             }, $fileName, [
                 'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
             ]);
-            
+
         } catch (\Throwable $e) {
             \Illuminate\Support\Facades\Log::error('Lỗi xuất báo cáo tình hình phục vụ bạn đọc: ' . $e->getMessage());
             return response()->json([
-                'status' => 500, 
+                'status' => 500,
+                'message' => 'Đã xảy ra lỗi khi xuất báo cáo: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function thongKePhatBanDoc(Request $request)
+    {
+        try {
+            $request->validate([
+                'tu_ngay' => 'required|date',
+                'den_ngay' => 'required|date|after_or_equal:tu_ngay',
+            ]);
+
+            $tuNgay = Carbon::parse($request->tu_ngay)->startOfDay();
+            $denNgay = Carbon::parse($request->den_ngay)->endOfDay();
+
+            // Lấy dữ liệu từ bảng checkin_ban_doc
+            $phatBanDoc = XuLyViPhamModel::whereBetween('ngay_phat', [$tuNgay, $denNgay])
+                ->leftJoin('phat_ban_doc','phat_ban_doc.id_phat_ban_doc','xu_ly_vi_pham.id_phat_ban_doc')
+                ->leftJoin('dkcb','dkcb.id_dkcb','xu_ly_vi_pham.id_dkcb')
+                ->select(
+                    'xu_ly_vi_pham.*',
+                    'dkcb.ma_dkcb',
+                    'phat_ban_doc.ten_loai_phat',
+                )
+                ->get();
+
+            $ketQua = [];
+
+            foreach ($phatBanDoc as $phat) {
+                $docGia = DocGiaModel::find($phat->id_ban_doc);
+                if (!$docGia) continue;
+
+                $ketQua[] = [
+                    'so_the' => $docGia->so_the,
+                    'ho_ten' => $docGia->ho_ten,
+                    'ten_lop' => $docGia->ten_lop,
+                    'ngay_phat' => $phat->ngay_phat,
+                    'ngay_het_han_phat' => $phat->ngay_het_han_phat,
+                    'so_tien' => $phat->so_tien,
+                    'lan_phat' => $phat->lan_phat,
+                    'ten_loai_phat' => $phat->ten_loai_phat,
+                    'hinh_thuc_phat' => $phat->hinh_thuc_phat,
+                    'ma_dkcb' => $phat->ma_dkcb,
+                ];
+            }
+
+            return response()->json([
+                'status' => 200,
+                'message' => 'Lấy thống kê bạn đọc đến thư viện thành công',
+                'data' => $ketQua
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 500,
+                'message' => 'Lỗi khi lấy thống kê bạn đọc đến thư viện',
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
+
+    public function xuatExcelPhatBanDoc(Request $request)
+    {
+        try {
+            $validated = $this->validate($request, [
+                'tu_ngay' => 'required|date',
+                'den_ngay' => 'required|date|after_or_equal:tu_ngay',
+            ], [
+                'tu_ngay.required' => 'Vui lòng chọn ngày bắt đầu',
+                'den_ngay.required' => 'Vui lòng chọn ngày kết thúc',
+                'den_ngay.after_or_equal' => 'Ngày kết thúc phải sau hoặc bằng ngày bắt đầu',
+            ]);
+
+            $tuNgay = Carbon::parse($validated['tu_ngay'])->startOfDay();
+            $denNgay = Carbon::parse($validated['den_ngay'])->endOfDay();
+
+            // Lấy dữ liệu từ bảng checkin_ban_doc
+            $phatBanDoc = XuLyViPhamModel::whereBetween('ngay_phat', [$tuNgay, $denNgay])
+                ->leftJoin('phat_ban_doc','phat_ban_doc.id_phat_ban_doc','xu_ly_vi_pham.id_phat_ban_doc')
+                ->leftJoin('dkcb','dkcb.id_dkcb','xu_ly_vi_pham.id_dkcb')
+                ->select(
+                    'xu_ly_vi_pham.*',
+                    'dkcb.ma_dkcb',
+                    'phat_ban_doc.ten_loai_phat',
+                )
+                ->get();
+
+            $ketQua = [];
+
+            foreach ($phatBanDoc as $phat) {
+                $docGia = DocGiaModel::find($phat->id_ban_doc);
+                if (!$docGia) continue;
+
+                $ketQua[] = [
+                    'so_the' => $docGia->so_the,
+                    'ho_ten' => $docGia->ho_ten,
+                    'ten_lop' => $docGia->ten_lop,
+                    'ngay_phat' => $phat->ngay_phat,
+                    'ngay_het_han_phat' => $phat->ngay_het_han_phat,
+                    'so_tien' => $phat->so_tien,
+                    'lan_phat' => $phat->lan_phat,
+                    'ten_loai_phat' => $phat->ten_loai_phat,
+                    'hinh_thuc_phat' => $phat->hinh_thuc_phat,
+                    'ma_dkcb' => $phat->ma_dkcb,
+                ];
+            }
+
+            // Xuất Excel dựa trên template
+            $templatePath = public_path('template_excel/template_excel_bctk_phat_ban_doc.xlsx');
+            if (!file_exists($templatePath)) {
+                return response()->json([
+                    'status' => 500,
+                    'message' => 'Không tìm thấy file mẫu báo cáo'
+                ], 500);
+            }
+
+            // Tạo đối tượng PhpSpreadsheet từ file mẫu
+            $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($templatePath);
+            $sheet = $spreadsheet->getActiveSheet();
+
+            // Thiết lập font chữ Times New Roman và kích thước 13 cho toàn bộ sheet
+            $defaultFont = [
+                'font' => [
+                    'name' => 'Times New Roman',
+                    'size' => 12,
+                ]
+            ];
+            $sheet->getParent()->getDefaultStyle()->applyFromArray($defaultFont);
+
+            // Cài đặt thông tin chung - Từ ngày đến ngày
+            $tuNgayFormatted = Carbon::parse($validated['tu_ngay'])->format('d-m-Y');
+            $denNgayFormatted = Carbon::parse($validated['den_ngay'])->format('d-m-Y');
+            $sheet->setCellValue('A5', "Từ ngày: {$tuNgayFormatted} Đến ngày: {$denNgayFormatted}");
+
+            // Chuẩn bị kiểu border
+            $borderStyle = [
+                'borders' => [
+                    'allBorders' => [
+                        'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                        'color' => ['argb' => 'FF000000'],
+                    ],
+                ],
+            ];
+
+            // Điền dữ liệu bạn đọc
+            $startRow = 8;
+            $stt = 1;
+            $currentRow = $startRow;
+
+            foreach ($ketQua as $item) {
+                // Điền dữ liệu vào hàng hiện tại
+                $sheet->setCellValue('A' . $currentRow, $stt);
+                $sheet->setCellValue('B' . $currentRow, $item['so_the']);
+                $sheet->setCellValue('C' . $currentRow, $item['ho_ten']);
+                $sheet->setCellValue('D' . $currentRow, $item['ten_lop']);
+                $sheet->setCellValue('E' . $currentRow, $item['ten_loai_phat']);
+                $sheet->setCellValue('F' . $currentRow, $item['ma_dkcb']);
+                $sheet->setCellValue('G' . $currentRow, $item['hinh_thuc_phat']);
+                $sheet->setCellValue('H' . $currentRow, $item['so_tien']);
+                $sheet->setCellValue('I' . $currentRow, Carbon::parse($item['ngay_phat'])->format('d-m-Y'));
+                $sheet->setCellValue('J' . $currentRow, Carbon::parse($item['ngay_het_han_phat'])->format('d-m-Y'));
+
+                // Căn giữa các cột số
+                $sheet->getStyle('A' . $currentRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+                $sheet->getStyle('B' . $currentRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+                $sheet->getStyle('F' . $currentRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+                $sheet->getStyle('G' . $currentRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+                $sheet->getStyle('H' . $currentRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+                $sheet->getStyle('I' . $currentRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+                $sheet->getStyle('J' . $currentRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+
+                // Style cho hàng
+                $sheet->getStyle('A' . $currentRow . ':J' . $currentRow)->applyFromArray($borderStyle);
+                $sheet->getStyle('A' . $currentRow . ':J' . $currentRow)->applyFromArray($defaultFont);
+
+                // Tăng số thứ tự và chuyển sang hàng tiếp theo
+                $stt++;
+                $currentRow++;
+            }
+
+            $sheet->getColumnDimension('E')->setAutoSize(true);
+
+            // Thêm thông tin người lập báo cáo ở cuối
+            $currentRow += 2;
+            $sheet->setCellValue('I' . $currentRow, "Vĩnh Long, ngày " . Carbon::now()->day . " tháng " . Carbon::now()->month . " năm " . Carbon::now()->year);
+            $sheet->mergeCells('I' . $currentRow . ':J' . $currentRow);
+            $sheet->getStyle('I' . $currentRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+            $sheet->getStyle('I' . $currentRow)->applyFromArray($defaultFont);
+
+            $currentRow += 1;
+            $sheet->setCellValue('I' . $currentRow, "Người lập báo cáo");
+            $sheet->mergeCells('I' . $currentRow . ':J' . $currentRow);
+            $sheet->getStyle('I' . $currentRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+            $sheet->getStyle('I' . $currentRow)->getFont()->setBold(true);
+            $sheet->getStyle('I' . $currentRow)->applyFromArray($defaultFont);
+
+            $currentRow += 4;
+            $sheet->setCellValue('I' . $currentRow, session('HoTen') ?? '');
+            $sheet->mergeCells('I' . $currentRow . ':J' . $currentRow);
+            $sheet->getStyle('I' . $currentRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+            $sheet->getStyle('I' . $currentRow)->applyFromArray($defaultFont);
+
+            // Tên file xuất
+            $fileName = 'BC_Phat_Ban_Doc' . Carbon::now()->format('dmY_His') . '.xlsx';
+
+            // Trả về file Excel
+            $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+            return response()->streamDownload(function () use ($writer) {
+                $writer->save('php://output');
+            }, $fileName, [
+                'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            ]);
+
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error('Lỗi xuất báo cáo bạn đọc đến thư viện: ' . $e->getMessage());
+            return response()->json([
+                'status' => 500,
                 'message' => 'Đã xảy ra lỗi khi xuất báo cáo: ' . $e->getMessage()
             ], 500);
         }

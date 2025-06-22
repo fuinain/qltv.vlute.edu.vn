@@ -19,6 +19,7 @@ class XuLyViPhamModel extends Model
         'ngay_het_han_phat',
         'lan_phat',
         'ghi_chu',
+        'id_dkcb'
     ];
 }
 

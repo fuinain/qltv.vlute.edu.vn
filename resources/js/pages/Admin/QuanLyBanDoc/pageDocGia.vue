@@ -15,12 +15,12 @@
                                         <i class="fas fa-sync"></i>&nbsp;
                                         Đồng bộ dữ liệu
                                     </button>
-                                </div>                              
+                                </div>
                             </div>
                         </template>
                         <template #ContentCardBody>
                             <div class="row mb-2">
-                                <div class="col-md-8">                               
+                                <div class="col-md-8">
                                 </div>
                                 <div class="col-md-4 d-flex justify-content-end">
                                     <div class="input-group search-group" style="width: 320px;">
@@ -51,7 +51,7 @@
                                                 class="btn p-1 btn-primary border-0 bg-transparent text-danger shadow-none"
                                                 @click="xoaBanDoc(row)">
                                                 <i class="fas fa-trash-alt"></i>&nbsp;
-                                            </button>                                    
+                                            </button>
                                         </template>
                                     </Table>
                                 </div>
@@ -126,18 +126,22 @@
             </div>
             <div class="col-md-6">
                 <SelectOption v-model="banDoc.id_chuyen_nganh" label="Chuyên ngành" placeholder="Chọn chuyên ngành..."
-                    :options="dsChuyenNganhOptions" note="(*)" required />
+                    :options="dsChuyenNganhOptions" note="(Nếu là SV/HS)" required />
+            </div>
+            <div class="col-md-6">
+                <SelectOption v-model="banDoc.id_don_vi" label="Phòng/Khoa" placeholder="Chọn phòng/khoa..."
+                              :options="dsDonVi" note="(Nếu là CB/GV)" required />
             </div>
         </div>
         <div class="row">
             <div class="col-md-6">
-                <SelectOption 
-                    v-model="banDoc.rut_han" 
+                <SelectOption
+                    v-model="banDoc.rut_han"
                     :options="dsRutHan"
-                    label="Trạng thái thẻ" 
+                    label="Trạng thái thẻ"
                     placeholder="Chọn trạng thái thẻ..."
-                    note="(*)" 
-                    required 
+                    note="(*)"
+                    required
                 />
             </div>
             <div class="col-md-6">
@@ -223,7 +227,8 @@ export default {
                 chuc_vu: "",
                 ma_so_quy_uoc: "",
                 id_chuyen_nganh: "",
-                email: ""
+                email: "",
+                id_don_vi: '',
             },
             headers: [
                 { key: 'index', label: 'STT', sortable: false },
@@ -241,6 +246,7 @@ export default {
             dsChuyenNganhOptions: [],
             dsNienKhoa: [],
             dsChucVu: [],
+            dsDonVi: [],
             dsRutHan: [
                 { value: 1, text: 'Mở khoá' },
                 { value: 0, text: 'Rút hạn' }
@@ -261,6 +267,7 @@ export default {
         this.loadChuyenNganh();
         this.getListNienKhoa();
         this.loadChucVu();
+        this.loadDonVi();
     },
     methods: {
         async fetchData(page = 1) {
@@ -304,6 +311,21 @@ export default {
                     this.dsChucVu = this.dsChucVu.map(item => ({
                         value: item.ten_chuc_vu,
                         text: item.ten_chuc_vu
+                    }));
+                }
+            } catch (error) {
+                console.error("Lỗi khi load chức vụ:", error);
+            }
+        },
+
+        async loadDonVi() {
+            try {
+                const response = await axios.get('/api/danh-muc/thong-tin-chung/don-vi/list-don-vi-select-option');
+                if (response.data.status === 200) {
+                    this.dsDonVi = response.data.data;
+                    this.dsDonVi = this.dsDonVi.map(item => ({
+                        value: item.id_don_vi,
+                        text: item.ten_don_vi
                     }));
                 }
             } catch (error) {
@@ -362,7 +384,8 @@ export default {
                 ma_so_quy_uoc: "",
                 id_chuyen_nganh: "",
                 chuc_vu: "",
-                email: ""
+                email: "",
+                id_don_vi: '',
             };
 
             // Mở modal
@@ -400,10 +423,11 @@ export default {
         },
 
         async suaBanDoc(row) {
+            console.log(row)
             // Set tiêu đề và điền dữ liệu hiện có vào form
             this.$refs.modal.$data.title = "Cập nhật bạn đọc";
             this.$refs.modal.$data.save = "Cập nhật";
-            
+
             // Format lại các trường ngày tháng khi load dữ liệu
             const formattedRow = { ...row };
             if (formattedRow.ngay_sinh) {
@@ -415,7 +439,7 @@ export default {
             if (formattedRow.han_the) {
                 formattedRow.han_the = formattedRow.han_the.split(' ')[0];
             }
-            
+
             this.banDoc = formattedRow;
 
             // Mở modal để chỉnh sửa

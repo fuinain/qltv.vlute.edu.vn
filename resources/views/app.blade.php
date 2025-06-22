@@ -8,6 +8,7 @@
     @vite('resources/css/app.css')
     <link rel="shortcut icon" href="{{ asset('images/logoVLUTE.png') }}" />
 
+    @routes
 </head>
 
 <body class="hold-transition sidebar-mini">

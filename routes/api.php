@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BienMucBieuGhiController;
+use App\Http\Controllers\GiangVienController;
 use App\Http\Controllers\MarcController;
 use App\Http\Controllers\ThamSoLuuThongController;
 use App\Http\Controllers\TrangThaiDonController;
@@ -48,7 +49,16 @@ Route::middleware(['isLogin:admin'])->group(function () {
                 Route::get('/', [DonViController::class, 'index']);
                 Route::put('/{id}', [DonViController::class, 'update']);
                 Route::delete('/{id}', [DonViController::class, 'destroy']);
-                Route::get('/list-don-vi-select-option', [DonViController::class, 'listDonViSelectOption']);
+                Route::get('/list-don-vi-select-option', [DonViController::class, 'listDonViSelectOption'])->name('DonViController.all');
+            });
+
+            //API quản lý đơn vị
+            Route::prefix('giang-vien')->group(function () {
+                Route::get('/', [GiangVienController::class, 'index'])->name('GiangVienController.index');
+                Route::post('/', [GiangVienController::class, 'store'])->name('GiangVienController.store');
+                Route::post('/import', [GiangVienController::class, 'importGiangVien'])->name('GiangVienController.importGiangVien');
+                Route::put('/', [GiangVienController::class, 'update'])->name('GiangVienController.update');
+                Route::delete('/', [GiangVienController::class, 'destroy'])->name('GiangVienController.destroy');
             });
 
             //API quản lý chức vụ
@@ -330,6 +340,8 @@ Route::middleware(['isLogin:admin'])->group(function () {
             Route::post('/xuat-excel-ban-doc-den-thu-vien', [DMBaoCaoController::class, 'xuatExcelBanDocDenThuVien']);
             Route::post('/thong-ke-tinh-hinh-phuc-vu-ban-doc', [DMBaoCaoController::class, 'thongKeTinhHinhPhucVuBanDoc']);
             Route::post('/xuat-excel-tinh-hinh-phuc-vu-ban-doc', [DMBaoCaoController::class, 'xuatExcelTinhHinhPhucVuBanDoc']);
+            Route::post('/thong-ke-phat-ban-doc', [DMBaoCaoController::class, 'thongKePhatBanDoc']);
+            Route::post('/xuat-excel-phat-ban-doc', [DMBaoCaoController::class, 'xuatExcelPhatBanDoc']);
         });
 
         Route::prefix('bai-viet')->group(function () {
@@ -369,7 +381,7 @@ Route::prefix('opac')->group(function () {
     Route::get('/danh-sach-sach', [OpacController::class, 'getDanhSachSach']);
     Route::get('/sach-theo-tai-lieu/{id_tai_lieu}', [OpacController::class, 'getSachTheoTaiLieu']);
     Route::get('/chi-tiet-sach/{id_sach}', [OpacController::class, 'getChiTietSach']);
-    
+
     // API cho sinh viên đã đăng nhập
     Route::middleware(['isLogin:docgia'])->group(function () {
         Route::get('/thong-tin-sinh-vien/{id_doc_gia}', [OpacController::class, 'getThongTinSinhVien']);
