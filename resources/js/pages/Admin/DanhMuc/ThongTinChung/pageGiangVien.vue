@@ -109,10 +109,9 @@
 </template>
 
 <script>
-import { route } from 'ziggy-js'
 
-const API_GIANG_VIEN = 'GiangVienController.index';
-const API_DON_VI = 'DonViController.all';
+const API_GIANG_VIEN = '/api/danh-muc/thong-tin-chung/giang-vien';
+const API_DON_VI = '/api/danh-muc/thong-tin-chung/don-vi/list-don-vi-select-option';
 
 export default {
     data() {
@@ -152,7 +151,7 @@ export default {
     },
     methods: {
         async loadDonViOptions(url) {
-            axios.get(route(url)).then(response => {
+            axios.get(url).then(response => {
                 const rData = response.data.data;
 
                 this.donViOptions = [{ value: 0, text: "Tất cả" }].concat(
@@ -173,7 +172,7 @@ export default {
                 page: page
             }
 
-            axios.get(route(API_GIANG_VIEN, params)).then(response => {
+            axios.get(API_GIANG_VIEN, params).then(response => {
                 const rData = response.data.data;
                 this.ds = rData;
             });
@@ -199,7 +198,7 @@ export default {
                 id_don_vi: this.giangVien.id_don_vi,
             }
 
-            await axios.post(route(API_GIANG_VIEN, params)).then(response => {
+            await axios.post(API_GIANG_VIEN, params).then(response => {
                 const rData = response.data;
                 if (rData.status === 200) {
                     toastr.success(rData.message);
@@ -235,7 +234,7 @@ export default {
                 id_don_vi: this.giangVien.id_don_vi,
             }
 
-            await axios.put(route(API_GIANG_VIEN, params)).then(response => {
+            await axios.put(API_GIANG_VIEN, params).then(response => {
                 const rData = response.data;
                 if (rData.status === 200) {
                     toastr.success(rData.message);
@@ -260,7 +259,7 @@ export default {
             }).then(async (result) => {
                 if (result.isConfirmed) {
                     try {
-                        await axios.delete(route(API_GIANG_VIEN, {id_giang_vien: row.id_giang_vien}))
+                        await axios.delete(API_GIANG_VIEN, {id_giang_vien: row.id_giang_vien})
                             .then(response => {
                                 if(response.data.status === 200){
                                     toastr.success(response.data.message);
@@ -311,7 +310,7 @@ export default {
             try {
                 document.body.style.cursor = "progress";
                 let response = await axios.post(
-                    route('GiangVienController.importGiangVien'),
+                    '/giang-vien/import',
                     formData,
                     { headers: { "Content-Type": "multipart/form-data" } }
                 );
