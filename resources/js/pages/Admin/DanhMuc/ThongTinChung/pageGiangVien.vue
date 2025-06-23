@@ -19,7 +19,7 @@
                         </template>
                         <template #ContentCardBody>
                             <div class="row">
-                                <div class="col-4">
+                                <div class="col-md-4">
                                     <SelectOption
                                         label="Đơn vị"
                                         :options="donViOptions"
@@ -27,9 +27,23 @@
                                         :placeholder="''"
                                     />
                                 </div>
+                                <div class="col-md-4"></div>
+                                <div class="col-md-4" style="margin-top: 32px">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" v-model="searchQuery"
+                                               placeholder="Tìm kiếm..." @keyup.enter="searchGlobal"
+                                               style="border-top-right-radius: 0; border-bottom-right-radius: 0;">
+                                        <div class="input-group-append">
+                                            <button type="button" class="btn btn-default" @click="searchGlobal">
+                                                <i class="fas fa-search"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
+
                             <!-- Bảng hiển thị dữ liệu -->
-                            <Table :columns="headers" :data="ds.data ?? []" :pagination="ds" :fetchData="loadGiangVien">
+                            <Table :columns="headers" :data="ds.data ?? []" :pagination="ds" :fetchData="loadGiangVien" :hideSearch="true">
                                 <!-- Slot cho cột hành động -->
                                 <template v-slot:column-actions="{ row }">
                                     <button type="button"
@@ -116,6 +130,7 @@ const API_DON_VI = '/api/danh-muc/thong-tin-chung/don-vi/list-don-vi-select-opti
 export default {
     data() {
         return {
+            currentPage: 1,
             ds: [],
             // Dữ liệu cho form thêm/sửa
             giangVien: {
@@ -142,7 +157,8 @@ export default {
             },
 
             errorsGV: [],
-
+            searchQuery: '',
+            isSearching: false,
         };
     },
     mounted() {
@@ -166,16 +182,37 @@ export default {
             });
         },
 
-        loadGiangVien(page = 1) {
+        async loadGiangVien(page = 1, search='') {
             const params = {
                 id_don_vi: this.id_don_vi,
-                page: page
+                page: page,
+                search: search
             }
 
-            axios.get(API_GIANG_VIEN, params).then(response => {
-                const rData = response.data.data;
-                this.ds = rData;
-            });
+            const response = await axios.get(`/api/danh-muc/thong-tin-chung/giang-vien?page=${page}`, {params: params});
+            if (response.data.status === 200) {
+                this.ds = response.data.data;
+                this.currentPage = this.ds.current_page;
+
+                // Nếu đang tìm kiếm và không có kết quả, hiển thị thông báo
+                if (this.ds.data.length === 0) {
+                    toastr.info('Không tìm thấy kết quả phù hợp');
+                }
+                this.isSearching = false;
+            } else {
+                toastr.error('Không tải được dữ liệu');
+            }
+
+        },
+
+        searchGlobal() {
+            if (this.searchQuery.trim() === '') {
+                this.loadGiangVien(1);
+                return;
+            }
+
+            this.isSearching = true;
+            this.loadGiangVien(1, this.searchQuery);
         },
 
         async themGiangVien() {

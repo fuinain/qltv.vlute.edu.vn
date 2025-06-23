@@ -14,14 +14,22 @@ class GiangVienController extends Controller
     public function index(Request $request)
     {
         $id_don_vi = $request->id_don_vi;
+        $search = $request->get('search', '');
+
         $ds = GiangVienModel::query()
-            ->leftJoin('don_vi','don_vi.id_don_vi','giang_vien.id_don_vi')
-            ->when(!empty($id_don_vi), function ($q) use ($id_don_vi){
-                $q->where('giang_vien.id_don_vi',$id_don_vi);
+            ->leftJoin('don_vi', 'don_vi.id_don_vi', '=', 'giang_vien.id_don_vi')
+            ->when(!empty($id_don_vi), function ($q) use ($id_don_vi) {
+                $q->where('giang_vien.id_don_vi', $id_don_vi);
             })
-            ->select('giang_vien.*','don_vi.ma_don_vi','don_vi.ten_don_vi')
-            ->paginate(perPage: 10)
-        ;
+            ->when(!empty($search), function ($q) use ($search) {
+                $q->where(function ($sub) use ($search) {
+                    $sub->where('ho_ten', 'like', "%{$search}%")
+                        ->orWhere('email', 'like', "%{$search}%");
+                });
+            })
+            ->select('giang_vien.*', 'don_vi.ma_don_vi', 'don_vi.ten_don_vi')
+            ->paginate(perPage: 10);
+
 
         return response()->json([
             'status' => 200,
