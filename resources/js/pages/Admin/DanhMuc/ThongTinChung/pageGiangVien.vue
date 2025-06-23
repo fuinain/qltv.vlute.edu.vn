@@ -310,7 +310,7 @@ export default {
             try {
                 document.body.style.cursor = "progress";
                 let response = await axios.post(
-                    '/giang-vien/import',
+                    '/api/danh-muc/thong-tin-chung/giang-vien/import',
                     formData,
                     { headers: { "Content-Type": "multipart/form-data" } }
                 );
