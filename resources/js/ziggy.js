@@ -1,1 +1,5 @@
-export const Ziggy = window.Ziggy;
+const Ziggy = {"url":"http:\/\/qltv.local","port":null,"defaults":{},"routes":{"sanctum.csrf-cookie":{"uri":"sanctum\/csrf-cookie","methods":["GET","HEAD"]},"DonViController.all":{"uri":"api\/danh-muc\/thong-tin-chung\/don-vi\/list-don-vi-select-option","methods":["GET","HEAD"]},"GiangVienController.index":{"uri":"api\/danh-muc\/thong-tin-chung\/giang-vien","methods":["GET","HEAD"]},"GiangVienController.store":{"uri":"api\/danh-muc\/thong-tin-chung\/giang-vien","methods":["POST"]},"GiangVienController.importGiangVien":{"uri":"api\/danh-muc\/thong-tin-chung\/giang-vien\/import","methods":["POST"]},"GiangVienController.update":{"uri":"api\/danh-muc\/thong-tin-chung\/giang-vien","methods":["PUT"]},"GiangVienController.destroy":{"uri":"api\/danh-muc\/thong-tin-chung\/giang-vien","methods":["DELETE"]},"login":{"uri":"login","methods":["GET","HEAD"]},"callback":{"uri":"login\/callback","methods":["GET","HEAD"]},"logout":{"uri":"logout","methods":["GET","HEAD"]},"thayDoiMatKhau":{"uri":"thayDoiMatKhau","methods":["GET","HEAD"]},"storage.local":{"uri":"storage\/{path}","methods":["GET","HEAD"],"wheres":{"path":".*"},"parameters":["path"]}}};
+if (typeof window !== 'undefined' && typeof window.Ziggy !== 'undefined') {
+  Object.assign(Ziggy.routes, window.Ziggy.routes);
+}
+export { Ziggy };
