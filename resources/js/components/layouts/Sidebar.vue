@@ -339,66 +339,14 @@
                                             <i class="fas fa-angle-right nav-icon"></i> <!-- Icon cấp 2 -->
                                             <p>Quản lý tin tức-bài viết</p>
                                         </router-link>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="#" class="nav-link">
-                                            <i class="fas fa-angle-right nav-icon"></i> <!-- Icon cấp 2 -->
-                                            <p>Thống kê truy cập OPAC</p>
-                                        </a>
-                                    </li>
+                                    </li>                              
                                 </ul>
                             </li>
                         </ul>
                     </li>
 
                     <!-- KIỂM KÊ - THANH LÝ (menu cấp 1) -->
-                    <li class="nav-item has-treeview mb-2">
-                        <a href="#" class="nav-link font-weight-bold">
-                            <i class="nav-icon fas fa-clipboard-list"></i>
-                            <p>
-                                KIỂM KÊ THANH LÝ
-                                <i class="right fas fa-angle-left"></i>
-                            </p>
-                        </a>
-                        <!-- Menu cấp 2 -->
-                        <ul class="nav nav-treeview">
-                            <li class="nav-item has-treeview">
-                                <a href="#" class="nav-link">
-                                    <i class="nav-icon far fa-circle"></i> <!-- Icon cấp 2 -->
-                                    <p>
-                                        Kiểm kê
-                                        <i class="fas fa-angle-left right"></i>
-                                    </p>
-                                </a>
-                                <!-- Menu cấp 3 -->
-                                <ul class="nav nav-treeview">
-                                    <li class="nav-item">
-                                        <router-link :to="{ name: 'pageThietLapKiemKe' }" class="nav-link">
-                                            <i class="fas fa-angle-right nav-icon"></i> <!-- Icon cấp 3 -->
-                                            <p>Thiết lập kiểm kê</p>
-                                        </router-link>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li class="nav-item has-treeview">
-                                <a href="#" class="nav-link">
-                                    <i class="nav-icon far fa-circle"></i> <!-- Icon cấp 2 -->
-                                    <p>
-                                        Thanh lý
-                                        <i class="fas fa-angle-left right"></i>
-                                    </p>
-                                </a>
-                                <ul class="nav nav-treeview">
-                                    <li class="nav-item">
-                                        <router-link :to="{ name: 'pageThanhLy' }" class="nav-link">
-                                            <i class="fas fa-angle-right nav-icon"></i> <!-- Icon cấp 3 -->
-                                            <p>Quản lý danh mục thanh lý</p>
-                                        </router-link>
-                                    </li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </li>
+                    
                 </ul>
             </nav>
         </div>
@@ -415,3 +363,4 @@ export default {
     },
 };
 </script>
+

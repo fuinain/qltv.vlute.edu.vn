@@ -7,7 +7,6 @@
             <h4 class="mb-0"><i class="fas fa-exclamation-triangle mr-2"></i> Thông báo</h4>
           </div>
           <div class="card-body text-center">
-            <img src="/images/image_opac/not_found.png" alt="Không tìm thấy" class="img-fluid mb-4" style="max-height: 200px;">
             <h3 class="text-danger mb-3">Sinh viên chưa được đăng ký trong hệ thống thư viện</h3>
             <p class="lead mb-4">
               Tài khoản của bạn chưa được đăng ký trong hệ thống thư viện. Vui lòng liên hệ với thư viện trường để được hỗ trợ.

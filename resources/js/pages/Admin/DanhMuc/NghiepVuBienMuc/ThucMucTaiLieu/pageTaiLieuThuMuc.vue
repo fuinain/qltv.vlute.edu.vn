@@ -145,7 +145,7 @@ export default {
             if (!confirmed) return;
 
             try {
-                const response = await axios.put(`/api/danh-muc/nghiep-vu-bien-muc/tai-lieu/${row.id_chuc_vu}`, this.TaiLieu);
+                const response = await axios.put(`/api/danh-muc/nghiep-vu-bien-muc/tai-lieu/${row.id_tai_lieu}`, this.TaiLieu);
                 if (response.data.status === 200) {
                     toastr.success(response.data.message);
                     this.fetchData(this.currentPage);
@@ -168,7 +168,7 @@ export default {
             }).then(async (result) => {
                 if (result.isConfirmed) {
                     try {
-                        const response = await axios.delete(`/api/danh-muc/nghiep-vu-bien-muc/tai-lieu/${row.id_chuc_vu}`);
+                        const response = await axios.delete(`/api/danh-muc/nghiep-vu-bien-muc/tai-lieu/${row.id_tai_lieu}`);
                         if (response.data.status === 200) {
                             toastr.success(response.data.message);
                             this.fetchData(this.currentPage);
